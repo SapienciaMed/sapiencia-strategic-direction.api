@@ -1,1 +1,1 @@
-# sapiencia-strategic-direction.api
+# sapiencia-auth.api
