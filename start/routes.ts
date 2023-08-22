@@ -25,6 +25,6 @@ Route.get("/", async () => {
 });
 
 Route.group(() => {
-  Route.get("/get-by-id/:id", "BusinessController.getBusinessById");
-}).prefix("/api/v1/business");
+  Route.get("/get-by-id/:id", "ProjectController.getProjectById");
+}).prefix("/api/v1/project");
 // .middleware("auth");
