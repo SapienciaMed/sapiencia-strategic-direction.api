@@ -2,7 +2,7 @@ import { schema, CustomMessages } from "@ioc:Adonis/Core/Validator";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
 export default class ProjectValidator {
-  constructor(protected ctx: HttpContextContract) {}
+  constructor(protected ctx: HttpContextContract) { }
 
   /*
    * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
@@ -24,9 +24,140 @@ export default class ProjectValidator {
    *    ```
    */
   public schema = schema.create({
-    name: schema.string(),
-    description: schema.string(),
-    aplicationId: schema.number(),
+    id: schema.number.optional(),
+    register: schema.object.optional().members({
+      bpin: schema.number.optional(),
+      project: schema.string.optional(),
+      dateFrom: schema.string.optional(),
+      dateTo: schema.number.optional(),
+      process: schema.number.optional(),
+      localitation: schema.number.optional(),
+      dependency: schema.number.optional(),
+      object: schema.string.optional(),
+    }),
+    identification: schema.object.optional().members({
+      problemDescription: schema.object.optional().members({
+        problemDescription: schema.string.optional(),
+        magnitude: schema.string.optional(),
+        centerProblem: schema.string.optional(),
+        causes: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            consecutive: schema.string(),
+            description: schema.string(),
+            childrens: schema.array.optional().members(
+              schema.object().members({
+                id: schema.number.optional(),
+                consecutive: schema.string(),
+                description: schema.string()
+              })
+            )
+          })
+        ),
+        effects: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            consecutive: schema.string(),
+            description: schema.string(),
+            childrens: schema.array.optional().members(
+              schema.object().members({
+                id: schema.number.optional(),
+                consecutive: schema.string(),
+                description: schema.string()
+              })
+            )
+          })
+        ),
+      }),
+      planDevelopment: schema.object.optional().members({
+        pnd_pacto: schema.string.optional(),
+        pnd_linea: schema.string.optional(),
+        pnd_programa: schema.string.optional(),
+        pdd_linea: schema.string.optional(),
+        pdd_componentes: schema.string.optional(),
+        pdd_programa: schema.string.optional(),
+        pdi_linea: schema.string.optional(),
+        pdi_componentes: schema.string.optional(),
+        pdi_programa: schema.string.optional()
+      }),
+      objectives: schema.object.optional().members({
+        generalObjective: schema.string.optional(),
+        specificObjectives: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            consecutive: schema.string(),
+            description: schema.string(),
+            childrens: schema.array.optional().members(
+              schema.object().members({
+                id: schema.number.optional(),
+                consecutive: schema.string(),
+                description: schema.string()
+              })
+            )
+          })
+        ),
+        purposes: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            consecutive: schema.string(),
+            description: schema.string(),
+            childrens: schema.array.optional().members(
+              schema.object().members({
+                id: schema.number.optional(),
+                consecutive: schema.string(),
+                description: schema.string()
+              })
+            )
+          })
+        ),
+        indicators: schema.string.optional(),
+        measurement: schema.number.optional(),
+        goal: schema.number.optional(),
+      }),
+      actors: schema.object.optional().members({
+        actors: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            actor: schema.string(),
+            expectation: schema.string(),
+            position: schema.string(),
+            contribution: schema.string(),
+          })
+        )
+      })
+    }),
+    preparation: schema.object.optional().members({
+      needs: schema.object.optional().members({
+        alternative: schema.string.optional(),
+        generalObjetive: schema.string.optional(),
+        objetives: schema.array().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            objectiveSelect: schema.string(),
+            objetive: schema.object().members({
+              id: schema.number.optional(),
+              consecutive: schema.string(),
+              description: schema.string(),
+              childrens: schema.array.optional().members(
+                schema.object().members({
+                  id: schema.number.optional(),
+                  consecutive: schema.string(),
+                  description: schema.string()
+                })
+              )
+            }),
+            interventionActions: schema.string(),
+            quantification: schema.number(),
+            estatesService: schema.array().members(
+              schema.object().members({
+                id: schema.number.optional(),
+                description: schema.string()
+              })
+            )
+          })
+        )
+      })
+    })
   });
 
   /**

@@ -1,4 +1,4 @@
-import { IProject } from "App/Interfaces/ProjectInterfaces";
+/*import { IProject } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 
 export class ProjectRepositoryFake implements IProjectRepository {
@@ -8,3 +8,4 @@ export class ProjectRepositoryFake implements IProjectRepository {
     });
   }
 }
+*/

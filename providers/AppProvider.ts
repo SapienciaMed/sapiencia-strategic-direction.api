@@ -1,7 +1,7 @@
 import type { ApplicationContract } from "@ioc:Adonis/Core/Application";
 
 export default class AppProvider {
-  constructor(protected app: ApplicationContract) {}
+  constructor(protected app: ApplicationContract) { }
 
   public async register() {
     // Register your own bindings
@@ -22,13 +22,25 @@ export default class AppProvider {
       "App/Repositories/ProjectRepository"
     );
 
+    const CausesRepository = await import(
+      "App/Repositories/CausesRepository"
+    );
+
+    const EffectsRepository = await import(
+      "App/Repositories/EffectsRepository"
+    );
+
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
 
     this.app.container.singleton(
       "core.ProjectProvider",
-      () => new ProjectService.default(new ProjectRepository.default())
+      () => new ProjectService.default(
+        new ProjectRepository.default(),
+        new CausesRepository.default(),
+        new EffectsRepository.default()
+      )
     );
   }
 
