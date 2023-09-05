@@ -1,63 +1,63 @@
-import { IImpactType, IImpactTypeTemp } from "App/Interfaces/ImpactTypeInterfaces";
-import ImpactTypes from "../Models/ImpactType";
+import { IImpactLevel, IImpactLevelTemp } from "App/Interfaces/ImpactLevelInterfaces";
+import ImpactLevels from "../Models/ImpactLevel";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 
-export interface IImpactTypeRepository {
-  getImpactType(): Promise<IImpactType[] | null>;
-  getImpactTypeById(id: number): Promise<IImpactType | null>;
-  createImpactType(ImpactType: IImpactTypeTemp, trx: TransactionClientContract): Promise<IImpactType>;
-  updateImpactType(ImpactType: IImpactTypeTemp, id: number, trx: TransactionClientContract): Promise<IImpactType | null>;
+export interface IImpactLevelRepository {
+  getImpactLevel(): Promise<IImpactLevel[] | null>;
+  getImpactLevelById(id: number): Promise<IImpactLevel | null>;
+  createImpactLevel(ImpactLevel: IImpactLevelTemp, trx: TransactionClientContract): Promise<IImpactLevel>;
+  updateImpactLevel(ImpactLevel: IImpactLevelTemp, id: number, trx: TransactionClientContract): Promise<IImpactLevel | null>;
 }
 
-export default class ImpactTypeRepository implements IImpactTypeRepository {
+export default class ImpactLevelRepository implements IImpactLevelRepository {
 
-  async getImpactType(): Promise<IImpactType[] | null> {
-    const res = await ImpactTypes.all();
+  async getImpactLevel(): Promise<IImpactLevel[] | null> {
+    const res = await ImpactLevels.all();
     return res ? (res) : null;
   }
 
-  async getImpactTypeById(id: number): Promise<IImpactType | null> {
-    const res = await ImpactTypes.find(id);
-    return res ? (res.serialize() as IImpactType) : null;
+  async getImpactLevelById(id: number): Promise<IImpactLevel | null> {
+    const res = await ImpactLevels.find(id);
+    return res ? (res.serialize() as IImpactLevel) : null;
   }
 
-  async createImpactType(ImpactType: IImpactTypeTemp, trx: TransactionClientContract): Promise<IImpactType> {
-    const toCreate = new ImpactTypes();
-    if (ImpactType?.id !== undefined) {
-      toCreate.id = ImpactType.id;
+  async createImpactLevel(ImpactLevel: IImpactLevelTemp, trx: TransactionClientContract): Promise<IImpactLevel> {
+    const toCreate = new ImpactLevels();
+    if (ImpactLevel?.id !== undefined) {
+      toCreate.id = ImpactLevel.id;
     }
-    if (ImpactType?.description) {
-      toCreate.description = ImpactType.description;
+    if (ImpactLevel?.description) {
+      toCreate.description = ImpactLevel.description;
     }
-    if (ImpactType?.active) {
-      toCreate.active = ImpactType.active;
+    if (ImpactLevel?.active) {
+      toCreate.active = ImpactLevel.active;
     }
-    if (ImpactType?.order) {
-      toCreate.order = ImpactType.order;
+    if (ImpactLevel?.order) {
+      toCreate.order = ImpactLevel.order;
     }
 
     toCreate.useTransaction(trx);
     await toCreate.save();
-    return toCreate.serialize() as IImpactType;
+    return toCreate.serialize() as IImpactLevel;
   }
 
-  async updateImpactType(ImpactType: IImpactTypeTemp, id: number, trx: TransactionClientContract): Promise<IImpactType | null> {
-    const toUpdate = await ImpactTypes.find(id);
+  async updateImpactLevel(ImpactLevel: IImpactLevelTemp, id: number, trx: TransactionClientContract): Promise<IImpactLevel | null> {
+    const toUpdate = await ImpactLevels.find(id);
     if (!toUpdate) {
       return null;
     }
-    if (ImpactType?.description !== undefined) {
-      toUpdate.description = ImpactType.description;
+    if (ImpactLevel?.description !== undefined) {
+      toUpdate.description = ImpactLevel.description;
     }
-    if (ImpactType?.active) {
-      toUpdate.active = ImpactType.active;
+    if (ImpactLevel?.active) {
+      toUpdate.active = ImpactLevel.active;
     }
-    if (ImpactType?.order) {
-      toUpdate.order = ImpactType.order;
+    if (ImpactLevel?.order) {
+      toUpdate.order = ImpactLevel.order;
     }
 
     toUpdate.useTransaction(trx);
     await toUpdate.save();
-    return toUpdate.serialize() as IImpactType;
+    return toUpdate.serialize() as IImpactLevel;
   }
 }
