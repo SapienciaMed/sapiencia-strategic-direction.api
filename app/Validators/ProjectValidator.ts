@@ -28,7 +28,7 @@ export default class ProjectValidator {
     user: schema.string(),
     status: schema.boolean(),
     register: schema.object.optional().members({
-      bpin: schema.number.optional(),
+      bpin: schema.string.optional(),
       project: schema.string.optional(),
       dateFrom: schema.string.optional(),
       dateTo: schema.string.optional(),

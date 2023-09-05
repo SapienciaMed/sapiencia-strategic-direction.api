@@ -64,7 +64,7 @@ export default class ProjectService implements IProjectService {
       effects = await this.effectsRepository.updateEffects(project.identification.problemDescription.effects, id, trx);
     }
     if(project.identification?.actors?.actors) {
-      actors = await this.actorsRepository.createActors(project.identification.actors.actors, id, trx);
+      actors = await this.actorsRepository.updateActors(project.identification.actors.actors, id, trx);
     }
     if (!res) {
       return new ApiResponse(

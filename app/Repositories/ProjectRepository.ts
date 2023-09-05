@@ -29,7 +29,7 @@ export default class ProjectRepository implements IProjectRepository {
     const toCreate = new Projects();
     toCreate.user = project.user;
     toCreate.status = project.status;
-    if (project.register?.bpin !== undefined) {
+    if (project.register?.bpin) {
       toCreate.bpin = project.register.bpin;
     }
     if (project.register?.project) {
@@ -41,10 +41,10 @@ export default class ProjectRepository implements IProjectRepository {
     if (project.register?.dateTo) {
       toCreate.dateTo = Number(project.register.dateTo);
     }
-    if (project.register?.process !== undefined) {
+    if (project.register?.process) {
       toCreate.process = project.register.process;
     }
-    if (project.register?.dependency !== undefined) {
+    if (project.register?.dependency) {
       toCreate.dependency = project.register.dependency;
     }
     if(project.register?.localitation) {

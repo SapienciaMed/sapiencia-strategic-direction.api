@@ -10,7 +10,7 @@ export default class Projects extends BaseModel {
   public id: number;
 
   @column({ columnName: "PRY_CODIGO_BPIN", serializeAs: "bpin" })
-  public bpin: number;
+  public bpin: string;
 
   @column({ columnName: "PRY_NOMBRE_PROYECTO", serializeAs: "project" })
   public project: string;
