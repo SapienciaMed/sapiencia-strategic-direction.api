@@ -3,29 +3,32 @@ import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 
 export interface IProjectRepository {
-  getProjectById(id: number): Promise<IProject | null>;
-  createProject(project: IProjectTemp, trx: TransactionClientContract, causes: ICause[] | null, effecs: IEffect[] | null): Promise<IProject>;
+  getProjectByUser(user: string): Promise<IProject | null>;
+  createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<IProject>;
   updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<IProject | null>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
 
-  async getProjectById(id: number): Promise<IProject | null> {
-    const res = await Projects.find(id);
+  async getProjectByUser(user: string): Promise<IProject | null> {
+    const res = await Projects.findBy("user", user);
     await res?.load('causes', (query) => {
       query.preload("childrens");
     });
     await res?.load('effects', (query) => {
       query.preload("childrens");
     });
-    if(res?.goal) {
+    await res?.load('actors');
+    if (res?.goal) {
       res.goal = Number(res.goal);
     }
     return res ? (res.serialize() as IProject) : null;
   }
 
-  async createProject(project: IProjectTemp, trx: TransactionClientContract, causes: ICause[] | null, effects: IEffect[] | null): Promise<IProject> {
+  async createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<IProject> {
     const toCreate = new Projects();
+    toCreate.user = project.user;
+    toCreate.status = project.status;
     if (project.register?.bpin !== undefined) {
       toCreate.bpin = project.register.bpin;
     }
@@ -33,16 +36,22 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.project = project.register.project;
     }
     if (project.register?.dateFrom) {
-      toCreate.dateFrom = project.register.dateFrom;
+      toCreate.dateFrom = Number(project.register.dateFrom);
     }
     if (project.register?.dateTo) {
-      toCreate.dateTo = project.register.dateTo.toString();
+      toCreate.dateTo = Number(project.register.dateTo);
     }
     if (project.register?.process !== undefined) {
       toCreate.process = project.register.process;
     }
     if (project.register?.dependency !== undefined) {
       toCreate.dependency = project.register.dependency;
+    }
+    if(project.register?.localitation) {
+      toCreate.localitation = project.register.localitation;
+    }
+    if(project.register?.object) {
+      toCreate.object = project.register.object;
     }
     if (project.identification?.problemDescription?.problemDescription) {
       toCreate.problemDescription = project.identification.problemDescription.problemDescription;
@@ -52,16 +61,6 @@ export default class ProjectRepository implements IProjectRepository {
     }
     if (project.identification?.problemDescription?.centerProblem) {
       toCreate.centerProblem = project.identification.problemDescription.centerProblem;
-    }
-    if (causes) {
-      if (causes[0].id) {
-        toCreate.causeId = causes[0].id;
-      }
-    }
-    if (effects) {
-      if (effects[0].id) {
-        toCreate.effectId = effects[0].id;
-      }
     }
     if (project.identification?.planDevelopment?.pnd_pacto) {
       toCreate.pnd_pacto = project.identification.planDevelopment.pnd_pacto;
@@ -94,8 +93,7 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.indicators = project.identification.objectives.indicators;
     }
     if (project.identification?.objectives?.measurement !== undefined) {
-      //CAMBIO: CAMBIAR A NUMBER PORQUE ES UNA LISTA DESPLEGABLE
-      toCreate.measurement = project.identification.objectives.measurement.toString();
+      toCreate.measurement = project.identification.objectives.measurement;
     }
     if (project.identification?.objectives?.goal !== undefined) {
       toCreate.goal = project.identification.objectives.goal;
@@ -110,6 +108,8 @@ export default class ProjectRepository implements IProjectRepository {
     if (!toUpdate) {
       return null;
     }
+    toUpdate.user = project.user;
+    toUpdate.status = project.status;
     if (project.register?.bpin !== undefined) {
       toUpdate.bpin = project.register.bpin;
     }
@@ -117,16 +117,22 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.project = project.register.project;
     }
     if (project.register?.dateFrom) {
-      toUpdate.dateFrom = project.register.dateFrom;
+      toUpdate.dateFrom = Number(project.register.dateFrom);
     }
     if (project.register?.dateTo) {
-      toUpdate.dateTo = project.register.dateTo.toString();
+      toUpdate.dateTo = Number(project.register.dateTo);
     }
     if (project.register?.process !== undefined) {
       toUpdate.process = project.register.process;
     }
     if (project.register?.dependency !== undefined) {
       toUpdate.dependency = project.register.dependency;
+    }
+    if(project.register?.localitation) {
+      toUpdate.localitation = project.register.localitation;
+    }
+    if(project.register?.object) {
+      toUpdate.object = project.register.object;
     }
     if (project.identification?.problemDescription?.problemDescription) {
       toUpdate.problemDescription = project.identification.problemDescription.problemDescription;
@@ -168,8 +174,7 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.indicators = project.identification.objectives.indicators;
     }
     if (project.identification?.objectives?.measurement !== undefined) {
-      //CAMBIO: CAMBIAR A NUMBER PORQUE ES UNA LISTA DESPLEGABLE
-      toUpdate.measurement = project.identification.objectives.measurement.toString();
+      toUpdate.measurement = project.identification.objectives.measurement;
     }
     if (project.identification?.objectives?.goal !== undefined) {
       toUpdate.goal = project.identification.objectives.goal;

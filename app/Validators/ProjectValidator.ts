@@ -25,11 +25,13 @@ export default class ProjectValidator {
    */
   public schema = schema.create({
     id: schema.number.optional(),
+    user: schema.string(),
+    status: schema.boolean(),
     register: schema.object.optional().members({
       bpin: schema.number.optional(),
-      project: schema.string.optional(),
+      project: schema.number.optional(),
       dateFrom: schema.string.optional(),
-      dateTo: schema.number.optional(),
+      dateTo: schema.string.optional(),
       process: schema.number.optional(),
       localitation: schema.number.optional(),
       dependency: schema.number.optional(),
@@ -120,7 +122,7 @@ export default class ProjectValidator {
             id: schema.number.optional(),
             actor: schema.string(),
             expectation: schema.string(),
-            position: schema.string(),
+            position: schema.number(),
             contribution: schema.string(),
           })
         )

@@ -25,7 +25,7 @@ Route.get("/", async () => {
 });
 
 Route.group(() => {
-  Route.get("/get-by-id/:id", "ProjectController.getProjectById");
+  Route.get("/get-by-user/:user", "ProjectController.getProjectByUser");
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
 }).prefix("/api/v1/project");

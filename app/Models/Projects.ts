@@ -1,6 +1,7 @@
-import { BaseModel, HasOne, column, hasOne } from "@ioc:Adonis/Lucid/Orm";
-import Causes from "./Causes";
+import { BaseModel, HasMany, column, hasMany } from "@ioc:Adonis/Lucid/Orm";
 import Effects from "./Effects";
+import Causes from "./Causes";
+import Actors from "./Actors";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -13,12 +14,12 @@ export default class Projects extends BaseModel {
 
   @column({ columnName: "PRY_NOMBRE_PROYECTO", serializeAs: "project" })
   public project: string;
-  
+
   @column({ columnName: "PRY_PERIODO_INICIAL", serializeAs: "dateFrom" })
-  public dateFrom: string;
-  
+  public dateFrom: number;
+
   @column({ columnName: "PRY_PERIODO_FINAL", serializeAs: "dateTo" })
-  public dateTo: string;
+  public dateTo: number;
 
   @column({ columnName: "PRY_CODPRC_PROCESO", serializeAs: "process" })
   public process: number;
@@ -65,29 +66,44 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_INDICADORES", serializeAs: "indicators" })
   public indicators: string;
 
-  @column({ columnName: "PRY_UNIDAD_MEDIDA", serializeAs: "measurement" })
-  public measurement: string;
+  @column({ columnName: "PRY_CODMED_MED_MEDIDAS", serializeAs: "measurement" })
+  public measurement: number;
 
   @column({ columnName: "PRY_META", serializeAs: "goal" })
   public goal: number;
 
-  @column({ columnName: "PRY_CODLCD_LISTA_CAUSA_DIRECTA", serializeAs: "cause" })
-  public causeId: number;
+  @column({ columnName: "PRY_OBJETIVO", serializeAs: "object" })
+  public object: string;
 
-  @column({ columnName: "PRY_CODLED_LISTA_EFECTOS_DIRECTOS", serializeAs: "effect" })
-  public effectId: number;
+  @column({ columnName: "PRY_USUARIO", serializeAs: "user" })
+  public user: string;
 
-  @hasOne(() => Causes, {
-    localKey: "causeId",
-    foreignKey: "id",
-    serializeAs: "causes",
+  @column({
+    columnName: "PRY_ESTADO_PROYECTO",
+    serializeAs: "state",
+    prepare: (val) => String(val) === "true" ? 1 : 0,
+    serialize: (val) => Boolean(val)
   })
-  public causes: HasOne<typeof Causes>;
+  public status: boolean;
 
-  @hasOne(() => Effects, {
-    localKey: "effectId",
-    foreignKey: "id",
-    serializeAs: "effects",
+  @column({ columnName: "PRY_CODPRM_PRM_PARAMETROS", serializeAs: "localitation" })
+  public localitation: number;
+
+  @hasMany(() => Causes, {
+    localKey: 'id',
+    foreignKey: 'idProject',
   })
-  public effects: HasOne<typeof Effects>;
+  public causes: HasMany<typeof Causes>;
+  
+  @hasMany(() => Effects, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public effects: HasMany<typeof Effects>;
+
+  @hasMany(() => Actors, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public actors: HasMany<typeof Actors>;
 }
