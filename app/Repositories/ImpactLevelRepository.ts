@@ -12,7 +12,7 @@ export interface IImpactLevelRepository {
 export default class ImpactLevelRepository implements IImpactLevelRepository {
 
   async getImpactLevel(): Promise<IImpactLevel[] | null> {
-    const res = await ImpactLevels.all();
+    const res = await ImpactLevels.query().orderBy('id', 'asc');
     return res ? (res) : null;
   }
 

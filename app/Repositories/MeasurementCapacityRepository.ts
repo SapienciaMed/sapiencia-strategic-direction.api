@@ -12,7 +12,7 @@ export interface IMeasurementCapacityRepository {
 export default class MeasurementCapacityRepository implements IMeasurementCapacityRepository {
 
   async getMeasurementCapacity(): Promise<IMeasurementCapacity[] | null> {
-    const res = await MeasurementCapacitys.all();
+    const res = await MeasurementCapacitys.query().orderBy('id', 'asc');
     return res ? (res) : null;
   }
 

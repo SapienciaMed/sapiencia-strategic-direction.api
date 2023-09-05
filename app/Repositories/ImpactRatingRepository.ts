@@ -12,7 +12,7 @@ export interface IImpactRatingRepository {
 export default class ImpactRatingRepository implements IImpactRatingRepository {
 
   async getImpactRating(): Promise<IImpactRating[] | null> {
-    const res = await ImpactRatings.all();
+    const res = await ImpactRatings.query().orderBy('id', 'asc');
     return res ? (res) : null;
   }
 

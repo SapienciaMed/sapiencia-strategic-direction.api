@@ -12,7 +12,7 @@ export interface IImpactTypeRepository {
 export default class ImpactTypeRepository implements IImpactTypeRepository {
 
   async getImpactType(): Promise<IImpactType[] | null> {
-    const res = await ImpactTypes.all();
+    const res = await ImpactTypes.query().orderBy('id', 'asc');
     return res ? (res) : null;
   }
 
