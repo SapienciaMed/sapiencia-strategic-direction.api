@@ -34,6 +34,10 @@ export default class AppProvider {
       "App/Repositories/EffectsRepository"
     );
 
+    const ActorsRepository = await import(
+      "App/Repositories/ActorsRepository"
+    );
+    
     const MeasurementCapacityRepository = await import(
       "App/Repositories/MeasurementCapacityRepository"
     );
@@ -60,7 +64,8 @@ export default class AppProvider {
         new ProjectRepository.default(),
         new CausesRepository.default(),
         new EffectsRepository.default(),
-      ),
+        new ActorsRepository.default(),
+      )
     );
 
     this.app.container.singleton(

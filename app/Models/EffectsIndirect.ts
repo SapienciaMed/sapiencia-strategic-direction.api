@@ -7,8 +7,8 @@ export default class EffectsIndirect extends BaseModel {
   @column({ isPrimary: true, columnName: "LEI_CODIGO", serializeAs: "id" })
   public id: number;
 
-  @column({ columnName: "LEI_TIPO", serializeAs: "type" })
-  public type: string;
+  @column({ columnName: "LEI_NUMERO", serializeAs: "consecutive" })
+  public consecutive: string;
 
   @column({ columnName: "LEI_DESCRIPCION", serializeAs: "description" })
   public description: string;
