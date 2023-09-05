@@ -29,7 +29,7 @@ export default class ProjectValidator {
     status: schema.boolean(),
     register: schema.object.optional().members({
       bpin: schema.number.optional(),
-      project: schema.number.optional(),
+      project: schema.string.optional(),
       dateFrom: schema.string.optional(),
       dateTo: schema.string.optional(),
       process: schema.number.optional(),

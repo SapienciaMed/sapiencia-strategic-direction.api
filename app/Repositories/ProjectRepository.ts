@@ -1,4 +1,4 @@
-import { ICause, IEffect, IProject, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
+import { IProject, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 
