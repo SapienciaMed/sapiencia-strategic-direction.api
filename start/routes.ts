@@ -29,4 +29,32 @@ Route.group(() => {
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
 }).prefix("/api/v1/project");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "MeasurementCapacityController.getMeasurementCapacityById");
+  Route.get("/", "MeasurementCapacityController.getMeasurementCapacity");
+  Route.post("/create", "MeasurementCapacityController.createMeasurementCapacity");
+  Route.put("/update/:id", "MeasurementCapacityController.updateMeasurementCapacity");
+}).prefix("/api/v1/measurement-capacity");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "ImpactLevelController.getImpactLevelById");
+  Route.get("/", "ImpactLevelController.getImpactLevel");
+  Route.post("/create", "ImpactLevelController.createImpactLevel");
+  Route.put("/update/:id", "ImpactLevelController.updateImpactLevel");
+}).prefix("/api/v1/impact-level");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "ImpactTypeController.getImpactTypeById");
+  Route.get("/", "ImpactTypeController.getImpactType");
+  Route.post("/create", "ImpactTypeController.createImpactType");
+  Route.put("/update/:id", "ImpactTypeController.updateImpactType");
+}).prefix("/api/v1/impact-type");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "ImpactRatingController.getImpactRatingById");
+  Route.get("/", "ImpactRatingController.getImpactRating");
+  Route.post("/create", "ImpactRatingController.createImpactRating");
+  Route.put("/update/:id", "ImpactRatingController.updateImpactRating");
+}).prefix("/api/v1/impact-rating");
 // .middleware("auth");

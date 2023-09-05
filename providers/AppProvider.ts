@@ -10,6 +10,10 @@ export default class AppProvider {
     /******************************** SERVICES ********************************/
     /**************************************************************************/
     const ProjectService = await import("App/Services/ProjectService");
+    const MeasurementCapacityService = await import("App/Services/MeasurementCapacityService");
+    const ImpactLevelService = await import("App/Services/ImpactLevelService");
+    const ImpactTypeService = await import("App/Services/ImpactTypeService");
+    const ImpactRatingService = await import("App/Services/ImpactRatingService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -30,6 +34,22 @@ export default class AppProvider {
       "App/Repositories/EffectsRepository"
     );
 
+    const MeasurementCapacityRepository = await import(
+      "App/Repositories/MeasurementCapacityRepository"
+    );
+
+    const ImpactLevelRepository = await import(
+      "App/Repositories/ImpactLevelRepository"
+    );
+
+    const ImpactTypeRepository = await import(
+      "App/Repositories/ImpactTypeRepository"
+    );
+
+    const ImpactRatingRepository = await import(
+      "App/Repositories/ImpactRatingRepository"
+    );
+
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -39,8 +59,36 @@ export default class AppProvider {
       () => new ProjectService.default(
         new ProjectRepository.default(),
         new CausesRepository.default(),
-        new EffectsRepository.default()
-      )
+        new EffectsRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.MeasurementCapacityProvider",
+      () => new MeasurementCapacityService.default(
+        new MeasurementCapacityRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.ImpactLevelProvider",
+      () => new ImpactLevelService.default(
+        new ImpactLevelRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.ImpactTypeProvider",
+      () => new ImpactTypeService.default(
+        new ImpactTypeRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.ImpactRatingProvider",
+      () => new ImpactRatingService.default(
+        new ImpactRatingRepository.default(),
+      ),
     );
   }
 
