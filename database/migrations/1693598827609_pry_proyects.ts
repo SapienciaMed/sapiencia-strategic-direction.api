@@ -18,7 +18,7 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Nombre del proyecto");
       table
-      .string("PRY_PERIODO_INICIAL", 4)
+      .integer("PRY_PERIODO_INICIAL", 4)
       .nullable()
       .comment("Año en el cual se crea el proyecto (4 dígitos)");
       table
@@ -92,7 +92,7 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Descripcion indicadores");
       table
-      .string("PRY_UNIDAD_MEDIDA",10)
+      .integer("PRY_CODMED_MED_MEDIDAS")
       .nullable()
       .comment("unidad de medida (Listados Genericos)");
       table
@@ -100,19 +100,21 @@ export default class extends BaseSchema {
       .nullable()
       .comment("campo de tipo moneda ");
       table
-      .integer("PRY_CODLCD_LISTA_CAUSA_DIRECTA")
+      .string("PRY_OBJETIVO	")
       .nullable()
-      .unsigned()
-      .references("LCD_CODIGO")
-      .inTable("LCD_LISTADO_CAUSA_DIRECTA")
-      .comment("codigo de la causa directa(FK LCD_LISTADO_CAUSA_DIRECTA)");
+      .comment("objetivo del proyecto");
       table
-      .integer("PRY_CODLED_LISTA_EFECTOS_DIRECTOS")
+      .string("PRY_USUARIO",20)
       .nullable()
-      .unsigned()
-      .references("LED_CODIGO")
-      .inTable("LED_LISTADO_EFECTOS_DIRECTOS")
-      .comment("codigo de la causa directa(FK LED_LISTADO_EFECTOS_DIRECTOS)");
+      .comment("objetivo del proyecto");
+      table
+      .boolean("PRY_ESTADO_PROYECTO")
+      .nullable()
+      .comment("Estado del proyecto, completado o guardado temporal	");
+      table
+      .integer("PRY_CODPRM_PRM_PARAMETROS	")
+      .nullable()
+      .comment("localización");
     })
   }
 

@@ -10,13 +10,20 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .string("LED_TIPO", 20)
+      .string("LED_NUMERO", 5)
       .notNullable()
-      .comment("Tipó de efecto puede ser directo o indirecto");
+      .comment("Numero que identifica la Efecto");
       table
       .string("LED_DESCRIPCION")
       .notNullable()
       .comment("Descripcion del efecto");
+      table
+      .integer("LED_CODPRY_PRY_PROYECTO")
+      .notNullable()
+      .unsigned()
+      .references("PRY_CODIGO	")
+      .inTable("PRY_PROYECTOS")
+      .comment("codigo del proyecto , llave foranea de la tabla proyecto PRY_PROYECTOS (PRY_CODIGO)");
     })
   }
 

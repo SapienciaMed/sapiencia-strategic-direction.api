@@ -10,13 +10,13 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .string("LEI_TIPO", 20)
-      .notNullable()
-      .comment("Tipó de efecto puede ser directo o indirecto");
-      table
       .string("LEI_DESCRIPCION")
       .notNullable()
       .comment("Descripcion del efecto");
+      table
+      .string("LEI_NUMERO", 5)
+      .notNullable()
+      .comment("Numero que identifica la Efecto");
       table
       .integer("LEI_CODLED_EFECTO_DIRECTO")
       .notNullable()

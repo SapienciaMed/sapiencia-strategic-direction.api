@@ -6,19 +6,19 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.comment("Tabla maestra que contiene las 5 regiones colombianas, hace parte de la tabla generica");
-      table.increments("DPA_CODIGO")
+      table.increments("LRE_CODIGO")
       .primary()
       .comment("Llave primaria");
       table
-      .string("DPA_DESCRIPCION",50)
+      .string("LRE_DESCRIPCION",50)
       .notNullable()
       .comment("Descripción del proceso");
       table
-      .boolean("DPA_ACTIVO")
+      .boolean("LRE_ACTIVO")
       .notNullable()
       .comment("booleano con posibles valores True o False.");
       table
-      .integer("DPA_ORDEN")
+      .integer("LRE_ORDEN")
       .notNullable()
       .comment("Valor que indica el orden");
     })

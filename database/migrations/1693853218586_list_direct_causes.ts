@@ -17,6 +17,13 @@ export default class extends BaseSchema {
       .string("LCD_DESCRIPCION")
       .notNullable()
       .comment("Descripcion de la causa");
+      table
+      .integer("LCD_CODPRY_PRY_PROYECTO")
+      .notNullable()
+      .unsigned()
+      .references("PRY_CODIGO	")
+      .inTable("PRY_PROYECTOS")
+      .comment("codigo del proyecto , llave foranea de la tabla proyecto PRY_PROYECTOS (PRY_CODIGO)");
     })
   }
 

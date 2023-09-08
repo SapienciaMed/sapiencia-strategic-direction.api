@@ -18,7 +18,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("Postsecundaria - SAPIENCIA");
       table
-      .integer("PRM_IDAPLICATIVO")
+      .integer("PRM_ID_APLICATIVO")
       .notNullable()
       .comment("Id del aplicativo Dirección Estratégica");
     })
