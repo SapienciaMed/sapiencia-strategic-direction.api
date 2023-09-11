@@ -14,6 +14,7 @@ export default class AppProvider {
     const ImpactLevelService = await import("App/Services/ImpactLevelService");
     const ImpactTypeService = await import("App/Services/ImpactTypeService");
     const ImpactRatingService = await import("App/Services/ImpactRatingService");
+    const EntitiesService = await import("App/Services/EntitiesService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -28,6 +29,10 @@ export default class AppProvider {
 
     const CausesRepository = await import(
       "App/Repositories/CausesRepository"
+    );
+
+    const EntitiesRepository = await import(
+      "App/Repositories/EntitiesRepository"
     );
 
     const EffectsRepository = await import(
@@ -110,6 +115,12 @@ export default class AppProvider {
         new ImpactRatingRepository.default(),
       ),
     );
+
+    this.app.container.singleton(
+      "core.EntitiesProvider",
+      () => new EntitiesService.default(new EntitiesRepository.default())
+    );
+
   }
 
   public async boot() {
