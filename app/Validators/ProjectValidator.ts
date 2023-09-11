@@ -126,16 +126,34 @@ export default class ProjectValidator {
             contribution: schema.string(),
           })
         )
+      }),
+      poblation: schema.object.optional().members({
+        objectivePeople: schema.number.optional(),
+        informationSource: schema.string.optional(),
+        region: schema.number.optional(),
+        departament: schema.number.optional(),
+        district: schema.number.optional(),
+        shelter: schema.string.optional(),
+        demographic: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            clasification: schema.number(),
+            detail: schema.number(),
+            numPerson: schema.number.optional(),
+            infoSource: schema.string.optional(),
+          })
+        )
       })
     }),
     preparation: schema.object.optional().members({
-      needs: schema.object.optional().members({
+      technicalAnalysis: schema.object.optional().members({
         alternative: schema.string.optional(),
-        generalObjetive: schema.string.optional(),
+        resumeAlternative: schema.string.optional()
+      }),
+      needs: schema.object.optional().members({
         objetives: schema.array().members(
           schema.object().members({
             id: schema.number.optional(),
-            objectiveSelect: schema.string(),
             objetive: schema.object().members({
               id: schema.number.optional(),
               consecutive: schema.string(),
@@ -156,6 +174,25 @@ export default class ProjectValidator {
                 description: schema.string()
               })
             )
+          })
+        )
+      }),
+      capacity: schema.object.optional().members({
+        alternativeCapacity: schema.string.optional(),
+        descriptionCapacity: schema.string.optional(),
+        unitCapacity: schema.number.optional(),
+        capacityGenerated: schema.number.optional(),
+      }),
+      enviromentalAnalysis: schema.object.optional().members({
+        environmentDiagnosis: schema.string.optional(),
+        effects: schema.array.optional().members(
+          schema.object().members({
+            id: schema.number.optional(),
+            type: schema.number.optional(),
+            impact: schema.string.optional(),
+            classification: schema.number.optional(),
+            level: schema.number.optional(),
+            measures: schema.string.optional(),
           })
         )
       })

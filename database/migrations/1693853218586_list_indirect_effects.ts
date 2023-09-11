@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .string("LEI_DESCRIPCION")
+      .text("LEI_DESCRIPCION")
       .notNullable()
       .comment("Descripcion del efecto");
       table

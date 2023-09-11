@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("Numero que identifica la Efecto");
       table
-      .string("LED_DESCRIPCION")
+      .text("LED_DESCRIPCION")
       .notNullable()
       .comment("Descripcion del efecto");
       table

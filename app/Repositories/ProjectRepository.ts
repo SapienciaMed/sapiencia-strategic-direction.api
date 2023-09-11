@@ -19,8 +19,21 @@ export default class ProjectRepository implements IProjectRepository {
       query.preload("childrens");
     });
     await res?.load('actors');
+    await res?.load('classifications');
+    await res?.load('specificObjectives', (query) => {
+      query.preload("estatesService");
+    });
+    await res?.load('environmentalEffects');
     if (res?.goal) {
       res.goal = Number(res.goal);
+    }
+    if(res?.specificObjectives){
+      res.specificObjectives.forEach((obj, index) => {
+        const objetive = res.causes.find(cause => cause.id === obj.objetive)
+        if(objetive){
+          res.specificObjectives[index].objetive = objetive;
+        }
+      });
     }
     return res ? (res.serialize() as IProject) : null;
   }
@@ -41,16 +54,16 @@ export default class ProjectRepository implements IProjectRepository {
     if (project.register?.dateTo) {
       toCreate.dateTo = Number(project.register.dateTo);
     }
-    if (project.register?.process) {
+    if (project.register?.process !== undefined) {
       toCreate.process = project.register.process;
     }
-    if (project.register?.dependency) {
+    if (project.register?.dependency !== undefined) {
       toCreate.dependency = project.register.dependency;
     }
-    if(project.register?.localitation) {
+    if (project.register?.localitation !== undefined) {
       toCreate.localitation = project.register.localitation;
     }
-    if(project.register?.object) {
+    if (project.register?.object) {
       toCreate.object = project.register.object;
     }
     if (project.identification?.problemDescription?.problemDescription) {
@@ -98,6 +111,42 @@ export default class ProjectRepository implements IProjectRepository {
     if (project.identification?.objectives?.goal !== undefined) {
       toCreate.goal = project.identification.objectives.goal;
     }
+    if (project.identification?.poblation?.objectivePeople !== undefined) {
+      toCreate.objectivePeople = project.identification.poblation.objectivePeople;
+    }
+    if (project.identification?.poblation?.informationSource) {
+      toCreate.informationSource = project.identification.poblation.informationSource;
+    }
+    if (project.identification?.poblation?.region !== undefined) {
+      toCreate.region = project.identification.poblation.region;
+    }
+    if (project.identification?.poblation?.departament !== undefined) {
+      toCreate.departament = project.identification.poblation.departament;
+    }
+    if (project.identification?.poblation?.district !== undefined) {
+      toCreate.district = project.identification.poblation.district;
+    }
+    if (project.identification?.poblation?.shelter) {
+      toCreate.shelter = project.identification.poblation.shelter;
+    }
+    if (project.preparation?.technicalAnalysis?.alternative) {
+      toCreate.alternative = project.preparation.technicalAnalysis.alternative;
+    }
+    if (project.preparation?.technicalAnalysis?.resumeAlternative) {
+      toCreate.resumeAlternative = project.preparation.technicalAnalysis.resumeAlternative;
+    }
+    if (project.preparation?.capacity?.descriptionCapacity) {
+      toCreate.descriptionCapacity = project.preparation.capacity.descriptionCapacity;
+    }
+    if (project.preparation?.capacity?.unitCapacity !== undefined) {
+      toCreate.unitCapacity = project.preparation.capacity.unitCapacity;
+    }
+    if (project.preparation?.capacity?.capacityGenerated !== undefined) {
+      toCreate.capacityGenerated = project.preparation.capacity.capacityGenerated;
+    }
+    if (project.preparation?.enviromentalAnalysis?.environmentDiagnosis) {
+      toCreate.environmentDiagnosis = project.preparation.enviromentalAnalysis.environmentDiagnosis;
+    }
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IProject;
@@ -128,10 +177,10 @@ export default class ProjectRepository implements IProjectRepository {
     if (project.register?.dependency !== undefined) {
       toUpdate.dependency = project.register.dependency;
     }
-    if(project.register?.localitation) {
+    if (project.register?.localitation !== undefined) {
       toUpdate.localitation = project.register.localitation;
     }
-    if(project.register?.object) {
+    if (project.register?.object) {
       toUpdate.object = project.register.object;
     }
     if (project.identification?.problemDescription?.problemDescription) {
@@ -178,6 +227,42 @@ export default class ProjectRepository implements IProjectRepository {
     }
     if (project.identification?.objectives?.goal !== undefined) {
       toUpdate.goal = project.identification.objectives.goal;
+    }
+    if (project.identification?.poblation?.objectivePeople !== undefined) {
+      toUpdate.objectivePeople = project.identification.poblation.objectivePeople;
+    }
+    if (project.identification?.poblation?.informationSource) {
+      toUpdate.informationSource = project.identification.poblation.informationSource;
+    }
+    if (project.identification?.poblation?.region !== undefined) {
+      toUpdate.region = project.identification.poblation.region;
+    }
+    if (project.identification?.poblation?.departament !== undefined) {
+      toUpdate.departament = project.identification.poblation.departament;
+    }
+    if (project.identification?.poblation?.district !== undefined) {
+      toUpdate.district = project.identification.poblation.district;
+    }
+    if (project.identification?.poblation?.shelter) {
+      toUpdate.shelter = project.identification.poblation.shelter;
+    }
+    if (project.preparation?.technicalAnalysis?.alternative) {
+      toUpdate.alternative = project.preparation.technicalAnalysis.alternative;
+    }
+    if (project.preparation?.technicalAnalysis?.resumeAlternative) {
+      toUpdate.resumeAlternative = project.preparation.technicalAnalysis.resumeAlternative;
+    }
+    if (project.preparation?.capacity?.descriptionCapacity) {
+      toUpdate.descriptionCapacity = project.preparation.capacity.descriptionCapacity;
+    }
+    if (project.preparation?.capacity?.unitCapacity !== undefined) {
+      toUpdate.unitCapacity = project.preparation.capacity.unitCapacity;
+    }
+    if (project.preparation?.capacity?.capacityGenerated !== undefined) {
+      toUpdate.capacityGenerated = project.preparation.capacity.capacityGenerated;
+    }
+    if (project.preparation?.enviromentalAnalysis?.environmentDiagnosis) {
+      toUpdate.environmentDiagnosis = project.preparation.enviromentalAnalysis.environmentDiagnosis;
     }
     toUpdate.useTransaction(trx);
     await toUpdate.save();

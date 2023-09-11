@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .integer("PRY_CODIGO_BPIN", 20)
+      .string("PRY_CODIGO_BPIN", 20)
       .nullable()
       .comment("Código de 20 dígitos que identifica el banco de proyectos de inversión nacional");
       table
@@ -40,55 +40,55 @@ export default class extends BaseSchema {
       .inTable("DEP_DEPENDENCIA")
       .comment("codigo de la Dependencia (FK DEP_DEPENDENCIA)");
       table
-      .string("PRY_PACTO_PLAN_NACIONAL")
+      .text("PRY_PACTO_PLAN_NACIONAL")
       .nullable()
       .comment("Descripción del pacto plan nacional");
       table
-      .string("PRY_LINEA_PLAN_NACIONAL")
+      .text("PRY_LINEA_PLAN_NACIONAL")
       .nullable()
       .comment("Descripción de la linea plan nacional");
       table
-      .string("PRY_PROGRAMA_PLAN_NACIONAL")
+      .text("PRY_PROGRAMA_PLAN_NACIONAL")
       .nullable()
       .comment("Descripción del programa plan nacional");
       table
-      .string("PRY_LINEA_PLAN_DEPARTAMENTAL")
+      .text("PRY_LINEA_PLAN_DEPARTAMENTAL")
       .nullable()
       .comment("Descripción de la linea plan departamental");
       table
-      .string("PRY_COMPONENTES_PLAN_DEPARTAMENTAL")
+      .text("PRY_COMPONENTES_PLAN_DEPARTAMENTAL")
       .nullable()
       .comment("Descripción de los componentes plan departamental");
       table
-      .string("PRY_PROGRAMA_PLAN_DEPARTAMENTAL")
+      .text("PRY_PROGRAMA_PLAN_DEPARTAMENTAL")
       .nullable()
       .comment("Descripción del programa plan departamental");
       table
-      .string("PRY_LINEA_PLAN_DISTRITAL")
+      .text("PRY_LINEA_PLAN_DISTRITAL")
       .nullable()
       .comment("Descripción de la linea plan distrital");
       table
-      .string("PRY_COMPONENTES_PLAN_DISTRITAL")
+      .text("PRY_COMPONENTES_PLAN_DISTRITAL")
       .nullable()
       .comment("Descripción de los componentes plan distrital");
       table
-      .string("PRY_PROGRAMA_PLAN_DISTRITAL")
+      .text("PRY_PROGRAMA_PLAN_DISTRITAL")
       .nullable()
       .comment("Descripción del programa plan distrital");
       table
-      .string("PYR_DETALLE_PROBLEMA")
+      .text("PYR_DETALLE_PROBLEMA")
       .nullable()
       .comment("Descripción detallada del problema");
       table
-      .string("PRY_MAGNITUD")
+      .text("PRY_MAGNITUD")
       .nullable()
       .comment("Magnitud del problema");
       table
-      .string("PRY_PROBLEMA_CENTRAL")
+      .text("PRY_PROBLEMA_CENTRAL")
       .nullable()
       .comment("Descripción del problema central");
       table
-      .string("PRY_INDICADORES")
+      .text("PRY_INDICADORES")
       .nullable()
       .comment("Descripcion indicadores");
       table
@@ -100,7 +100,7 @@ export default class extends BaseSchema {
       .nullable()
       .comment("campo de tipo moneda ");
       table
-      .string("PRY_OBJETIVO	")
+      .text("PRY_OBJETIVO")
       .nullable()
       .comment("objetivo del proyecto");
       table
@@ -112,9 +112,57 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Estado del proyecto, completado o guardado temporal	");
       table
-      .integer("PRY_CODPRM_PRM_PARAMETROS	")
+      .integer("PRY_CODPRM_PRM_PARAMETROS")
       .nullable()
       .comment("localización");
+      table
+      .text("PRY_NOMBRE_ALTERNATIVA")
+      .nullable()
+      .comment("Nombre de la alternativa");
+      table
+      .text("PRY_RESUMEN_TECNICO_ALTERNATIVA")
+      .nullable()
+      .comment("Resumen tecnico de la alternativa");
+      table
+      .text("PRY_DESCRIPCION_CAPACIDAD")
+      .nullable()
+      .comment("Descripción de la capacidad");
+      table
+      .integer("PRY_CODUMC_UNIDAD_MEDIDA_CAPACIDAD")
+      .nullable()
+      .comment("llava foranea a la tabla unidad medida capacidad(FK UMC_UNIDAD_MEDIDA_CAPACIDAD");
+      table
+      .integer("PRY_CAPACIDAD_GENERADA")
+      .nullable()
+      .comment("");
+      table
+      .text("PRY_DIAGNOSTICO_AMBIENTAL")
+      .nullable()
+      .comment("");
+      table
+      .integer("PRY_NUMERO_PERSONA_OBJETIVO")
+      .nullable()
+      .comment("");
+      table
+      .string("PRY_FUENTE_INFORMACION", 300)
+      .nullable()
+      .comment("Descripcion de la fuente de información");
+      table
+      .integer("PRY_REGION")
+      .nullable()
+      .comment("campo perteneciente a la tabla generica");
+      table
+      .integer("PRY_DEPARTAMENTO")
+      .nullable()
+      .comment("campo perteneciente a la tabla generica");
+      table
+      .integer("PRY_MUNICIPIO")
+      .nullable()
+      .comment("campo perteneciente a la tabla generica");
+      table
+      .string("PRY_RESGUARDO", 100)
+      .nullable()
+      .comment("campo perteneciente a la tabla generica");
     })
   }
 

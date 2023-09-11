@@ -52,7 +52,6 @@ export interface IPlanDevelopmentForm {
   pdi_programa?: string;
 }
 
-
 export interface IParticipatingActors {
   id?: number;
   actor: string;
@@ -65,14 +64,54 @@ export interface IActorsForm {
   actors?: IParticipatingActors[];
 }
 
+export interface IEffectEnviromentForm {
+  id?: number;
+  type?: number;
+  impact?: string;
+  classification?: number;
+  level?: number;
+  measures?: string;
+}
+
+export interface IPoblationForm {
+  objectivePeople?: number;
+  informationSource?: string;
+  region?: number;
+  departament?: number;
+  district?: number;
+  shelter?: string;
+  demographic?: IDemographicCharacteristics[];
+}
+
+export interface IDemographicCharacteristics {
+  id?: number;
+  clasification: number;
+  detail: number;
+  numPerson?: number;
+  infoSource?: string;
+}
+
 export interface IEstatesService {
   id?: number;
   description: string;
 }
 
+export interface ICapacityForm {
+  alternativeCapacity?: string;
+  descriptionCapacity?: string;
+  unitCapacity?: number;
+  capacityGenerated?: number;
+}
+
+export interface IEnvironmentAnalysisForm {
+  environmentDiagnosis?: string;
+  effects?: IEffectEnviromentForm[]
+}
+
+
 export interface INeedObjetive {
   id?: number;
-  objectiveSelect: string;
+  objectiveSelect?: string;
   objetive: ICause;
   interventionActions: string;
   quantification: number;
@@ -82,7 +121,12 @@ export interface INeedObjetive {
 export interface INeedsForm {
   alternative?: string;
   generalObjetive?: string;
-  objetives: INeedObjetive[];
+  objetives?: INeedObjetive[];
+}
+
+export interface ItechnicalAnalysisForm {
+  alternative?: string;
+  resumeAlternative?: string;
 }
 
 export interface IProjectTemp {
@@ -95,9 +139,13 @@ export interface IProjectTemp {
     planDevelopment?: IPlanDevelopmentForm;
     objectives?: IObjectivesForm;
     actors?: IActorsForm;
+    poblation?: IPoblationForm;
   };
   preparation?: {
+    technicalAnalysis?: ItechnicalAnalysisForm
     needs?: INeedsForm
+    capacity?: ICapacityForm
+    enviromentalAnalysis?: IEnvironmentAnalysisForm
   }
 }
 

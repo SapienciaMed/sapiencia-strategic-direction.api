@@ -54,6 +54,18 @@ export default class AppProvider {
       "App/Repositories/ImpactRatingRepository"
     );
 
+    const ClassificationsRepository = await import(
+      "App/Repositories/ClassificationsRepository"
+    );
+
+    const SpecificObjectivesRepository = await import(
+      "App/Repositories/SpecificObjectivesRepository"
+    );
+
+    const EnvironmentalEffectsRepository = await import(
+      "App/Repositories/EnvironmentalEffectsRepository"
+    );
+
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -65,6 +77,9 @@ export default class AppProvider {
         new CausesRepository.default(),
         new EffectsRepository.default(),
         new ActorsRepository.default(),
+        new ClassificationsRepository.default(),
+        new SpecificObjectivesRepository.default(),
+        new EnvironmentalEffectsRepository.default(),
       )
     );
 

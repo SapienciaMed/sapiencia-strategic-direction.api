@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("numero que identifica la causa");
       table
-      .string("LCI_DESCRIPCION")
+      .text("LCI_DESCRIPCION")
       .notNullable()
       .comment("Descripcion de la causa");
       table

@@ -56,7 +56,7 @@ export default class EffectsRepository implements IEffectsRepository {
                     })
                 }
             }
-            effectsCreate.push(toCreate.serialize() as IEffect)
+            effectsCreate.push(toCreate.serialize() as IEffect);
         }
         return effectsCreate;
     }

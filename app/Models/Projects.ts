@@ -2,6 +2,9 @@ import { BaseModel, HasMany, column, hasMany } from "@ioc:Adonis/Lucid/Orm";
 import Effects from "./Effects";
 import Causes from "./Causes";
 import Actors from "./Actors";
+import SpecificObjectives from "./SpecificObjectives";
+import EnvironmentalEffects from "./EnvironmentalEffects";
+import Classifications from "./Classifications";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -89,6 +92,42 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_CODPRM_PRM_PARAMETROS", serializeAs: "localitation" })
   public localitation: number;
 
+  @column({ columnName: "PRY_NOMBRE_ALTERNATIVA", serializeAs: "alternative" })
+  public alternative: string;
+
+  @column({ columnName: "PRY_RESUMEN_TECNICO_ALTERNATIVA", serializeAs: "resumeAlternative" })
+  public resumeAlternative: string;
+
+  @column({ columnName: "PRY_DESCRIPCION_CAPACIDAD", serializeAs: "descriptionCapacity" })
+  public descriptionCapacity: string;
+
+  @column({ columnName: "PRY_CODUMC_UNIDAD_MEDIDA_CAPACIDAD", serializeAs: "unitCapacity" })
+  public unitCapacity: number;
+
+  @column({ columnName: "PRY_CAPACIDAD_GENERADA", serializeAs: "capacityGenerated" })
+  public capacityGenerated: number;
+
+  @column({ columnName: "PRY_DIAGNOSTICO_AMBIENTAL", serializeAs: "environmentDiagnosis" })
+  public environmentDiagnosis: string;
+
+  @column({ columnName: "PRY_NUMERO_PERSONA_OBJETIVO", serializeAs: "objectivePeople" })
+  public objectivePeople: number;
+
+  @column({ columnName: "PRY_FUENTE_INFORMACION", serializeAs: "informationSource" })
+  public informationSource: string;
+
+  @column({ columnName: "PRY_REGION", serializeAs: "region" })
+  public region: number;
+
+  @column({ columnName: "PRY_DEPARTAMENTO", serializeAs: "departament" })
+  public departament: number;
+
+  @column({ columnName: "PRY_MUNICIPIO", serializeAs: "district" })
+  public district: number;
+
+  @column({ columnName: "PRY_RESGUARDO", serializeAs: "shelter" })
+  public shelter: string;
+
   @hasMany(() => Causes, {
     localKey: 'id',
     foreignKey: 'idProject',
@@ -106,4 +145,22 @@ export default class Projects extends BaseModel {
     foreignKey: 'idProject',
   })
   public actors: HasMany<typeof Actors>;
+
+  @hasMany(() => Classifications, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public classifications: HasMany<typeof Classifications>;
+
+  @hasMany(() => SpecificObjectives, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public specificObjectives: HasMany<typeof SpecificObjectives>;
+
+  @hasMany(() => EnvironmentalEffects, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public environmentalEffects: HasMany<typeof EnvironmentalEffects>;
 }
