@@ -19,7 +19,6 @@
 */
 
 import Route from "@ioc:Adonis/Core/Route";
-import EntitiesController from "App/Controllers/Http/EntitiesController";
 
 Route.get("/", async () => {
   return "Api contabilidad de SAPIENCIA";
@@ -33,16 +32,24 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get("/get-all", "EntitiesController.getEntities");
-  Route.get("/get-all-dependency","EntitiesController.getEntitiesDependency");
-  Route.get("/get-all-position","EntitiesController.getEntitiesPosition");
-
-}).prefix("/api/v1/entities")
+  Route.get("/get-all-dependency", "EntitiesController.getEntitiesDependency");
+  Route.get("/get-all-position", "EntitiesController.getEntitiesPosition");
+}).prefix("/api/v1/entities");
 
 Route.group(() => {
-  Route.get("/get-by-id/:id", "MeasurementCapacityController.getMeasurementCapacityById");
+  Route.get(
+    "/get-by-id/:id",
+    "MeasurementCapacityController.getMeasurementCapacityById"
+  );
   Route.get("/", "MeasurementCapacityController.getMeasurementCapacity");
-  Route.post("/create", "MeasurementCapacityController.createMeasurementCapacity");
-  Route.put("/update/:id", "MeasurementCapacityController.updateMeasurementCapacity");
+  Route.post(
+    "/create",
+    "MeasurementCapacityController.createMeasurementCapacity"
+  );
+  Route.put(
+    "/update/:id",
+    "MeasurementCapacityController.updateMeasurementCapacity"
+  );
 }).prefix("/api/v1/measurement-capacity");
 
 Route.group(() => {
