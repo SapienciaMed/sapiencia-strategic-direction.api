@@ -9,7 +9,7 @@ export default class EntitiesController {
       return response.send(await EntitiesProvider.getEntities());
     } catch (err) {
       return response.badRequest(
-        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        new ApiResponse(null, EResponseCodes.FAIL, String(err) + ' '  + process.env.MYSQL_HOST)
       );
     }
   }
