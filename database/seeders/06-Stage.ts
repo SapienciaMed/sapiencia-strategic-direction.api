@@ -15,7 +15,7 @@ export default class extends BaseSeeder {
         id: 2,
         description: 'Operación',
         active: true,
-        order: 3
+        order: 2
       },
       {
         id: 3,

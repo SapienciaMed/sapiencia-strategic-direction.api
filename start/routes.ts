@@ -34,6 +34,8 @@ Route.group(() => {
   Route.get("/get-all", "EntitiesController.getEntities");
   Route.get("/get-all-dependency", "EntitiesController.getEntitiesDependency");
   Route.get("/get-all-position", "EntitiesController.getEntitiesPosition");
+  Route.get("/get-all-typesRisks", "EntitiesController.getEntitiesTypesRisks")
+  Route.get("/get-all-probability", "EntitiesController.getEntitiesProbability")
 }).prefix("/api/v1/entities");
 
 Route.group(() => {

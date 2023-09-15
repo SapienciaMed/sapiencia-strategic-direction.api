@@ -15,7 +15,7 @@ export default class extends BaseSeeder {
         id: 2,
         description: 'Dirección General – Gestión de Comunicaciones',
         active: true,
-        order: 3
+        order: 2
       },
       {
         id: 3,

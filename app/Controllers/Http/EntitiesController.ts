@@ -33,4 +33,34 @@ export default class EntitiesController {
       );
     }
   }
+
+  public async getEntitiesTypesRisks({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getEntitiesTypesRisks());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getEntitiesProbability({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getEntitiesProbability());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getEntitiesImpact({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getEntitiesImpact());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
 }
