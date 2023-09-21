@@ -3,6 +3,7 @@ import Entities from "App/Models/Process";
 import EntitiesDependency from "App/Models/Dependence";
 import EntitiesPosition from "App/Models/Position";
 import EntitiesTypesRisks from "App/Models/RisksTypes"
+import EntitiesImpact from "App/Models/Impact";
 import EntitiesProbabiity from "App/Models/Probability"
 
 export interface IEntitiesRepository {
@@ -47,7 +48,7 @@ export default class EntitiesRepository implements IEntitiesRepository {
 
   async getEntitiesImpact(): Promise<IEntities[]> {
   
-    const res = await EntitiesTypesRisks.query().orderBy('TRI_ORDEN', 'asc');
+    const res = await EntitiesImpact.query().orderBy('IMP_ORDEN', 'asc');
 
     return res.map((i) => i.serialize() as IEntities);
   }
