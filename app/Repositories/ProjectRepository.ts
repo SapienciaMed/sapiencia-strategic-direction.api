@@ -1,36 +1,66 @@
-import { IProject, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
+import {
+  IProject,
+  IProjectFilters,
+  IProjectTemp,
+} from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 
 export interface IProjectRepository {
   getProjectByUser(user: string): Promise<IProject | null>;
-  createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<IProject>;
-  updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<IProject | null>;
+  createProject(
+    project: IProjectTemp,
+    trx: TransactionClientContract
+  ): Promise<IProject>;
+  updateProject(
+    project: IProjectTemp,
+    id: number,
+    trx: TransactionClientContract
+  ): Promise<IProject | null>;
+  getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
+  async getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]> {
+    const query = Projects.query();
+
+    if (filters.codeList) {
+      query.whereIn("bpin", filters.codeList);
+    }
+
+    if (filters.idList) {
+      query.whereIn("id", filters.idList);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+    const res = await query;
+
+    return res.map((i) => i.serialize() as IProject);
+  }
 
   async getProjectByUser(user: string): Promise<IProject | null> {
     const res = await Projects.findBy("user", user);
-    await res?.load('causes', (query) => {
+    await res?.load("causes", (query) => {
       query.preload("childrens");
     });
-    await res?.load('effects', (query) => {
+    await res?.load("effects", (query) => {
       query.preload("childrens");
     });
-    await res?.load('actors');
-    await res?.load('classifications');
-    await res?.load('specificObjectives', (query) => {
+    await res?.load("actors");
+    await res?.load("classifications");
+    await res?.load("specificObjectives", (query) => {
       query.preload("estatesService");
     });
-    await res?.load('environmentalEffects');
+    await res?.load("environmentalEffects");
     if (res?.goal) {
       res.goal = Number(res.goal);
     }
-    if(res?.specificObjectives){
+    if (res?.specificObjectives) {
       res.specificObjectives.forEach((obj, index) => {
-        const objetive = res.causes.find(cause => cause.id === obj.objetive)
-        if(objetive){
+        const objetive = res.causes.find((cause) => cause.id === obj.objetive);
+        if (objetive) {
           res.specificObjectives[index].objetive = objetive;
         }
       });
@@ -38,7 +68,10 @@ export default class ProjectRepository implements IProjectRepository {
     return res ? (res.serialize() as IProject) : null;
   }
 
-  async createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<IProject> {
+  async createProject(
+    project: IProjectTemp,
+    trx: TransactionClientContract
+  ): Promise<IProject> {
     const toCreate = new Projects();
     toCreate.user = project.user;
     toCreate.status = project.status;
@@ -67,13 +100,15 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.object = project.register.object;
     }
     if (project.identification?.problemDescription?.problemDescription) {
-      toCreate.problemDescription = project.identification.problemDescription.problemDescription;
+      toCreate.problemDescription =
+        project.identification.problemDescription.problemDescription;
     }
     if (project.identification?.problemDescription?.magnitude) {
       toCreate.magnitude = project.identification.problemDescription.magnitude;
     }
     if (project.identification?.problemDescription?.centerProblem) {
-      toCreate.centerProblem = project.identification.problemDescription.centerProblem;
+      toCreate.centerProblem =
+        project.identification.problemDescription.centerProblem;
     }
     if (project.identification?.planDevelopment?.pnd_pacto) {
       toCreate.pnd_pacto = project.identification.planDevelopment.pnd_pacto;
@@ -82,25 +117,30 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.pnd_linea = project.identification.planDevelopment.pnd_linea;
     }
     if (project.identification?.planDevelopment?.pnd_programa) {
-      toCreate.pnd_programa = project.identification.planDevelopment.pnd_programa;
+      toCreate.pnd_programa =
+        project.identification.planDevelopment.pnd_programa;
     }
     if (project.identification?.planDevelopment?.pdd_linea) {
       toCreate.pdd_linea = project.identification.planDevelopment.pdd_linea;
     }
     if (project.identification?.planDevelopment?.pdd_componentes) {
-      toCreate.pdd_componentes = project.identification.planDevelopment.pdd_componentes;
+      toCreate.pdd_componentes =
+        project.identification.planDevelopment.pdd_componentes;
     }
     if (project.identification?.planDevelopment?.pdd_programa) {
-      toCreate.pdd_programa = project.identification.planDevelopment.pdd_programa;
+      toCreate.pdd_programa =
+        project.identification.planDevelopment.pdd_programa;
     }
     if (project.identification?.planDevelopment?.pdi_linea) {
       toCreate.pdi_linea = project.identification.planDevelopment.pdi_linea;
     }
     if (project.identification?.planDevelopment?.pdi_componentes) {
-      toCreate.pdi_componentes = project.identification.planDevelopment.pdi_componentes;
+      toCreate.pdi_componentes =
+        project.identification.planDevelopment.pdi_componentes;
     }
     if (project.identification?.planDevelopment?.pdi_programa) {
-      toCreate.pdi_programa = project.identification.planDevelopment.pdi_programa;
+      toCreate.pdi_programa =
+        project.identification.planDevelopment.pdi_programa;
     }
     if (project.identification?.objectives?.indicators) {
       toCreate.indicators = project.identification.objectives.indicators;
@@ -112,10 +152,12 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.goal = project.identification.objectives.goal;
     }
     if (project.identification?.poblation?.objectivePeople !== undefined) {
-      toCreate.objectivePeople = project.identification.poblation.objectivePeople;
+      toCreate.objectivePeople =
+        project.identification.poblation.objectivePeople;
     }
     if (project.identification?.poblation?.informationSource) {
-      toCreate.informationSource = project.identification.poblation.informationSource;
+      toCreate.informationSource =
+        project.identification.poblation.informationSource;
     }
     if (project.identification?.poblation?.region !== undefined) {
       toCreate.region = project.identification.poblation.region;
@@ -133,26 +175,34 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.alternative = project.preparation.technicalAnalysis.alternative;
     }
     if (project.preparation?.technicalAnalysis?.resumeAlternative) {
-      toCreate.resumeAlternative = project.preparation.technicalAnalysis.resumeAlternative;
+      toCreate.resumeAlternative =
+        project.preparation.technicalAnalysis.resumeAlternative;
     }
     if (project.preparation?.capacity?.descriptionCapacity) {
-      toCreate.descriptionCapacity = project.preparation.capacity.descriptionCapacity;
+      toCreate.descriptionCapacity =
+        project.preparation.capacity.descriptionCapacity;
     }
     if (project.preparation?.capacity?.unitCapacity !== undefined) {
       toCreate.unitCapacity = project.preparation.capacity.unitCapacity;
     }
     if (project.preparation?.capacity?.capacityGenerated !== undefined) {
-      toCreate.capacityGenerated = project.preparation.capacity.capacityGenerated;
+      toCreate.capacityGenerated =
+        project.preparation.capacity.capacityGenerated;
     }
     if (project.preparation?.enviromentalAnalysis?.environmentDiagnosis) {
-      toCreate.environmentDiagnosis = project.preparation.enviromentalAnalysis.environmentDiagnosis;
+      toCreate.environmentDiagnosis =
+        project.preparation.enviromentalAnalysis.environmentDiagnosis;
     }
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IProject;
   }
 
-  async updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<IProject | null> {
+  async updateProject(
+    project: IProjectTemp,
+    id: number,
+    trx: TransactionClientContract
+  ): Promise<IProject | null> {
     const toUpdate = await Projects.find(id);
     if (!toUpdate) {
       return null;
@@ -184,13 +234,15 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.object = project.register.object;
     }
     if (project.identification?.problemDescription?.problemDescription) {
-      toUpdate.problemDescription = project.identification.problemDescription.problemDescription;
+      toUpdate.problemDescription =
+        project.identification.problemDescription.problemDescription;
     }
     if (project.identification?.problemDescription?.magnitude) {
       toUpdate.magnitude = project.identification.problemDescription.magnitude;
     }
     if (project.identification?.problemDescription?.centerProblem) {
-      toUpdate.centerProblem = project.identification.problemDescription.centerProblem;
+      toUpdate.centerProblem =
+        project.identification.problemDescription.centerProblem;
     }
     if (project.identification?.planDevelopment?.pnd_pacto) {
       toUpdate.pnd_pacto = project.identification.planDevelopment.pnd_pacto;
@@ -199,25 +251,30 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.pnd_linea = project.identification.planDevelopment.pnd_linea;
     }
     if (project.identification?.planDevelopment?.pnd_programa) {
-      toUpdate.pnd_programa = project.identification.planDevelopment.pnd_programa;
+      toUpdate.pnd_programa =
+        project.identification.planDevelopment.pnd_programa;
     }
     if (project.identification?.planDevelopment?.pdd_linea) {
       toUpdate.pdd_linea = project.identification.planDevelopment.pdd_linea;
     }
     if (project.identification?.planDevelopment?.pdd_componentes) {
-      toUpdate.pdd_componentes = project.identification.planDevelopment.pdd_componentes;
+      toUpdate.pdd_componentes =
+        project.identification.planDevelopment.pdd_componentes;
     }
     if (project.identification?.planDevelopment?.pdd_programa) {
-      toUpdate.pdd_programa = project.identification.planDevelopment.pdd_programa;
+      toUpdate.pdd_programa =
+        project.identification.planDevelopment.pdd_programa;
     }
     if (project.identification?.planDevelopment?.pdi_linea) {
       toUpdate.pdi_linea = project.identification.planDevelopment.pdi_linea;
     }
     if (project.identification?.planDevelopment?.pdi_componentes) {
-      toUpdate.pdi_componentes = project.identification.planDevelopment.pdi_componentes;
+      toUpdate.pdi_componentes =
+        project.identification.planDevelopment.pdi_componentes;
     }
     if (project.identification?.planDevelopment?.pdi_programa) {
-      toUpdate.pdi_programa = project.identification.planDevelopment.pdi_programa;
+      toUpdate.pdi_programa =
+        project.identification.planDevelopment.pdi_programa;
     }
     if (project.identification?.objectives?.indicators) {
       toUpdate.indicators = project.identification.objectives.indicators;
@@ -229,10 +286,12 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.goal = project.identification.objectives.goal;
     }
     if (project.identification?.poblation?.objectivePeople !== undefined) {
-      toUpdate.objectivePeople = project.identification.poblation.objectivePeople;
+      toUpdate.objectivePeople =
+        project.identification.poblation.objectivePeople;
     }
     if (project.identification?.poblation?.informationSource) {
-      toUpdate.informationSource = project.identification.poblation.informationSource;
+      toUpdate.informationSource =
+        project.identification.poblation.informationSource;
     }
     if (project.identification?.poblation?.region !== undefined) {
       toUpdate.region = project.identification.poblation.region;
@@ -250,19 +309,23 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.alternative = project.preparation.technicalAnalysis.alternative;
     }
     if (project.preparation?.technicalAnalysis?.resumeAlternative) {
-      toUpdate.resumeAlternative = project.preparation.technicalAnalysis.resumeAlternative;
+      toUpdate.resumeAlternative =
+        project.preparation.technicalAnalysis.resumeAlternative;
     }
     if (project.preparation?.capacity?.descriptionCapacity) {
-      toUpdate.descriptionCapacity = project.preparation.capacity.descriptionCapacity;
+      toUpdate.descriptionCapacity =
+        project.preparation.capacity.descriptionCapacity;
     }
     if (project.preparation?.capacity?.unitCapacity !== undefined) {
       toUpdate.unitCapacity = project.preparation.capacity.unitCapacity;
     }
     if (project.preparation?.capacity?.capacityGenerated !== undefined) {
-      toUpdate.capacityGenerated = project.preparation.capacity.capacityGenerated;
+      toUpdate.capacityGenerated =
+        project.preparation.capacity.capacityGenerated;
     }
     if (project.preparation?.enviromentalAnalysis?.environmentDiagnosis) {
-      toUpdate.environmentDiagnosis = project.preparation.enviromentalAnalysis.environmentDiagnosis;
+      toUpdate.environmentDiagnosis =
+        project.preparation.enviromentalAnalysis.environmentDiagnosis;
     }
     toUpdate.useTransaction(trx);
     await toUpdate.save();

@@ -6,6 +6,21 @@ import { ApiResponse } from "App/Utils/ApiResponses";
 import ProjectValidator from "App/Validators/ProjectValidator";
 
 export default class ProjectController {
+
+  public async getProjectsByFilters({ request, response }: HttpContextContract) {
+      try {
+        const data = await request.all();
+        return response.send(
+          await ProjectProvider.getProjectsByFilters(data)
+        );
+      } catch (err) {
+
+        return response.badRequest(
+          new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        );
+      }
+  }
+
   public async getProjectByUser({ request, response }: HttpContextContract) {
     try {
       const { user } = request.params();

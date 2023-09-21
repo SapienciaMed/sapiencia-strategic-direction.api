@@ -148,6 +148,11 @@ export interface IProjectTemp {
     enviromentalAnalysis?: IEnvironmentAnalysisForm
   }
 }
+export interface IProjectFilters {
+  idList?: number[]
+  codeList?: string[]
+  status?: boolean
+}
 
 export interface IProject {
   id: number;

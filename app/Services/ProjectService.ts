@@ -1,4 +1,4 @@
-import { ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
+import { ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -14,6 +14,7 @@ export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
   createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<ApiResponse<IProject>>;
   updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>>
+  getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>>;
 }
 
 export default class ProjectService implements IProjectService {
@@ -26,6 +27,13 @@ export default class ProjectService implements IProjectService {
     private specificObjectivesRepository: ISpecificObjectivesRepository,
     private environmentalEffectsRepository: IEnvironmentalEffectsRepository,
   ) { }
+
+
+async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>> {
+  const res = await this.projectRepository.getProjectsByFilters(filters);
+  return new ApiResponse(res, EResponseCodes.OK)
+}
+
 
   async getProjectByUser(user: string): Promise<ApiResponse<IProject>> {
     const res = await this.projectRepository.getProjectByUser(user);
