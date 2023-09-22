@@ -1,4 +1,4 @@
-import { ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -9,6 +9,7 @@ import { IActorsRepository } from "App/Repositories/ActorsRepository";
 import { IClassificationsRepository } from "App/Repositories/ClassificationsRepository";
 import { ISpecificObjectivesRepository } from "App/Repositories/SpecificObjectivesRepository";
 import { IEnvironmentalEffectsRepository } from "App/Repositories/EnvironmentalEffectsRepository";
+import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -26,6 +27,7 @@ export default class ProjectService implements IProjectService {
     private classificationsRepository: IClassificationsRepository,
     private specificObjectivesRepository: ISpecificObjectivesRepository,
     private environmentalEffectsRepository: IEnvironmentalEffectsRepository,
+    private activitiesRepository: IActivitiesRepository,
   ) { }
 
 
@@ -57,6 +59,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let classifications: IDemographicCharacteristics[] | null = null;
     let specificObjectives: INeedObjetive[] | null = null;
     let environmentalEffects: IEffectEnviromentForm[] | null = null;
+    let activities: IActivityMGA[] | null = null;
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.createCauses(project.identification.problemDescription.causes, projectCreate.id, trx);
     }
@@ -75,6 +78,9 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     if (project.preparation?.enviromentalAnalysis?.effects) {
       environmentalEffects = await this.environmentalEffectsRepository.createEnvironmentalEffectsRepository(project.preparation.enviromentalAnalysis.effects, projectCreate.id, trx);
     }
+    if (project.preparation?.activities?.activities) {
+      activities = await this.activitiesRepository.createActivities(project.preparation.activities.activities, causes, projectCreate.id, trx);
+    }
     return new ApiResponse(
       {
         ...projectCreate,
@@ -83,7 +89,36 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         actors: actors,
         classifications: classifications,
         specificObjectives: specificObjectives,
-        environmentalEffects: environmentalEffects
+        environmentalEffects: environmentalEffects,
+        activities: activities ? activities.map((item): IActivitiesProject => {
+          return {...item, budgetsMGA: [
+            {
+              budget: item.budgetsMGA.year0.budget,
+              year: 0,
+              validity: item.budgetsMGA.year0.validity
+            },
+            {
+              budget: item.budgetsMGA.year1.budget,
+              year: 1,
+              validity: item.budgetsMGA.year1.validity
+            },
+            {
+              budget: item.budgetsMGA.year2.budget,
+              year: 2,
+              validity: item.budgetsMGA.year2.validity
+            },
+            {
+              budget: item.budgetsMGA.year3.budget,
+              year: 3,
+              validity: item.budgetsMGA.year3.validity
+            },
+            {
+              budget: item.budgetsMGA.year4.budget,
+              year: 4,
+              validity: item.budgetsMGA.year4.validity
+            }
+          ]}
+        }) : null
       },
       EResponseCodes.OK
     );
@@ -97,6 +132,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let classifications: IDemographicCharacteristics[] | null = null;
     let specificObjectives: INeedObjetive[] | null = null;
     let environmentalEffects: IEffectEnviromentForm[] | null = null;
+    let activities: IActivityMGA[] | null = null;
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.updateCauses(project.identification.problemDescription.causes, id, trx);
     }
@@ -115,6 +151,9 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     if (project.preparation?.enviromentalAnalysis?.effects) {
       environmentalEffects = await this.environmentalEffectsRepository.updateEnvironmentalEffectsRepository(project.preparation.enviromentalAnalysis.effects, id, trx);
     }
+    if (project.preparation?.activities?.activities) {
+      activities = await this.activitiesRepository.updateActivities(project.preparation.activities.activities, causes, id, trx);
+    }
     if (!res) {
       return new ApiResponse(
         {} as IProject,
@@ -130,7 +169,36 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         actors: actors,
         classifications: classifications,
         specificObjectives: specificObjectives,
-        environmentalEffects: environmentalEffects
+        environmentalEffects: environmentalEffects,
+        activities: activities ? activities.map((item): IActivitiesProject => {
+          return {...item, budgetsMGA: [
+            {
+              budget: item.budgetsMGA.year0.budget,
+              year: 0,
+              validity: item.budgetsMGA.year0.validity
+            },
+            {
+              budget: item.budgetsMGA.year1.budget,
+              year: 1,
+              validity: item.budgetsMGA.year1.validity
+            },
+            {
+              budget: item.budgetsMGA.year2.budget,
+              year: 2,
+              validity: item.budgetsMGA.year2.validity
+            },
+            {
+              budget: item.budgetsMGA.year3.budget,
+              year: 3,
+              validity: item.budgetsMGA.year3.validity
+            },
+            {
+              budget: item.budgetsMGA.year4.budget,
+              year: 4,
+              validity: item.budgetsMGA.year4.validity
+            }
+          ]}
+        }) : null
       },
       EResponseCodes.OK
     );

@@ -17,14 +17,6 @@ export default class extends BaseSchema {
       .inTable("AMG_ACTIVIDAD_MGA")
       .comment("Codigo de la actividad MGA (FK AMG)");
       table
-      .datetime("ACD_VIGENCIA")
-      .notNullable()
-      .comment("Fecha de vigencia");
-      table
-      .string("ACD_AÑO",4)
-      .notNullable()
-      .comment("un año representado en 4 caracteres");
-      table
       .string("ACD_NUMERO",10)
       .notNullable()
       .comment("numero de la actividad ");
@@ -33,11 +25,11 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("Descripcion detallada de la actividad");
       table
-      .string("ACD_COMPONENTE",30)
+      .integer("ACD_COMPONENTE")
       .notNullable()
       .comment("componente se carga de la tabla maestra");
       table
-      .string("ACD_UNIDAD_MEDIDA",30)
+      .integer("ACD_UNIDAD_MEDIDA")
       .notNullable()
       .comment("se carga de la tabla maestra UNIDAD_MEDIDA");
       table
@@ -49,24 +41,20 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("costo unitario");
       table
-      .integer("ACD_COSTO_TOTAL")
-      .notNullable()
-      .comment("es el resultado de multiplicar cantidad * costo unitario");
-      table
       .integer("ACD_OBJETIVO_GASTO_POSPRE")
-      .notNullable()
+      .nullable()
       .comment("se carga de la tabla maestra POSPRE");
       table
       .string("ACD_VALIDADOR_CPC",2)
-      .notNullable()
+      .nullable()
       .comment("solo dos posibles valores si ó no ");
       table
       .integer("ACD_CLASIFICADOR_CPC")
-      .notNullable()
+      .nullable()
       .comment("se carga de la tabla maestra  CPC");
       table
       .string("ACD_VALIDADOR_SECCION_CPC",3)
-      .notNullable()
+      .nullable()
       .comment("se carga de la tabla maestra  CPC");
     })
   }

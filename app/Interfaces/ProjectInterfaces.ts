@@ -252,6 +252,26 @@ export interface IProjectFilters {
   status?: boolean;
 }
 
+export interface IActivitiesProject {
+  objectiveSelect?: string;
+  objetiveActivity: ICause;
+  stageActivity: number;
+  productMGA: string;
+  activityMGA: string;
+  productDescriptionMGA: string;
+  activityDescriptionMGA: string;
+  budgetsMGA: {
+    id?: number;
+    activityId?: number;
+    year: number;
+    validity: number;
+    budget: number;
+  }[];
+  validity: number;
+  year: number;
+  detailActivities: IDetailActivity[];
+}
+
 export interface IProject {
   id: number;
   user: string;
@@ -279,10 +299,23 @@ export interface IProject {
   indicators: string | null;
   measurement: number | null;
   goal: number | null;
+  alternative: string | null;
+  resumeAlternative: string | null;
+  descriptionCapacity: string | null;
+  unitCapacity: number | null;
+  capacityGenerated: number | null;
+  environmentDiagnosis: string | null;
+  objectivePeople: number | null;
+  informationSource: string | null;
+  region: number | null;
+  departament: number | null;
+  district: number | null;
+  shelter: string | null;
   causes: ICause[] | null;
   effects: IEffect[] | null;
   actors: IParticipatingActors[] | null;
   classifications: IDemographicCharacteristics[] | null;
   specificObjectives: INeedObjetive[] | null;
   environmentalEffects: IEffectEnviromentForm[] | null;
+  activities: IActivitiesProject[] | null;
 }

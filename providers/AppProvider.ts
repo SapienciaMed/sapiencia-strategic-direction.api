@@ -73,6 +73,10 @@ export default class AppProvider {
       "App/Repositories/EnvironmentalEffectsRepository"
     );
 
+    const ActivitiesRepository = await import(
+      "App/Repositories/ActivitiesRepository"
+    );
+
     const ComponentsRepository = await import(
       "App/Repositories/ComponentsRepository"
     );
@@ -95,6 +99,7 @@ export default class AppProvider {
         new ClassificationsRepository.default(),
         new SpecificObjectivesRepository.default(),
         new EnvironmentalEffectsRepository.default(),
+        new ActivitiesRepository.default(),
       )
     );
 

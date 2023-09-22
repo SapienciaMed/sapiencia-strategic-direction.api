@@ -12,9 +12,6 @@ export default class extends BaseSchema {
       table
       .integer("AMG_CODLOE_OBJETIVO_ESPECIFICO")
       .notNullable()
-      .unsigned()
-      .references("LOE_CODIGO")
-      .inTable("LOE_OBJETIVO_ESPECIFICO")
       .comment("llave foranea tabla objetivo especifico(FK LOE_OBJETIVO_ESPECIFICO)");
       table
       .integer("AMG_CODLET_ETAPA")
@@ -37,6 +34,19 @@ export default class extends BaseSchema {
       table
       .text("AMG_DESCRIPCION_MGA")
       .comment("Descripcion actividad MGA");
+      table
+      .integer("AMG_VIGENCIA_MGA")
+      .comment("");
+      table
+      .integer("AMG_ANIO_MGA")
+      .comment("");
+      table
+      .integer("AMG_CODPRY_PROYECTO")
+      .notNullable()
+      .unsigned()
+      .references("PRY_CODIGO")
+      .inTable("PRY_PROYECTOS")
+      .comment("codigo del proyecto");
     })
   }
 

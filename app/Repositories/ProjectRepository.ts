@@ -54,6 +54,10 @@ export default class ProjectRepository implements IProjectRepository {
       query.preload("estatesService");
     });
     await res?.load("environmentalEffects");
+    await res?.load("activities", (query) => {
+      query.preload("detailActivities");
+      query.preload("budgetsMGA");
+    });
     if (res?.goal) {
       res.goal = Number(res.goal);
     }
@@ -62,6 +66,14 @@ export default class ProjectRepository implements IProjectRepository {
         const objetive = res.causes.find((cause) => cause.id === obj.objetive);
         if (objetive) {
           res.specificObjectives[index].objetive = objetive;
+        }
+      });
+    }
+    if (res?.activities) {
+      res.activities.forEach((obj, index) => {
+        const objetive = res.causes.find((cause) => cause.id === obj.objetiveActivity);
+        if (objetive) {
+          res.activities[index].objetiveActivity = objetive;
         }
       });
     }

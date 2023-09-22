@@ -21,7 +21,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("numerico se acepta 0");
       table
-      .string("PPT_VIGENCIA",4)
+      .integer("PPT_VIGENCIA")
       .notNullable()
       .comment("vigencia campo de 4 caracteres");
       table

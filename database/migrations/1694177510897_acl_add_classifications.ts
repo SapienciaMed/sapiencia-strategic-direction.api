@@ -5,7 +5,7 @@ export default class extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.comment("Tabla que contie la clasificacion");
+      table.comment("Tabla que contiene la clasificacion");
       table.increments("ACL_CODIGO")
       .primary()
       .comment("Llave primaria");

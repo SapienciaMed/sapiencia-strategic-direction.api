@@ -5,6 +5,7 @@ import Actors from "./Actors";
 import SpecificObjectives from "./SpecificObjectives";
 import EnvironmentalEffects from "./EnvironmentalEffects";
 import Classifications from "./Classifications";
+import Activities from "./Activities";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -167,4 +168,10 @@ export default class Projects extends BaseModel {
     foreignKey: 'idProject',
   })
   public environmentalEffects: HasMany<typeof EnvironmentalEffects>;
+
+  @hasMany(() => Activities, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public activities: HasMany<typeof Activities>;
 }

@@ -10,11 +10,11 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .string("ACP_ACTOR",100)
+      .text("ACP_ACTOR")
       .notNullable()
       .comment("Descripción del actor");
       table
-      .string("ACP_INTERES_EXPECTATIVA",20)
+      .text("ACP_INTERES_EXPECTATIVA")
       .notNullable()
       .comment("interes o espectativa");
       table
@@ -25,7 +25,7 @@ export default class extends BaseSchema {
       .inTable("POS_POSICION")
       .comment("llave foranea de la tabla Posicion(FK POS_POSICION)");
       table
-      .string("ACP_CONTRIBUICION")
+      .text("ACP_CONTRIBUICION")
       .notNullable()
       .comment("Campo que almacena la informacion relacionanda con la contribucion");
       table
