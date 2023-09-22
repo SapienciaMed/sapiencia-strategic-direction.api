@@ -218,7 +218,7 @@ export interface IActivityMGA {
 }
 
 export interface IActivitiesForm {
-  activities: IActivityMGA[];
+  activities?: IActivityMGA[];
 }
 
 export interface IProjectTemp {

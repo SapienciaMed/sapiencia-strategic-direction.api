@@ -195,6 +195,67 @@ export default class ProjectValidator {
             measures: schema.string.optional(),
           })
         )
+      }),
+      activities: schema.object.optional().members({
+        activities: schema.array.optional().members(
+          schema.object().members({
+            objetiveActivity: schema.object().members({
+              id: schema.number.optional(),
+              consecutive: schema.string(),
+              description: schema.string(),
+              childrens: schema.array.optional().members(
+                schema.object().members({
+                  id: schema.number.optional(),
+                  consecutive: schema.string(),
+                  description: schema.string()
+                })
+              )
+            }),
+            stageActivity: schema.number(),
+            productMGA: schema.string(),
+            activityMGA: schema.string(),
+            productDescriptionMGA: schema.string(),
+            activityDescriptionMGA: schema.string(),
+            budgetsMGA: schema.object().members({
+              year0: schema.object().members({
+                validity: schema.number(),
+                budget: schema.number()
+              }),
+              year1: schema.object().members({
+                validity: schema.number(),
+                budget: schema.number()
+              }),
+              year2: schema.object().members({
+                validity: schema.number(),
+                budget: schema.number()
+              }),
+              year3: schema.object().members({
+                validity: schema.number(),
+                budget: schema.number()
+              }),
+              year4: schema.object().members({
+                validity: schema.number(),
+                budget: schema.number()
+              }),
+            }),
+            validity: schema.number(),
+            year: schema.number(),
+            detailActivities: schema.array().members(
+              schema.object().members({
+                consecutive: schema.string(),
+                detailActivity: schema.string(),
+                component: schema.number(),
+                measurement: schema.number(),
+                amount: schema.number(),
+                unitCost: schema.number(),
+                pospre: schema.number.optional(),
+                validatorCPC: schema.string.optional(),
+                clasificatorCPC: schema.number.optional(),
+                sectionValidatorCPC: schema.string.optional(),
+              })
+            ),
+          })
+        )
       })
     })
   });
