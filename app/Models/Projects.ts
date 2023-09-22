@@ -128,6 +128,10 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_RESGUARDO", serializeAs: "shelter" })
   public shelter: string;
 
+  
+
+  //RELACIONES
+
   @hasMany(() => Causes, {
     localKey: 'id',
     foreignKey: 'idProject',

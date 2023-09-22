@@ -15,6 +15,8 @@ export default class AppProvider {
     const ImpactTypeService = await import("App/Services/ImpactTypeService");
     const ImpactRatingService = await import("App/Services/ImpactRatingService");
     const EntitiesService = await import("App/Services/EntitiesService");
+    const ComponentsService = await import("App/Services/ComponentsService");
+    const StageService = await import("App/Services/StageService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -71,6 +73,14 @@ export default class AppProvider {
       "App/Repositories/EnvironmentalEffectsRepository"
     );
 
+    const ComponentsRepository = await import(
+      "App/Repositories/ComponentsRepository"
+    );
+
+    const StageRepository = await import(
+      "App/Repositories/StageRepository"
+    );
+
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -121,6 +131,19 @@ export default class AppProvider {
       () => new EntitiesService.default(new EntitiesRepository.default())
     );
 
+    this.app.container.singleton(
+      "core.ComponentsProvider",
+      () => new ComponentsService.default(
+        new ComponentsRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.StageProvider",
+      () => new StageService.default(
+        new StageRepository.default(),
+      ),
+    );
   }
 
   public async boot() {

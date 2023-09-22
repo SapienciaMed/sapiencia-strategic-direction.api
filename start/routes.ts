@@ -79,3 +79,15 @@ Route.group(() => {
   Route.put("/update/:id", "ImpactRatingController.updateImpactRating");
 }).prefix("/api/v1/impact-rating");
 // .middleware("auth");
+
+Route.group(() => {
+  Route.get("/get-all", "ComponentsController.getComponents");
+}).prefix("/api/v1/components");
+
+Route.group(() => {
+  Route.get("/get-all", "StageController.getStages");
+}).prefix("/api/v1/stages");
+
+Route.group(() => {
+  Route.post("/generate-consolidated", "ActivitiesController.generateConsolidated");
+}).prefix("/api/v1/activities");

@@ -129,6 +129,98 @@ export interface ItechnicalAnalysisForm {
   resumeAlternative?: string;
 }
 
+export interface IAddRisks {
+  id?: number;
+  level: number;
+  risk:number;
+  typeRisk:number;
+  descriptionRisk: string;
+  probability:number;
+  impact:number;
+  effects:string;
+  mitigation:string;
+}
+
+export interface IRisks {
+  risks?: IAddRisks[];
+}
+
+
+export interface IprofitsIncome {
+  id?: number;
+  type: string;
+  description: string;
+  unit: number;
+  period: Iperiod[];
+}
+
+export interface IproftisIncomeForm {
+  profitsIncome?: IprofitsIncome[];
+}
+
+export interface Iperiod {
+  id?: number;
+  period: number;
+  quantity:number;
+  unitValue:number;
+  financialValue:number;
+}
+
+export interface IBudgetMGA {
+  year0: {
+    validity: number;
+    budget: number;
+  };
+  year1: {
+    validity: number;
+    budget: number;
+  };
+  year2: {
+    validity: number;
+    budget: number;
+  };
+  year3: {
+    validity: number;
+    budget: number;
+  };
+  year4: {
+    validity: number;
+    budget: number;
+  };
+}
+
+export interface IDetailActivity {
+  consecutive: string;
+  detailActivity: string;
+  component: number;
+  measurement: number;
+  amount: number;
+  unitCost: number;
+  totalCost?: string;
+  pospre?: number;
+  validatorCPC?: string;
+  clasificatorCPC?: number;
+  sectionValidatorCPC?: string;
+}
+
+export interface IActivityMGA {
+  objectiveSelect?: string;
+  objetiveActivity: ICause;
+  stageActivity: number;
+  productMGA: string;
+  activityMGA: string;
+  productDescriptionMGA: string;
+  activityDescriptionMGA: string;
+  budgetsMGA: IBudgetMGA;
+  validity: number;
+  year: number;
+  detailActivities: IDetailActivity[];
+}
+
+export interface IActivitiesForm {
+  activities: IActivityMGA[];
+}
+
 export interface IProjectTemp {
   id?: number;
   user: string;
@@ -146,12 +238,18 @@ export interface IProjectTemp {
     needs?: INeedsForm
     capacity?: ICapacityForm
     enviromentalAnalysis?: IEnvironmentAnalysisForm
+    activities?: IActivitiesForm;
+    risks?:IRisks
+  }
+  programation?:{
+    profitsIncome?:IproftisIncomeForm;
   }
 }
+
 export interface IProjectFilters {
-  idList?: number[]
-  codeList?: string[]
-  status?: boolean
+  idList?: number[];
+  codeList?: string[];
+  status?: boolean;
 }
 
 export interface IProject {
@@ -184,4 +282,7 @@ export interface IProject {
   causes: ICause[] | null;
   effects: IEffect[] | null;
   actors: IParticipatingActors[] | null;
+  classifications: IDemographicCharacteristics[] | null;
+  specificObjectives: INeedObjetive[] | null;
+  environmentalEffects: IEffectEnviromentForm[] | null;
 }
