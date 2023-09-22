@@ -5,6 +5,8 @@ import EntitiesPosition from "App/Models/Position";
 import EntitiesTypesRisks from "App/Models/RisksTypes"
 import EntitiesImpact from "App/Models/Impact";
 import EntitiesProbabiity from "App/Models/Probability"
+import Resources from "App/Models/Resources"
+import Entity from "App/Models/Financing"
 
 export interface IEntitiesRepository {
   getEntities(): Promise<IEntities[]>;
@@ -13,6 +15,8 @@ export interface IEntitiesRepository {
   getEntitiesTypesRisks(): Promise<IEntities[]>;
   getEntitiesImpact(): Promise<IEntities[]>;
   getEntitiesProbability(): Promise<IEntities[]>;
+  getEntity(): Promise<IEntities[]>;
+  getResource(): Promise<IEntities[]>;
 }
 
 export default class EntitiesRepository implements IEntitiesRepository {
@@ -51,6 +55,7 @@ export default class EntitiesRepository implements IEntitiesRepository {
     const res = await EntitiesImpact.query().orderBy('IMP_ORDEN', 'asc');
 
     return res.map((i) => i.serialize() as IEntities);
+
   }
 
   async getEntitiesProbability(): Promise<IEntities[]> {
@@ -60,4 +65,17 @@ export default class EntitiesRepository implements IEntitiesRepository {
     return res.map((i) => i.serialize() as IEntities);
   }
 
+  async getEntity(): Promise<IEntities[]> {
+  
+    const res = await Entity.query().orderBy('FFI_ORDEN', 'asc');
+
+    return res.map((i) => i.serialize() as IEntities);
+  }
+
+  async getResource(): Promise<IEntities[]> {
+  
+    const res = await Resources.query().orderBy('RCS_ORDEN', 'asc');
+
+    return res.map((i) => i.serialize() as IEntities);
+  }
 }

@@ -53,7 +53,6 @@ export default class EntitiesController {
       );
     }
   }
-
   public async getEntitiesImpact({ response }: HttpContextContract) {
     try {
       return response.send(await EntitiesProvider.getEntitiesImpact());
@@ -63,4 +62,25 @@ export default class EntitiesController {
       );
     }
   }
+
+  public async getResource({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getResource());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getEntity({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getEntity());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
 }
