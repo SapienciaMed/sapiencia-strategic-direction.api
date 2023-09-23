@@ -42,10 +42,10 @@ export default class extends BaseSeeder {
         order: 6
       },
       {
-        id: 6,
+        id: 7,
         description: 'Empresas privadas',
         active: true,
-        order: 6
+        order: 7
       }
 
       
