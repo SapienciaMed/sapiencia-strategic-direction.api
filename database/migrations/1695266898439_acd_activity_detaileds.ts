@@ -37,7 +37,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("cantidad");
       table
-      .integer("ACD_COSTO_UNITARIO")
+      .double("ACD_COSTO_UNITARIO")
       .notNullable()
       .comment("costo unitario");
       table

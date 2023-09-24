@@ -25,7 +25,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("vigencia campo de 4 caracteres");
       table
-      .integer("PPT_PRESUPUESTO")
+      .bigint("PPT_PRESUPUESTO")
       .notNullable()
       .comment("numerico");
     })
