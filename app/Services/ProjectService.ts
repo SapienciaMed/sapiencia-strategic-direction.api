@@ -104,6 +104,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         specificObjectives: specificObjectives,
         environmentalEffects: environmentalEffects,
         risks:risks,
+        profitsIncome:profitsIncome,
         activities: activities ? activities.map((item): IActivitiesProject => {
           return {...item, budgetsMGA: [
             {

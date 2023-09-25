@@ -271,7 +271,9 @@ export default class ProjectValidator {
           })
         )
       }),
-      profitsIncome:schema.object.optional().members({ 
+    }),
+    programation: schema.object.optional().members({
+    profitsIncome:schema.object.optional().members({ 
         profitsIncome: schema.array.optional().members(
           schema.object().members({
           type: schema.string(),
@@ -289,9 +291,7 @@ export default class ProjectValidator {
         })
       )
     })
-
-
-    })
+  })
   });
 
   /**

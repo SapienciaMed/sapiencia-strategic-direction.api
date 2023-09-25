@@ -4,7 +4,7 @@ import Period from "./Period";
 
 
 
-export default class Risks extends BaseModel {
+export default class ProfitsIncome extends BaseModel {
   public static table = "AIB_AGREGAR_INGRESO_BENEFICIO";
 
   @column({ isPrimary: true, columnName: "AIB_CODIGO", serializeAs: "id" })
@@ -30,7 +30,7 @@ export default class Risks extends BaseModel {
 
   @hasMany(() => Period, {
     localKey: 'id',
-    foreignKey: 'idPeriod',
+    foreignKey: 'idProfit',
   })
   public period: HasMany<typeof Period>;
 }
