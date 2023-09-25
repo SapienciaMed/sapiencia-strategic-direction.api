@@ -1,4 +1,4 @@
-import { IActivitiesProject, IActivityMGA, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -10,6 +10,7 @@ import { IClassificationsRepository } from "App/Repositories/ClassificationsRepo
 import { ISpecificObjectivesRepository } from "App/Repositories/SpecificObjectivesRepository";
 import { IEnvironmentalEffectsRepository } from "App/Repositories/EnvironmentalEffectsRepository";
 import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
+import { IRisksRepository } from "App/Repositories/RisksRepository";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -28,6 +29,7 @@ export default class ProjectService implements IProjectService {
     private specificObjectivesRepository: ISpecificObjectivesRepository,
     private environmentalEffectsRepository: IEnvironmentalEffectsRepository,
     private activitiesRepository: IActivitiesRepository,
+    private risksRepository : IRisksRepository,
   ) { }
 
 
@@ -60,6 +62,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let specificObjectives: INeedObjetive[] | null = null;
     let environmentalEffects: IEffectEnviromentForm[] | null = null;
     let activities: IActivityMGA[] | null = null;
+    let risks : IAddRisks[] | null = null;
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.createCauses(project.identification.problemDescription.causes, projectCreate.id, trx);
     }
@@ -81,6 +84,9 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     if (project.preparation?.activities?.activities) {
       activities = await this.activitiesRepository.createActivities(project.preparation.activities.activities, causes, projectCreate.id, trx);
     }
+    if (project.preparation?.risks?.risks) {
+      risks = await this.risksRepository.createRisks(project.preparation.risks.risks, projectCreate.id, trx);
+    }
     return new ApiResponse(
       {
         ...projectCreate,
@@ -90,6 +96,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         classifications: classifications,
         specificObjectives: specificObjectives,
         environmentalEffects: environmentalEffects,
+        risks:risks,
         activities: activities ? activities.map((item): IActivitiesProject => {
           return {...item, budgetsMGA: [
             {
@@ -133,6 +140,8 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let specificObjectives: INeedObjetive[] | null = null;
     let environmentalEffects: IEffectEnviromentForm[] | null = null;
     let activities: IActivityMGA[] | null = null;
+    let risks : IAddRisks[] | null = null;    
+
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.updateCauses(project.identification.problemDescription.causes, id, trx);
     }
@@ -154,6 +163,9 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     if (project.preparation?.activities?.activities) {
       activities = await this.activitiesRepository.updateActivities(project.preparation.activities.activities, causes, id, trx);
     }
+    if (project.preparation?.risks?.risks) {
+      risks = await this.risksRepository.updateRisks(project.preparation.risks.risks, id, trx);
+    }
     if (!res) {
       return new ApiResponse(
         {} as IProject,
@@ -170,6 +182,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         classifications: classifications,
         specificObjectives: specificObjectives,
         environmentalEffects: environmentalEffects,
+        risks:risks,
         activities: activities ? activities.map((item): IActivitiesProject => {
           return {...item, budgetsMGA: [
             {

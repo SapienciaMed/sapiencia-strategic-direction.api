@@ -318,4 +318,5 @@ export interface IProject {
   specificObjectives: INeedObjetive[] | null;
   environmentalEffects: IEffectEnviromentForm[] | null;
   activities: IActivitiesProject[] | null;
+  risks:IAddRisks[] | null;
 }

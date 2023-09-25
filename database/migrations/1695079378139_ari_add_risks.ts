@@ -4,8 +4,8 @@ export default class extends BaseSchema {
   protected tableName = 'ARI_AGREGAR_RIESGO'
 
   public async up () {
-    this.schema.createTable(this.tableName, (table) => {
-      table.comment("Tabla que contiene las actividades MGA");
+    this.schema.table(this.tableName, (table) => {
+      table.comment("Tabla que contiene los riesgos MGA");
       table.increments("ARI_CODIGO")
       .primary()
       .comment("Llave primaria");
@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("nivel asociado al riesgo");
       table
-      .string("ARI_RIESGO_RELACIONADO")
+      .text("ARI_RIESGO_RELACIONADO")
       .notNullable()
       .comment("Riesgo relacionado");
       table
@@ -47,6 +47,13 @@ export default class extends BaseSchema {
       .text("ARI_MEDIDAS_MITIGACION")
       .notNullable()
       .comment("medidas de mitacion de la amenaza descripcion 500 caracteres");
+      table
+      .integer("ARI_CODPRY_PROYECTO")
+      .notNullable()
+      .unsigned()
+      .references("PRY_CODIGO")
+      .inTable("PRY_PROYECTOS")
+      .comment("codigo del proyecto");
     })
   }
 
