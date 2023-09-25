@@ -256,6 +256,20 @@ export default class ProjectValidator {
             ),
           })
         )
+      }),
+      risks:schema.object.optional().members({ 
+          risks: schema.array.optional().members(
+            schema.object().members({
+            level: schema.number(),
+            risk: schema.number(),
+            typeRisk: schema.number(),
+            descriptionRisk: schema.string(),
+            probability: schema.number(),
+            impact: schema.number(),
+            effects: schema.string(),
+            mitigation: schema.string(),
+          })
+        )
       })
     })
   });
