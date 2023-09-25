@@ -1,4 +1,4 @@
-import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -12,6 +12,7 @@ import { IEnvironmentalEffectsRepository } from "App/Repositories/EnvironmentalE
 import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
 import { IRisksRepository } from "App/Repositories/RisksRepository";
 import { IProfitsIncomeRepository } from "App/Repositories/ProfitsIncomeRepository"
+import { ISourceFundingRepository } from "App/Repositories/sourceFundingRepository";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -32,6 +33,7 @@ export default class ProjectService implements IProjectService {
     private activitiesRepository: IActivitiesRepository,
     private risksRepository : IRisksRepository,
     private profitsRepository : IProfitsIncomeRepository,
+    private sourceFundingRepository : ISourceFundingRepository,
   ) { }
 
 
@@ -66,6 +68,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let activities: IActivityMGA[] | null = null;
     let risks : IAddRisks[] | null = null;
     let profitsIncome : IprofitsIncome[] | null = null;
+    let sourceFunding : ISourceFunding[] | null = null;
 
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.createCauses(project.identification.problemDescription.causes, projectCreate.id, trx);
@@ -94,6 +97,9 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     if (project.programation?.profitsIncome?.profitsIncome) {
       profitsIncome  = await this.profitsRepository.createProfits(project.programation.profitsIncome.profitsIncome, projectCreate.id, trx);
     }
+    if (project.programation?.sourceFunding?.sourceFunding) {
+      sourceFunding  = await this.sourceFundingRepository.createSourceFunding(project.programation.sourceFunding.sourceFunding, projectCreate.id, trx);
+    }
     return new ApiResponse(
       {
         ...projectCreate,
@@ -105,6 +111,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         environmentalEffects: environmentalEffects,
         risks:risks,
         profitsIncome:profitsIncome,
+        sourceFunding:sourceFunding,
         activities: activities ? activities.map((item): IActivitiesProject => {
           return {...item, budgetsMGA: [
             {
@@ -150,6 +157,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let activities: IActivityMGA[] | null = null;
     let risks : IAddRisks[] | null = null;    
     let profitsIncome : IprofitsIncome[] | null = null;
+    let sourceFunding : ISourceFunding[] | null = null;
 
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.updateCauses(project.identification.problemDescription.causes, id, trx);
@@ -178,6 +186,9 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     if (project.programation?.profitsIncome?.profitsIncome) {
       profitsIncome  = await this.profitsRepository.updateProfits(project.programation.profitsIncome.profitsIncome, id, trx);
     }
+    if (project.programation?.sourceFunding?.sourceFunding) {
+      sourceFunding  = await this.sourceFundingRepository.createSourceFunding(project.programation.sourceFunding.sourceFunding, id, trx);
+    }
     if (!res) {
       return new ApiResponse(
         {} as IProject,
@@ -196,6 +207,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         environmentalEffects: environmentalEffects,
         risks:risks,
         profitsIncome:profitsIncome,
+        sourceFunding:sourceFunding,
         activities: activities ? activities.map((item): IActivitiesProject => {
           return {...item, budgetsMGA: [
             {

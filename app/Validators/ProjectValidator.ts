@@ -290,8 +290,23 @@ export default class ProjectValidator {
           ),
         })
       )
+    }),
+        sourceFunding :schema.object.optional().members({ 
+          sourceFunding: schema.array.optional().members(
+            schema.object().members({
+              stage: schema.number(),
+              typeEntity: schema.number(),
+              resource: schema.number(),
+              entity: schema.string(),
+              year0: schema.number(),
+              year1: schema.number(),
+              year2: schema.number(),
+              year3: schema.number(),
+              year4: schema.number(),
+          })
+        )
+      }),
     })
-  })
   });
 
   /**

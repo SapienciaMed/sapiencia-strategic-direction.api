@@ -83,6 +83,7 @@ export default class ProjectRepository implements IProjectRepository {
     await res?.load("profitsIncome", (query) => {
       query.preload("period");
     });
+    await res?.load("sourceFunding");
     return res ? (res.serialize() as IProject) : null;
   }
 

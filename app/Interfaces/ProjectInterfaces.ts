@@ -146,6 +146,25 @@ export interface IRisks {
 }
 
 
+
+
+export interface ISourceFunding {
+  id?: number;
+  stage: number;
+  typeEntity: number;
+  resource: number;
+  entity:string;
+  year0:number;
+  year1:number;
+  year2:number;
+  year3:number;
+  year4:number;
+}
+
+export interface ISourceFundingForm {
+  sourceFunding?: ISourceFunding[];
+}
+
 export interface IprofitsIncome {
   id?: number;
   type: string;
@@ -246,9 +265,10 @@ export interface IProjectTemp {
     enviromentalAnalysis?: IEnvironmentAnalysisForm
     activities?: IActivitiesForm;
     risks?:IRisks
-  }
+  };
   programation?:{
     profitsIncome?:IproftisIncomeForm;
+    sourceFunding?:ISourceFundingForm;
   }
 }
 
@@ -326,4 +346,5 @@ export interface IProject {
   activities: IActivitiesProject[] | null;
   risks:IAddRisks[] | null;
   profitsIncome:IprofitsIncome[] | null;
+  sourceFunding:ISourceFunding[] | null;
 }
