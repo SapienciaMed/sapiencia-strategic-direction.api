@@ -1,5 +1,4 @@
 import type { ApplicationContract } from "@ioc:Adonis/Core/Application";
-import RisksRepository from "App/Repositories/RisksRepository";
 
 export default class AppProvider {
   constructor(protected app: ApplicationContract) { }
