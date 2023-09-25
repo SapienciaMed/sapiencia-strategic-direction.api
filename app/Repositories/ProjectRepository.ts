@@ -54,10 +54,12 @@ export default class ProjectRepository implements IProjectRepository {
       query.preload("estatesService");
     });
     await res?.load("environmentalEffects");
+    
     await res?.load("activities", (query) => {
       query.preload("detailActivities");
       query.preload("budgetsMGA");
     });
+    await res?.load("risks");
     if (res?.goal) {
       res.goal = Number(res.goal);
     }
@@ -205,6 +207,7 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.environmentDiagnosis =
         project.preparation.enviromentalAnalysis.environmentDiagnosis;
     }
+    
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IProject;
