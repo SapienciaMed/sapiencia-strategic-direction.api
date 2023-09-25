@@ -1,5 +1,5 @@
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
-import { IActivityMGA, ICause } from "App/Interfaces/ProjectInterfaces";
+import { IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter } from "App/Interfaces/ProjectInterfaces";
 import Activities from "App/Models/Activities";
 import Budgets from "App/Models/Budgets";
 import DetailActivities from "App/Models/DetailsActivities";
@@ -7,9 +7,27 @@ import DetailActivities from "App/Models/DetailsActivities";
 export interface IActivitiesRepository {
     createActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]>;
     updateActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]>;
+    getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]>
 }
 
 export default class ActivitiesRepository implements IActivitiesRepository {
+    async getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]> {
+        const query = DetailActivities.query().preload('activity')
+
+        if (filters.idList) {
+          query.whereIn("id", filters.idList);
+        }
+    
+        if (filters.description) {
+          query.whereILike("detailActivity", `%${filters.description}%`);
+        }
+
+        console.log(query.toQuery())
+        const res = await query;
+    
+        return res.map((i) => i.serialize() as IDetailActivity);   
+    }
+
     async createActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]> {
         const activitiesCreate: IActivityMGA[] = [];
         for (let activity in activities) {
@@ -64,7 +82,7 @@ export default class ActivitiesRepository implements IActivitiesRepository {
                 });
             }
             const detailActivities = activities[activity].detailActivities;
-            if (detailActivities?.length > 0) {
+            if ((detailActivities || []).length > 0) {
                 for (let detailActivity in detailActivities) {
                     await toCreate.related("detailActivities").create({
                         activityId: toCreate.id,
@@ -147,7 +165,7 @@ export default class ActivitiesRepository implements IActivitiesRepository {
                 });
             }
             const detailActivities = activities[activity].detailActivities;
-            if (detailActivities?.length > 0) {
+            if ((detailActivities || []).length > 0) {
                 for (let detailActivity in detailActivities) {
                     await toCreate.related("detailActivities").create({
                         activityId: toCreate.id,

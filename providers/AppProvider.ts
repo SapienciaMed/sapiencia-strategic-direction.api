@@ -17,6 +17,7 @@ export default class AppProvider {
     const EntitiesService = await import("App/Services/EntitiesService");
     const ComponentsService = await import("App/Services/ComponentsService");
     const StageService = await import("App/Services/StageService");
+    const ActivityService = await import("App/Services/ActivityService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -93,6 +94,15 @@ export default class AppProvider {
     /******************************** CORE  ***********************************/
     /**************************************************************************/
 
+    this.app.container.singleton(
+      "core.ActivityProvider",
+      () => new ActivityService.default(
+        new ActivitiesRepository.default(),
+    
+      )
+    );
+
+    
     this.app.container.singleton(
       "core.ProjectProvider",
       () => new ProjectService.default(

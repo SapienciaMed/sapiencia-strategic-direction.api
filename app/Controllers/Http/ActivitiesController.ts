@@ -1,12 +1,31 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import ComponentsProvider from "@ioc:core.ComponentsProvider";
 import StageProvider from "@ioc:core.StageProvider";
+import ActivityProvider from "@ioc:core.ActivityProvider";
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import ActivitiesValidator from "App/Validators/ActivitiesValidator";
 import xlsx, { ISettings } from "json-as-xlsx"
 
-export default class ComponentsController {
+export default class ActivityController {
+
+
+    public async getDetailedActivitiesByFilters({ request, response }: HttpContextContract) {
+        try {
+          const data = request.all();
+          return response.send(
+            await ActivityProvider.getDetailedActivitiesByFilters(data)
+          );
+        } catch (err) {
+    
+          return response.badRequest(
+            new ApiResponse(null, EResponseCodes.FAIL, String(err))
+          );
+        }
+    }
+    
+
+
     public async generateConsolidated({ request, response }: HttpContextContract) {
         try {
             const stages = await StageProvider.getStage();

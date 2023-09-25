@@ -217,6 +217,12 @@ export interface IActivityMGA {
   detailActivities: IDetailActivity[];
 }
 
+export interface IDetailedActivityFilter {
+  idList?: number[];
+  description?: string;
+}
+
+
 export interface IActivitiesForm {
   activities?: IActivityMGA[];
 }
