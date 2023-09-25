@@ -13,7 +13,7 @@ export default class Risks extends BaseModel {
   public level: number;
 
   @column({ columnName: "ARI_RIESGO_RELACIONADO", serializeAs: "risk" })
-  public risk: number;
+  public risk: string;
 
   @column({ columnName: "ARI_TIPO_RIESGO", serializeAs: "typeRisk" })
   public typeRisk: number;

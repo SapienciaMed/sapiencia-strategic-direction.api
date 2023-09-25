@@ -132,7 +132,7 @@ export interface ItechnicalAnalysisForm {
 export interface IAddRisks {
   id?: number;
   level: number;
-  risk:number;
+  risk:string;
   typeRisk:number;
   descriptionRisk: string;
   probability:number;

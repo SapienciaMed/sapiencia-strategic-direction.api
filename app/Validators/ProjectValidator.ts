@@ -261,7 +261,7 @@ export default class ProjectValidator {
           risks: schema.array.optional().members(
             schema.object().members({
             level: schema.number(),
-            risk: schema.number(),
+            risk: schema.string(),
             typeRisk: schema.number(),
             descriptionRisk: schema.string(),
             probability: schema.number(),
