@@ -7,6 +7,7 @@ import EnvironmentalEffects from "./EnvironmentalEffects";
 import Classifications from "./Classifications";
 import Activities from "./Activities";
 import Risks from "./Risks"
+import ProfitsIncome from "./ProfitsIncome"
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -181,4 +182,10 @@ export default class Projects extends BaseModel {
     foreignKey: 'idProject',
   })
   public risks: HasMany<typeof Risks>;
+
+  @hasMany(() => ProfitsIncome, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public profitsIncome: HasMany<typeof ProfitsIncome>;
 }

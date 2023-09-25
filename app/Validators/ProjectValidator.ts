@@ -270,7 +270,27 @@ export default class ProjectValidator {
             mitigation: schema.string(),
           })
         )
-      })
+      }),
+      profitsIncome:schema.object.optional().members({ 
+        profitsIncome: schema.array.optional().members(
+          schema.object().members({
+          type: schema.string(),
+          description: schema.string(),
+          unit: schema.number(),
+          period: schema.array().members(
+            schema.object().members({
+              id: schema.number.optional(),
+              period: schema.number(),
+              quantity: schema.number(),
+              unitValue: schema.number(),
+              financialValue: schema.number(),
+            })
+          ),
+        })
+      )
+    })
+
+
     })
   });
 

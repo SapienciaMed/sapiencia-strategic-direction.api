@@ -89,6 +89,10 @@ export default class AppProvider {
       "App/Repositories/RisksRepository"
     );
 
+    const ProfitsIncomeRepository = await import(
+      "App/Repositories/ProfitsIncomeRepository"
+    );
+
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -105,6 +109,7 @@ export default class AppProvider {
         new EnvironmentalEffectsRepository.default(),
         new ActivitiesRepository.default(),
         new RisksRepository.default(),
+        new ProfitsIncomeRepository.default(),
       )
     );
 

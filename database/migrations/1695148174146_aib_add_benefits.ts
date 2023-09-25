@@ -22,12 +22,12 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("numero");
       table
-      .integer("AIB_CODPER_PERIODO")
+      .integer("AIB_CODPRY_PROYECTO")
       .notNullable()
       .unsigned()
-      .references("PER_CODIGO")
-      .inTable("PER_PERIODO")
-      .comment("llave foranea de la tabla periodo (FK PER)");
+      .references("PRY_CODIGO")
+      .inTable("PRY_PROYECTOS")
+      .comment("codigo del proyecto");
     })
   }
 

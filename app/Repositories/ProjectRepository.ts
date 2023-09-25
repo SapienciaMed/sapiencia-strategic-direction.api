@@ -59,7 +59,7 @@ export default class ProjectRepository implements IProjectRepository {
       query.preload("detailActivities");
       query.preload("budgetsMGA");
     });
-    await res?.load("risks");
+    
     if (res?.goal) {
       res.goal = Number(res.goal);
     }
@@ -79,6 +79,10 @@ export default class ProjectRepository implements IProjectRepository {
         }
       });
     }
+    await res?.load("risks");
+    await res?.load("profitsIncome", (query) => {
+      query.preload("period");
+    });
     return res ? (res.serialize() as IProject) : null;
   }
 
