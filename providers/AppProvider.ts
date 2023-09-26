@@ -1,5 +1,6 @@
 import type { ApplicationContract } from "@ioc:Adonis/Core/Application";
 
+
 export default class AppProvider {
   constructor(protected app: ApplicationContract) { }
 
@@ -94,6 +95,9 @@ export default class AppProvider {
       "App/Repositories/ProfitsIncomeRepository"
     );
 
+    const SourceFundingRepository = await import(
+      "App/Repositories/sourceFundingRepository"
+    );
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -120,6 +124,7 @@ export default class AppProvider {
         new ActivitiesRepository.default(),
         new RisksRepository.default(),
         new ProfitsIncomeRepository.default(),
+        new SourceFundingRepository.default(),
       )
     );
 

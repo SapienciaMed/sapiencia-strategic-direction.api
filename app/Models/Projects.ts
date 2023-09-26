@@ -8,6 +8,7 @@ import Classifications from "./Classifications";
 import Activities from "./Activities";
 import Risks from "./Risks"
 import ProfitsIncome from "./ProfitsIncome"
+import SourceFunding from "./EntityFinancing"
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -188,4 +189,10 @@ export default class Projects extends BaseModel {
     foreignKey: 'idProject',
   })
   public profitsIncome: HasMany<typeof ProfitsIncome>;
+
+  @hasMany(() => SourceFunding, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public sourceFunding: HasMany<typeof SourceFunding>;
 }
