@@ -187,7 +187,7 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
       profitsIncome  = await this.profitsRepository.updateProfits(project.programation.profitsIncome.profitsIncome, id, trx);
     }
     if (project.programation?.sourceFunding?.sourceFunding) {
-      sourceFunding  = await this.sourceFundingRepository.createSourceFunding(project.programation.sourceFunding.sourceFunding, id, trx);
+      sourceFunding  = await this.sourceFundingRepository.updateSourceFunding(project.programation.sourceFunding.sourceFunding, id, trx);
     }
     if (!res) {
       return new ApiResponse(

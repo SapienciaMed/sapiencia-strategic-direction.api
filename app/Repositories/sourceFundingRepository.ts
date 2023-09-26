@@ -31,7 +31,7 @@ export default class SourceFundingRepository implements ISourceFundingRepository
 
     async updateSourceFunding(sources: ISourceFunding[], idProject: number, trx: TransactionClientContract): Promise<ISourceFunding[]> {
         await SourceFunding.query().where("idProject", idProject).delete().useTransaction(trx);
-        const risksCreate: ISourceFunding[] = [];
+        const sourceFundingCreate: ISourceFunding[] = [];
         for (let source in sources) {
             const toCreate = new SourceFunding();
             toCreate.idProject = idProject;
@@ -47,8 +47,8 @@ export default class SourceFundingRepository implements ISourceFundingRepository
             toCreate.useTransaction(trx);
             await toCreate.save();
            
-            risksCreate.push({ ...toCreate.serialize() as ISourceFunding});
+            sourceFundingCreate.push({ ...toCreate.serialize() as ISourceFunding});
         }
-        return risksCreate;
+        return sourceFundingCreate;
     }
 }
