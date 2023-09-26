@@ -93,5 +93,6 @@ Route.group(() => {
 Route.group(() => {
   Route.post("/generate-consolidated", "ActivitiesController.generateConsolidated");
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
+  Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
 }).prefix("/api/v1/activities");
 
