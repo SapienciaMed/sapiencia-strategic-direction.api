@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Código de 20 dígitos que identifica el banco de proyectos de inversión nacional");
       table
-      .string("PRY_NOMBRE_PROYECTO", 80)
+      .string("PRY_NOMBRE_PROYECTO", 200)
       .nullable()
       .comment("Nombre del proyecto");
       table

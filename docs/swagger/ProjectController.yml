@@ -1,0 +1,401 @@
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: number
+        user:
+          type: string
+        status:
+          type: boolean
+        bpin:
+          type: string
+          nullable: true
+        project:
+          type: string
+          nullable: true
+        dateFrom:
+          type: string
+          format: date-time
+          nullable: true
+        dateTo:
+          type: string
+          format: date-time
+          nullable: true
+        process:
+          type: number
+          nullable: true
+        localitation:
+          type: number
+          nullable: true
+        dependency:
+          type: number
+          nullable: true
+        object:
+          type: string
+          nullable: true
+        pnd_pacto:
+          type: string
+          nullable: true
+        pnd_linea:
+          type: string
+          nullable: true
+        pnd_programa:
+          type: string
+          nullable: true
+        pdd_linea:
+          type: string
+          nullable: true
+        pdd_componentes:
+          type: string
+          nullable: true
+        pdd_programa:
+          type: string
+          nullable: true
+        pdi_linea:
+          type: string
+          nullable: true
+        pdi_componentes:
+          type: string
+          nullable: true
+        pdi_programa:
+          type: string
+          nullable: true
+        problemDescription:
+          type: string
+          nullable: true
+        magnitude:
+          type: string
+          nullable: true
+        centerProblem:
+          type: string
+          nullable: true
+        indicators:
+          type: string
+          nullable: true
+        measurement:
+          type: number
+          nullable: true
+        goal:
+          type: number
+          nullable: true
+        alternative:
+          type: string
+          nullable: true
+        resumeAlternative:
+          type: string
+          nullable: true
+        descriptionCapacity:
+          type: string
+          nullable: true
+        unitCapacity:
+          type: number
+          nullable: true
+        capacityGenerated:
+          type: number
+          nullable: true
+        environmentDiagnosis:
+          type: string
+          nullable: true
+        objectivePeople:
+          type: number
+          nullable: true
+        informationSource:
+          type: string
+          nullable: true
+        region:
+          type: number
+          nullable: true
+        departament:
+          type: number
+          nullable: true
+        district:
+          type: number
+          nullable: true
+        shelter:
+          type: string
+          nullable: true
+        causes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cause'
+          nullable: true
+        effects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Effect'
+          nullable: true
+        actors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipatingActors'
+          nullable: true
+        classifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/DemographicCharacteristics'
+          nullable: true
+        specificObjectives:
+          type: array
+          items:
+            $ref: '#/components/schemas/NeedObjetive'
+          nullable: true
+        environmentalEffects:
+          type: array
+          items:
+            $ref: '#/components/schemas/EffectEnviromentForm'
+          nullable: true
+        activities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ActivitiesProject'
+          nullable: true
+        risks:
+          type: array
+          items:
+            $ref: '#/components/schemas/AddRisks'
+          nullable: true
+    IProjectTemp:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        user:
+          type: string
+        status:
+          type: boolean
+        register:
+          $ref: '#/components/schemas/IRegisterForm'
+        identification:
+          type: object
+          properties:
+            problemDescription:
+              $ref: '#/components/schemas/IProblemDescriptionForm'
+            planDevelopment:
+              $ref: '#/components/schemas/IPlanDevelopmentForm'
+            objectives:
+              $ref: '#/components/schemas/IObjectivesForm'
+            actors:
+              $ref: '#/components/schemas/IActorsForm'
+            poblation:
+              $ref: '#/components/schemas/IPoblationForm'
+        preparation:
+          type: object
+          properties:
+            technicalAnalysis:
+              $ref: '#/components/schemas/technicalAnalysisForm'
+            needs:
+              $ref: '#/components/schemas/NeedsForm'
+            capacity:
+              $ref: '#/components/schemas/CapacityForm'
+            enviromentalAnalysis:
+              $ref: '#/components/schemas/EnvironmentAnalysisForm'
+            activities:
+              $ref: '#/components/schemas/ActivitiesForm'
+            risks:
+              $ref: '#/components/schemas/Risks'
+    Cause:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        consecutive:
+          type: string
+        description:
+          type: string
+        childrens:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cause'
+          nullable: true
+    Effect:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        consecutive:
+          type: string
+        description:
+          type: string
+        childrens:
+          type: array
+          items:
+            $ref: '#/components/schemas/Effect'
+          nullable: true
+    ParticipatingActors:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        actor:
+          type: string
+        expectation:
+          type: string
+        position:
+          type: number
+        contribution:
+          type: string
+    DemographicCharacteristics:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        clasification:
+          type: number
+        detail:
+          type: number
+        numPerson:
+          type: number
+          nullable: true
+        infoSource:
+          type: string
+          nullable: true
+    NeedObjetive:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        objectiveSelect:
+          type: string
+          nullable: true
+        objetive:
+          $ref: '#/components/schemas/Cause'
+        interventionActions:
+          type: string
+        quantification:
+          type: number
+        estatesService:
+          type: array
+          items:
+            $ref: '#/components/schemas/EstatesService'
+    EstatesService:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        description:
+          type: string
+    EffectEnviromentForm:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        type:
+          type: number
+          nullable: true
+        impact:
+          type: string
+          nullable: true
+        classification:
+          type: number
+          nullable: true
+        level:
+          type: number
+          nullable: true
+        measures:
+          type: string
+          nullable: true
+    ActivitiesProject:
+      type: object
+      properties:
+        objectiveSelect:
+          type: string
+          nullable: true
+        objetiveActivity:
+          $ref: '#/components/schemas/Cause'
+        stageActivity:
+          type: number
+        productMGA:
+          type: string
+        activityMGA:
+          type: string
+        productDescriptionMGA:
+          type: string
+        activityDescriptionMGA:
+          type: string
+        budgetsMGA:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: number
+                nullable: true
+              activityId:
+                type: number
+                nullable: true
+              year:
+                type: number
+              validity:
+                type: number
+              budget:
+                type: number
+          nullable: true
+        validity:
+          type: number
+        year:
+          type: number
+        detailActivities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DetailActivity'
+    DetailActivity:
+      type: object
+      properties:
+        consecutive:
+          type: string
+        detailActivity:
+          type: string
+        component:
+          type: number
+        measurement:
+          type: number
+        amount:
+          type: number
+        unitCost:
+          type: number
+        totalCost:
+          type: string
+          nullable: true
+        pospre:
+          type: number
+        validatorCPC:
+          type: string
+          nullable: true
+        clasificatorCPC:
+          type: number
+          nullable: true
+        sectionValidatorCPC:
+          type: string
+          nullable: true
+    AddRisks:
+      type: object
+      properties:
+        id:
+          type: number
+          nullable: true
+        level:
+          type: number
+        risk:
+          type: string
+        typeRisk:
+          type: number
+        descriptionRisk:
+          type: string
+        probability:
+          type: number
+        impact:
+          type: number
+        effects:
+          type: string
+        mitigation:
+          type: string
