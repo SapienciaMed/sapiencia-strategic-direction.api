@@ -14,6 +14,13 @@ export default class ActivitiesRepository implements IActivitiesRepository {
     async getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]> {
         const query = DetailActivities.query().preload('activity')
 
+        if (filters.detail) {
+            query.andWhere((sub)=> {
+                sub.whereILike('consecutive', `%${filters.detail}%`)
+                sub.orWhereILike('detailActivity', `%${filters.detail}%`)
+            });
+          }
+
         if (filters.idList) {
           query.whereIn("id", filters.idList);
         }
@@ -21,8 +28,6 @@ export default class ActivitiesRepository implements IActivitiesRepository {
         if (filters.description) {
           query.whereILike("detailActivity", `%${filters.description}%`);
         }
-
-        console.log(query.toQuery())
         const res = await query;
     
         return res.map((i) => i.serialize() as IDetailActivity);   

@@ -239,6 +239,7 @@ export interface IActivityMGA {
 export interface IDetailedActivityFilter {
   idList?: number[];
   description?: string;
+  detail?: string
 }
 
 
