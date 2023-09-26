@@ -1,16 +1,37 @@
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
-import { IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter } from "App/Interfaces/ProjectInterfaces";
+import { IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter, IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
 import Activities from "App/Models/Activities";
 import Budgets from "App/Models/Budgets";
 import DetailActivities from "App/Models/DetailsActivities";
+import { IPagingData } from "App/Utils/ApiResponses";
 
 export interface IActivitiesRepository {
     createActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]>;
     updateActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]>;
     getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]>
+    getDetailedActivitiesPaginated(filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>>;
 }
 
 export default class ActivitiesRepository implements IActivitiesRepository {
+    async getDetailedActivitiesPaginated(filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>> {
+        const query = DetailActivities.query().preload('activity')
+
+        if (filters.detail) {
+            query.andWhere((sub)=> {
+                sub.whereILike('consecutive', `%${filters.detail}%`)
+                sub.orWhereILike('detailActivity', `%${filters.detail}%`)
+            });
+        }
+
+        const res = await query.paginate(filters.page, filters.perPage);
+        const { data, meta } = res.serialize();
+
+        return {
+        array: data as IDetailActivity[],
+        meta,
+        };
+    }
+    
     async getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]> {
         const query = DetailActivities.query().preload('activity')
 

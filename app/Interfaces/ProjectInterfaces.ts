@@ -241,6 +241,17 @@ export interface IDetailedActivityFilter {
   description?: string;
   detail?: string
 }
+export interface IDetailedActivityFilter {
+  idList?: number[];
+  description?: string;
+  detail?: string
+}
+
+export interface IDetailedActivityPaginated {
+  detail?: string
+  page: number;
+  perPage: number; 
+}
 
 
 export interface IActivitiesForm {

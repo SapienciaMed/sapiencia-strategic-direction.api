@@ -6,9 +6,22 @@ import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import ActivitiesValidator from "App/Validators/ActivitiesValidator";
 import xlsx, { ISettings } from "json-as-xlsx"
+import { IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
 
 export default class ActivityController {
 
+    public async getDetailedActivitiesPaginated({ request, response }: HttpContextContract) {
+        try {
+          const data = request.all();
+          return response.send(
+            await ActivityProvider.getDetailedActivitiesPaginated(data as IDetailedActivityPaginated)
+          );
+        } catch (err) {
+          return response.badRequest(
+            new ApiResponse(null, EResponseCodes.FAIL, String(err))
+          );
+        }
+    }
 
     public async getDetailedActivitiesByFilters({ request, response }: HttpContextContract) {
         try {
@@ -17,7 +30,6 @@ export default class ActivityController {
             await ActivityProvider.getDetailedActivitiesByFilters(data)
           );
         } catch (err) {
-    
           return response.badRequest(
             new ApiResponse(null, EResponseCodes.FAIL, String(err))
           );
