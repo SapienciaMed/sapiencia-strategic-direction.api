@@ -1,10 +1,12 @@
 import {
   IProject,
   IProjectFilters,
+  IProjectPaginated,
   IProjectTemp,
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
+import { IPagingData } from "App/Utils/ApiResponses";
 
 export interface IProjectRepository {
   getProjectByUser(user: string): Promise<IProject | null>;
@@ -18,9 +20,29 @@ export interface IProjectRepository {
     trx: TransactionClientContract
   ): Promise<IProject | null>;
   getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]>;
+  getProjectsPaginated(filters: IProjectPaginated): Promise<IPagingData<IProject>>
 }
 
 export default class ProjectRepository implements IProjectRepository {
+  async  getProjectsPaginated(filters: IProjectPaginated): Promise<IPagingData<IProject>> {
+    const query = Projects.query()
+
+    if (filters.nameOrCode) {
+        query.andWhere((sub)=> {
+            sub.whereILike('bpin', `%${filters.nameOrCode}%`)
+            sub.orWhereILike('project', `%${filters.nameOrCode}%`)
+        });
+    }
+    console.log(query.toQuery())
+    const res = await query.paginate(filters.page, filters.perPage);
+    const { data, meta } = res.serialize();
+
+    return {
+    array: data as IProject[],
+    meta,
+    };
+}
+
   async getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]> {
     const query = Projects.query();
 

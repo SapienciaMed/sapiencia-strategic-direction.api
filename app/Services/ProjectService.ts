@@ -1,6 +1,6 @@
-import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
-import { ApiResponse } from "App/Utils/ApiResponses";
+import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
 import { ICausesRepository } from "App/Repositories/CausesRepository";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -19,6 +19,7 @@ export interface IProjectService {
   createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<ApiResponse<IProject>>;
   updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>>
   getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>>;
+  getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>>
 }
 
 export default class ProjectService implements IProjectService {
@@ -35,12 +36,15 @@ export default class ProjectService implements IProjectService {
     private profitsRepository : IProfitsIncomeRepository,
     private sourceFundingRepository : ISourceFundingRepository,
   ) { }
+  async getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>> {
+    const res = await this.projectRepository.getProjectsPaginated(filters);
+    return new ApiResponse(res, EResponseCodes.OK)
+  }
 
-
-async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>> {
-  const res = await this.projectRepository.getProjectsByFilters(filters);
-  return new ApiResponse(res, EResponseCodes.OK)
-}
+  async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>> {
+    const res = await this.projectRepository.getProjectsByFilters(filters);
+    return new ApiResponse(res, EResponseCodes.OK)
+  }
 
 
   async getProjectByUser(user: string): Promise<ApiResponse<IProject>> {

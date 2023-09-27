@@ -21,16 +21,16 @@
 import Route from "@ioc:Adonis/Core/Route";
 
 Route.get("/", async () => {
-  return "Api direccion estrategica de SAPIENCIA";
+  return "Api dirección estrategica de SAPIENCIA";
 });
 
 Route.group(() => {
+  Route.post("/get-paginated", "ProjectController.getProjectsPaginated");
   Route.post("/get-by-filters", "ProjectController.getProjectsByFilters");
   Route.get("/get-by-user/:user", "ProjectController.getProjectByUser");
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
 }).prefix("/api/v1/project");
-
 
 
 Route.group(() => {

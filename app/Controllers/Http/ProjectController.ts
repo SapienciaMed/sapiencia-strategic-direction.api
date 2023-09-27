@@ -2,10 +2,24 @@ import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
 import ProjectProvider from "@ioc:core.ProjectProvider";
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
+import { IProjectPaginated } from "App/Interfaces/ProjectInterfaces";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import ProjectValidator from "App/Validators/ProjectValidator";
 
 export default class ProjectController {
+
+public async getProjectsPaginated({ request, response }: HttpContextContract) {
+    try {
+      const data = request.all();
+      return response.send(
+        await ProjectProvider.getProjectsPaginated(data as IProjectPaginated)
+      );
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+}
 
   public async getProjectsByFilters({ request, response }: HttpContextContract) {
       try {

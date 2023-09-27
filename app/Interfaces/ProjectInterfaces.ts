@@ -290,6 +290,13 @@ export interface IProjectFilters {
   status?: boolean;
 }
 
+export interface IProjectPaginated {
+  nameOrCode: string;
+  page: number;
+  perPage: number; 
+}
+
+
 export interface IActivitiesProject {
   objectiveSelect?: string;
   objetiveActivity: ICause;
