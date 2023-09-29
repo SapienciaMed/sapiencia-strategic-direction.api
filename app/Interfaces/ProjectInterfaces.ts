@@ -292,6 +292,7 @@ export interface IProjectFilters {
 
 export interface IProjectPaginated {
   nameOrCode: string;
+  excludeIds?: number[];
   page: number;
   perPage: number; 
 }

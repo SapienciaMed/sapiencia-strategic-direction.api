@@ -20,28 +20,36 @@ export interface IProjectRepository {
     trx: TransactionClientContract
   ): Promise<IProject | null>;
   getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]>;
-  getProjectsPaginated(filters: IProjectPaginated): Promise<IPagingData<IProject>>
+  getProjectsPaginated(
+    filters: IProjectPaginated
+  ): Promise<IPagingData<IProject>>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
-  async  getProjectsPaginated(filters: IProjectPaginated): Promise<IPagingData<IProject>> {
-    const query = Projects.query()
+  async getProjectsPaginated(
+    filters: IProjectPaginated
+  ): Promise<IPagingData<IProject>> {
+    const query = Projects.query();
+
+    if (filters.excludeIds) {
+      query.whereNotIn("id", filters.excludeIds);
+    }
 
     if (filters.nameOrCode) {
-        query.andWhere((sub)=> {
-            sub.whereILike('bpin', `%${filters.nameOrCode}%`)
-            sub.orWhereILike('project', `%${filters.nameOrCode}%`)
-        });
+      query.andWhere((sub) => {
+        sub.whereILike("bpin", `%${filters.nameOrCode}%`);
+        sub.orWhereILike("project", `%${filters.nameOrCode}%`);
+      });
     }
-    console.log(query.toQuery())
+    console.log(query.toQuery());
     const res = await query.paginate(filters.page, filters.perPage);
     const { data, meta } = res.serialize();
 
     return {
-    array: data as IProject[],
-    meta,
+      array: data as IProject[],
+      meta,
     };
-}
+  }
 
   async getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]> {
     const query = Projects.query();
@@ -76,12 +84,12 @@ export default class ProjectRepository implements IProjectRepository {
       query.preload("estatesService");
     });
     await res?.load("environmentalEffects");
-    
+
     await res?.load("activities", (query) => {
       query.preload("detailActivities");
       query.preload("budgetsMGA");
     });
-    
+
     if (res?.goal) {
       res.goal = Number(res.goal);
     }
@@ -95,7 +103,9 @@ export default class ProjectRepository implements IProjectRepository {
     }
     if (res?.activities) {
       res.activities.forEach((obj, index) => {
-        const objetive = res.causes.find((cause) => cause.id === obj.objetiveActivity);
+        const objetive = res.causes.find(
+          (cause) => cause.id === obj.objetiveActivity
+        );
         if (objetive) {
           res.activities[index].objetiveActivity = objetive;
         }
@@ -234,7 +244,7 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.environmentDiagnosis =
         project.preparation.enviromentalAnalysis.environmentDiagnosis;
     }
-    
+
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IProject;
