@@ -96,3 +96,11 @@ Route.group(() => {
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
 }).prefix("/api/v1/activities");
 
+Route.group(() => {
+  Route.get("/dpn/get-all", "IndicatorsController.getIndicatorDNP");
+  Route.get("/name/get-all", "IndicatorsController.getIndicatorName");
+  Route.get("/type/get-all", "IndicatorsController.getIndicatorType");
+  Route.get("/component/get-all", "IndicatorsController.getIndicatorsComponent");
+  Route.get("/programation/get-all", "IndicatorsController.getProgramation");
+  Route.get("/strategic-line/get-all", "IndicatorsController.getStrategicLine");
+}).prefix("/api/v1/indicators");
