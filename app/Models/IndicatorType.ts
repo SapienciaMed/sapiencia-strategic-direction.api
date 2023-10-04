@@ -1,7 +1,7 @@
 import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
 
 export default class IndicatorType extends BaseModel {
-    public static table = "TDI_TIPO_DE_INDICADOR";
+    public static table = "TDI_TIPO_INDICADOR";
 
     @column({ isPrimary: true, columnName: "TDI_CODIGO", serializeAs: "id" })
     public id: number;

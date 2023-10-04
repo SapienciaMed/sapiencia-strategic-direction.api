@@ -19,6 +19,7 @@ export default class AppProvider {
     const ComponentsService = await import("App/Services/ComponentsService");
     const StageService = await import("App/Services/StageService");
     const ActivityService = await import("App/Services/ActivityService");
+    const IndicatorsService = await import("App/Services/IndicatorsService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -98,6 +99,10 @@ export default class AppProvider {
     const SourceFundingRepository = await import(
       "App/Repositories/sourceFundingRepository"
     );
+
+    const IndicatorsRepository = await import(
+      "App/Repositories/IndicatorsRepository"
+    );
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -172,6 +177,13 @@ export default class AppProvider {
       "core.StageProvider",
       () => new StageService.default(
         new StageRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.IndicatorsProvider",
+      () => new IndicatorsService.default(
+        new IndicatorsRepository.default(),
       ),
     );
   }
