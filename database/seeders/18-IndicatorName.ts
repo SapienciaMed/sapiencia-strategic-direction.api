@@ -61,7 +61,7 @@ export default class extends BaseSeeder {
       },
       {
         id: 10,
-        description: '2.3.3.1.  Continuidad a la educación postsecundaria.',
+        description: '2.3.3.  Continuidad a la educación postsecundaria.',
         active: true,
         order: 10
       },
@@ -79,7 +79,7 @@ export default class extends BaseSeeder {
       },
       {
         id: 13,
-        description: '2.5.2.1. Satisfacción de la comunidad académica con la ciudad como destino universitario.',
+        description: '2.5.2. Satisfacción de la comunidad académica con la ciudad como destino universitario.',
         active: true,
         order: 13
       },

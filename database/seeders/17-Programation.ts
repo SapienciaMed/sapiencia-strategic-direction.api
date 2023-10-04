@@ -25,7 +25,7 @@ export default class extends BaseSeeder {
       },
       {
         id: 4,
-        description: '2.3.2. Educación para todos y todas',
+        description: '2.3. Educación para todos y todas',
         active: true,
         order: 4
       },
@@ -37,7 +37,7 @@ export default class extends BaseSeeder {
       },
       {
         id: 6,
-        description: '2.5.2. Infraestructura y ambientes de aprendizaje',
+        description: '2.5. Infraestructura y ambientes de aprendizaje',
         active: true,
         order: 6
       },
