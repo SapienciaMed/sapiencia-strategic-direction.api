@@ -1,5 +1,4 @@
-import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
-import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
