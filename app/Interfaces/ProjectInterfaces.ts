@@ -60,6 +60,11 @@ export interface IParticipatingActors {
   contribution: string;
 }
 
+export interface IPosition {
+  name: string,
+  value: string | number;
+}
+
 export interface IActorsForm {
   actors?: IParticipatingActors[];
 }
@@ -146,7 +151,28 @@ export interface IRisks {
 }
 
 
+export interface IlogicFrameForm {
+  logicFrame?: IAddLogicFrame[];
+}
 
+export interface IAddLogicFrame {
+  id?: number;
+  resume: number;
+  description:string;
+  indicator:number;
+  meta: number;
+  sourceVerification:string;
+  assumptions:string;
+  indicatorType:IIndicator;
+}
+
+export interface IprofitsIncome {
+  id?: number;
+  type: string;
+  description: string;
+  unit: number;
+  period: Iperiod[];
+}
 
 export interface ISourceFunding {
   id?: number;
@@ -161,20 +187,12 @@ export interface ISourceFunding {
   year4:number;
 }
 
-export interface ISourceFundingForm {
-  sourceFunding?: ISourceFunding[];
-}
-
-export interface IprofitsIncome {
-  id?: number;
-  type: string;
-  description: string;
-  unit: number;
-  period: Iperiod[];
-}
-
 export interface IproftisIncomeForm {
   profitsIncome?: IprofitsIncome[];
+}
+
+export interface ISourceFundingForm {
+  sourceFunding?: ISourceFunding[];
 }
 
 export interface Iperiod {
@@ -236,26 +254,40 @@ export interface IActivityMGA {
   detailActivities: IDetailActivity[];
 }
 
-export interface IDetailedActivityFilter {
-  idList?: number[];
-  description?: string;
-  detail?: string
-}
-export interface IDetailedActivityFilter {
-  idList?: number[];
-  description?: string;
-  detail?: string
-}
-
-export interface IDetailedActivityPaginated {
-  detail?: string
-  page: number;
-  perPage: number; 
-}
-
-
 export interface IActivitiesForm {
   activities?: IActivityMGA[];
+}
+
+export interface IIndicator {
+  type: number;
+  
+  //Producto
+  line?: number;
+  component?: number;
+  program?: number;
+  indicator?: number;
+  developmentPlan?: string;
+
+  //Valor estadistico
+  objective?: string;
+  dpnIndicator?: number;
+  dpn?: number;
+  staticValueCode?: number;
+  staticValue?: number;
+  total?: number;
+  accumulative?: number;
+
+  productMGA: string;
+  measurement: number;
+  year0: number;
+  year1: number;
+  year2: number;
+  year3: number;
+  year4: number;
+}
+
+export interface IIndicatorsForm {
+  indicators?: IIndicator[];
 }
 
 export interface IProjectTemp {
@@ -277,11 +309,25 @@ export interface IProjectTemp {
     enviromentalAnalysis?: IEnvironmentAnalysisForm
     activities?: IActivitiesForm;
     risks?:IRisks
-  };
+  }
   programation?:{
     profitsIncome?:IproftisIncomeForm;
     sourceFunding?:ISourceFundingForm;
+    indicators?: IIndicatorsForm;
+    logicFrame?:IlogicFrameForm;
   }
+}
+
+export interface IDetailedActivityFilter {
+  idList?: number[];
+  description?: string;
+  detail?: string
+}
+
+export interface IDetailedActivityPaginated {
+  detail?: string
+  page: number;
+  perPage: number; 
 }
 
 export interface IProjectFilters {
@@ -308,6 +354,40 @@ export interface IActivitiesProject {
   validity: number;
   year: number;
   detailActivities: IDetailActivity[];
+}
+
+export interface IIndicatorAction {
+  type: number;
+  objective?: string;
+  dpnIndicator?: number;
+  dpn?: number;
+  staticValueCode?: number;
+  staticValue?: number;
+  total?: number;
+  accumulative?: number;
+  productMGA: string;
+  measurement: number;
+  year0: number;
+  year1: number;
+  year2: number;
+  year3: number;
+  year4: number;
+}
+
+export interface IIndicatorIndicative {
+  type: number;
+  line?: number;
+  component?: number;
+  program?: number;
+  indicator?: number;
+  developmentPlan?: string;
+  productMGA: string;
+  measurement: number;
+  year0: number;
+  year1: number;
+  year2: number;
+  year3: number;
+  year4: number;
 }
 
 export interface IProject {
@@ -359,4 +439,6 @@ export interface IProject {
   risks:IAddRisks[] | null;
   profitsIncome:IprofitsIncome[] | null;
   sourceFunding:ISourceFunding[] | null;
+  indicatorsAction: IIndicatorAction[] | null;
+  indicatorsIndicative: IIndicatorIndicative[] | null;
 }

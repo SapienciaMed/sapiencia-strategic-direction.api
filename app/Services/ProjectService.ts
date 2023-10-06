@@ -1,4 +1,4 @@
-import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -13,6 +13,7 @@ import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
 import { IRisksRepository } from "App/Repositories/RisksRepository";
 import { IProfitsIncomeRepository } from "App/Repositories/ProfitsIncomeRepository"
 import { ISourceFundingRepository } from "App/Repositories/sourceFundingRepository";
+import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -31,16 +32,17 @@ export default class ProjectService implements IProjectService {
     private specificObjectivesRepository: ISpecificObjectivesRepository,
     private environmentalEffectsRepository: IEnvironmentalEffectsRepository,
     private activitiesRepository: IActivitiesRepository,
-    private risksRepository : IRisksRepository,
-    private profitsRepository : IProfitsIncomeRepository,
-    private sourceFundingRepository : ISourceFundingRepository,
+    private risksRepository: IRisksRepository,
+    private profitsRepository: IProfitsIncomeRepository,
+    private sourceFundingRepository: ISourceFundingRepository,
+    private indicatorsRepository: IIndicatorsRepository,
   ) { }
 
 
-async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>> {
-  const res = await this.projectRepository.getProjectsByFilters(filters);
-  return new ApiResponse(res, EResponseCodes.OK)
-}
+  async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>> {
+    const res = await this.projectRepository.getProjectsByFilters(filters);
+    return new ApiResponse(res, EResponseCodes.OK)
+  }
 
 
   async getProjectByUser(user: string): Promise<ApiResponse<IProject>> {
@@ -66,9 +68,10 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let specificObjectives: INeedObjetive[] | null = null;
     let environmentalEffects: IEffectEnviromentForm[] | null = null;
     let activities: IActivityMGA[] | null = null;
-    let risks : IAddRisks[] | null = null;
-    let profitsIncome : IprofitsIncome[] | null = null;
-    let sourceFunding : ISourceFunding[] | null = null;
+    let risks: IAddRisks[] | null = null;
+    let profitsIncome: IprofitsIncome[] | null = null;
+    let sourceFunding: ISourceFunding[] | null = null;
+    let indicators: IIndicator[] | null = null;
 
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.createCauses(project.identification.problemDescription.causes, projectCreate.id, trx);
@@ -95,10 +98,13 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
       risks = await this.risksRepository.createRisks(project.preparation.risks.risks, projectCreate.id, trx);
     }
     if (project.programation?.profitsIncome?.profitsIncome) {
-      profitsIncome  = await this.profitsRepository.createProfits(project.programation.profitsIncome.profitsIncome, projectCreate.id, trx);
+      profitsIncome = await this.profitsRepository.createProfits(project.programation.profitsIncome.profitsIncome, projectCreate.id, trx);
     }
     if (project.programation?.sourceFunding?.sourceFunding) {
-      sourceFunding  = await this.sourceFundingRepository.createSourceFunding(project.programation.sourceFunding.sourceFunding, projectCreate.id, trx);
+      sourceFunding = await this.sourceFundingRepository.createSourceFunding(project.programation.sourceFunding.sourceFunding, projectCreate.id, trx);
+    }
+    if (project.programation?.indicators?.indicators) {
+      indicators = await this.indicatorsRepository.createIndicators(project.programation.indicators.indicators, projectCreate.id, trx);
     }
     return new ApiResponse(
       {
@@ -109,38 +115,76 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         classifications: classifications,
         specificObjectives: specificObjectives,
         environmentalEffects: environmentalEffects,
-        risks:risks,
-        profitsIncome:profitsIncome,
-        sourceFunding:sourceFunding,
+        risks: risks,
+        profitsIncome: profitsIncome,
+        sourceFunding: sourceFunding,
         activities: activities ? activities.map((item): IActivitiesProject => {
-          return {...item, budgetsMGA: [
-            {
-              budget: item.budgetsMGA.year0.budget,
-              year: 0,
-              validity: item.budgetsMGA.year0.validity
-            },
-            {
-              budget: item.budgetsMGA.year1.budget,
-              year: 1,
-              validity: item.budgetsMGA.year1.validity
-            },
-            {
-              budget: item.budgetsMGA.year2.budget,
-              year: 2,
-              validity: item.budgetsMGA.year2.validity
-            },
-            {
-              budget: item.budgetsMGA.year3.budget,
-              year: 3,
-              validity: item.budgetsMGA.year3.validity
-            },
-            {
-              budget: item.budgetsMGA.year4.budget,
-              year: 4,
-              validity: item.budgetsMGA.year4.validity
-            }
-          ]}
-        }) : null
+          return {
+            ...item, budgetsMGA: [
+              {
+                budget: item.budgetsMGA.year0.budget,
+                year: 0,
+                validity: item.budgetsMGA.year0.validity
+              },
+              {
+                budget: item.budgetsMGA.year1.budget,
+                year: 1,
+                validity: item.budgetsMGA.year1.validity
+              },
+              {
+                budget: item.budgetsMGA.year2.budget,
+                year: 2,
+                validity: item.budgetsMGA.year2.validity
+              },
+              {
+                budget: item.budgetsMGA.year3.budget,
+                year: 3,
+                validity: item.budgetsMGA.year3.validity
+              },
+              {
+                budget: item.budgetsMGA.year4.budget,
+                year: 4,
+                validity: item.budgetsMGA.year4.validity
+              }
+            ]
+          }
+        }) : null,
+        indicatorsAction: indicators ? indicators.filter(indicator => indicator.type === 3).map(indicator => {
+          return {
+            type: indicator.type,
+            objective: indicator.objective,
+            dpnIndicator: indicator.dpnIndicator,
+            dpn: indicator.dpn,
+            staticValueCode: indicator.staticValueCode,
+            staticValue: indicator.staticValue,
+            total: indicator.total,
+            accumulative: indicator.accumulative,
+            productMGA: indicator.productMGA,
+            measurement: indicator.measurement,
+            year0: indicator.year0,
+            year1: indicator.year1,
+            year2: indicator.year2,
+            year3: indicator.year3,
+            year4: indicator.year4
+          }
+        }) : null,
+        indicatorsIndicative: indicators ? indicators.filter(indicator => indicator.type === 2).map(indicator => {
+          return {
+            type: indicator.type,
+            line: indicator.line,
+            component: indicator.component,
+            program: indicator.program,
+            indicator: indicator.indicator,
+            developmentPlan: indicator.developmentPlan,
+            productMGA: indicator.productMGA,
+            measurement: indicator.measurement,
+            year0: indicator.year0,
+            year1: indicator.year1,
+            year2: indicator.year2,
+            year3: indicator.year3,
+            year4: indicator.year4
+          }
+        }) : null,
       },
       EResponseCodes.OK
     );
@@ -155,9 +199,10 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
     let specificObjectives: INeedObjetive[] | null = null;
     let environmentalEffects: IEffectEnviromentForm[] | null = null;
     let activities: IActivityMGA[] | null = null;
-    let risks : IAddRisks[] | null = null;    
-    let profitsIncome : IprofitsIncome[] | null = null;
-    let sourceFunding : ISourceFunding[] | null = null;
+    let risks: IAddRisks[] | null = null;
+    let profitsIncome: IprofitsIncome[] | null = null;
+    let sourceFunding: ISourceFunding[] | null = null;
+    let indicators: IIndicator[] | null = null;
 
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.updateCauses(project.identification.problemDescription.causes, id, trx);
@@ -184,10 +229,13 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
       risks = await this.risksRepository.updateRisks(project.preparation.risks.risks, id, trx);
     }
     if (project.programation?.profitsIncome?.profitsIncome) {
-      profitsIncome  = await this.profitsRepository.updateProfits(project.programation.profitsIncome.profitsIncome, id, trx);
+      profitsIncome = await this.profitsRepository.updateProfits(project.programation.profitsIncome.profitsIncome, id, trx);
     }
     if (project.programation?.sourceFunding?.sourceFunding) {
-      sourceFunding  = await this.sourceFundingRepository.updateSourceFunding(project.programation.sourceFunding.sourceFunding, id, trx);
+      sourceFunding = await this.sourceFundingRepository.updateSourceFunding(project.programation.sourceFunding.sourceFunding, id, trx);
+    }
+    if (project.programation?.indicators?.indicators) {
+      indicators = await this.indicatorsRepository.updateIndicators(project.programation.indicators.indicators, id, trx);
     }
     if (!res) {
       return new ApiResponse(
@@ -205,39 +253,76 @@ async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProje
         classifications: classifications,
         specificObjectives: specificObjectives,
         environmentalEffects: environmentalEffects,
-        risks:risks,
-        profitsIncome:profitsIncome,
-        sourceFunding:sourceFunding,
+        risks: risks,
+        profitsIncome: profitsIncome,
+        sourceFunding: sourceFunding,
         activities: activities ? activities.map((item): IActivitiesProject => {
-          return {...item, budgetsMGA: [
-            {
-              budget: item.budgetsMGA.year0.budget,
-              year: 0,
-              validity: item.budgetsMGA.year0.validity
-            },
-            {
-              budget: item.budgetsMGA.year1.budget,
-              year: 1,
-              validity: item.budgetsMGA.year1.validity
-            },
-            {
-              budget: item.budgetsMGA.year2.budget,
-              year: 2,
-              validity: item.budgetsMGA.year2.validity
-            },
-            {
-              budget: item.budgetsMGA.year3.budget,
-              year: 3,
-              validity: item.budgetsMGA.year3.validity
-            },
-            {
-              budget: item.budgetsMGA.year4.budget,
-              year: 4,
-              validity: item.budgetsMGA.year4.validity
-            }
-          ]}
-        }) 
-        : null
+          return {
+            ...item, budgetsMGA: [
+              {
+                budget: item.budgetsMGA.year0.budget,
+                year: 0,
+                validity: item.budgetsMGA.year0.validity
+              },
+              {
+                budget: item.budgetsMGA.year1.budget,
+                year: 1,
+                validity: item.budgetsMGA.year1.validity
+              },
+              {
+                budget: item.budgetsMGA.year2.budget,
+                year: 2,
+                validity: item.budgetsMGA.year2.validity
+              },
+              {
+                budget: item.budgetsMGA.year3.budget,
+                year: 3,
+                validity: item.budgetsMGA.year3.validity
+              },
+              {
+                budget: item.budgetsMGA.year4.budget,
+                year: 4,
+                validity: item.budgetsMGA.year4.validity
+              }
+            ]
+          }
+        }) : null,
+        indicatorsAction: indicators ? indicators.filter(indicator => indicator.type === 3).map(indicator => {
+          return {
+            type: indicator.type,
+            objective: indicator.objective,
+            dpnIndicator: indicator.dpnIndicator,
+            dpn: indicator.dpn,
+            staticValueCode: indicator.staticValueCode,
+            staticValue: indicator.staticValue,
+            total: indicator.total,
+            accumulative: indicator.accumulative,
+            productMGA: indicator.productMGA,
+            measurement: indicator.measurement,
+            year0: indicator.year0,
+            year1: indicator.year1,
+            year2: indicator.year2,
+            year3: indicator.year3,
+            year4: indicator.year4
+          }
+        }) : null,
+        indicatorsIndicative: indicators ? indicators.filter(indicator => indicator.type === 2).map(indicator => {
+          return {
+            type: indicator.type,
+            line: indicator.line,
+            component: indicator.component,
+            program: indicator.program,
+            indicator: indicator.indicator,
+            developmentPlan: indicator.developmentPlan,
+            productMGA: indicator.productMGA,
+            measurement: indicator.measurement,
+            year0: indicator.year0,
+            year1: indicator.year1,
+            year2: indicator.year2,
+            year3: indicator.year3,
+            year4: indicator.year4
+          }
+        }) : null,
       },
       EResponseCodes.OK
     );
