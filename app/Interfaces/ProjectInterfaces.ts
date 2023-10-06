@@ -290,10 +290,23 @@ export interface IIndicatorsForm {
   indicators?: IIndicator[];
 }
 
+export interface Itransfers{
+  bpin?: string;
+  project?: string;
+  dependency?: string;
+  formulation?: string;
+  rol?:string;
+  order?:string;
+  tecniques?: boolean;
+  ambiental?: boolean;
+  sociocultural?: boolean;
+  observations?:string;
+}
+
 export interface IProjectTemp {
   id?: number;
   user: string;
-  status: boolean;
+  status: number;
   register?: IRegisterForm;
   identification?: {
     problemDescription?: IProblemDescriptionForm;
@@ -316,6 +329,7 @@ export interface IProjectTemp {
     indicators?: IIndicatorsForm;
     logicFrame?:IlogicFrameForm;
   }
+  transfers?:Itransfers;
 }
 
 export interface IDetailedActivityFilter {
@@ -333,7 +347,7 @@ export interface IDetailedActivityPaginated {
 export interface IProjectFilters {
   idList?: number[];
   codeList?: string[];
-  status?: boolean;
+  status?: number;
 }
 
 export interface IProjectPaginated {
@@ -401,7 +415,7 @@ export interface IIndicatorIndicative {
 export interface IProject {
   id: number;
   user: string;
-  status: boolean;
+  status: number;
   bpin: string | null;
   project: string | null;
   dateFrom: string | null;
@@ -449,4 +463,11 @@ export interface IProject {
   sourceFunding:ISourceFunding[] | null;
   indicatorsAction: IIndicatorAction[] | null;
   indicatorsIndicative: IIndicatorIndicative[] | null;
+  formulation: string | null;
+  rol:string | null;
+  order:string | null;
+  tecniques: boolean;
+  ambiental: boolean;
+  sociocultural: boolean;
+  observations:string | null;
 }

@@ -332,7 +332,19 @@ export default class ProjectValidator {
           })
         )
       })
-    })
+    }),
+    transfers: schema.array.optional().members(
+      schema.object().members({
+        formulation: schema.string(),
+        rol: schema.string(),
+        order: schema.string(),
+        tecniques: schema.boolean(),
+        ambiental: schema.boolean(),
+        sociocultural: schema.boolean(),
+        observations: schema.string(),
+      })
+    )
+
   });
 
   /**

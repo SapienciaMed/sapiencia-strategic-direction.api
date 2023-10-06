@@ -41,7 +41,6 @@ export default class ProjectRepository implements IProjectRepository {
         sub.orWhereILike("project", `%${filters.nameOrCode}%`);
       });
     }
-    console.log(query.toQuery());
     const res = await query.paginate(filters.page, filters.perPage);
     const { data, meta } = res.serialize();
 
@@ -126,7 +125,10 @@ export default class ProjectRepository implements IProjectRepository {
   ): Promise<IProject> {
     const toCreate = new Projects();
     toCreate.user = project.user;
-    toCreate.status = project.status;
+    
+    if (project?.status !== undefined) {
+      toCreate.status = project.status;
+    }
     if (project.register?.bpin) {
       toCreate.bpin = project.register.bpin;
     }
@@ -245,6 +247,27 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.environmentDiagnosis =
         project.preparation.enviromentalAnalysis.environmentDiagnosis;
     }
+    if (project.transfers?.formulation) {
+      toCreate.formulation = project.transfers.formulation;
+    }
+    if (project.transfers?.rol) {
+      toCreate.rol = project.transfers.rol;
+    }
+    if (project.transfers?.order) {
+      toCreate.order = project.transfers.order;
+    }
+    if (project.transfers?.tecniques !== undefined) {
+      toCreate.tecniques = project.transfers?.tecniques;
+    }
+    if (project.transfers?.ambiental !== undefined) {
+      toCreate.ambiental = project.transfers?.ambiental;
+    }
+    if (project.transfers?.sociocultural !== undefined) {
+      toCreate.sociocultural = project.transfers?.sociocultural;
+    }
+    if (project.transfers?.observations) {
+      toCreate.observations = project.transfers.observations;
+    }
 
     toCreate.useTransaction(trx);
     await toCreate.save();
@@ -261,7 +284,9 @@ export default class ProjectRepository implements IProjectRepository {
       return null;
     }
     toUpdate.user = project.user;
-    toUpdate.status = project.status;
+    if (project?.status !== undefined) {
+      toUpdate.status = project.status;
+    }
     if (project.register?.bpin !== undefined) {
       toUpdate.bpin = project.register.bpin;
     }
@@ -379,6 +404,27 @@ export default class ProjectRepository implements IProjectRepository {
     if (project.preparation?.enviromentalAnalysis?.environmentDiagnosis) {
       toUpdate.environmentDiagnosis =
         project.preparation.enviromentalAnalysis.environmentDiagnosis;
+    }
+    if (project.transfers?.formulation) {
+      toUpdate.formulation = project.transfers.formulation;
+    }
+    if (project.transfers?.rol) {
+      toUpdate.rol = project.transfers.rol;
+    }
+    if (project.transfers?.order) {
+      toUpdate.order = project.transfers.order;
+    }
+    if (project.transfers?.tecniques !== undefined) {
+      toUpdate.tecniques = project.transfers?.tecniques;
+    }
+    if (project.transfers?.ambiental !== undefined) {
+      toUpdate.ambiental = project.transfers?.ambiental;
+    }
+    if (project.transfers?.sociocultural !== undefined) {
+      toUpdate.sociocultural = project.transfers?.sociocultural;
+    }
+    if (project.transfers?.observations) {
+      toUpdate.observations = project.transfers.observations;
     }
     toUpdate.useTransaction(trx);
     await toUpdate.save();

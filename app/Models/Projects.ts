@@ -11,6 +11,7 @@ import ProfitsIncome from "./ProfitsIncome"
 import SourceFunding from "./EntityFinancing"
 import IndicatorsIndicative from "./IndicatorsIndicative";
 import IndicatorsAction from "./IndicatorsAction";
+import ProjectStates from "./ProjectStates";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -87,13 +88,8 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_USUARIO", serializeAs: "user" })
   public user: string;
 
-  @column({
-    columnName: "PRY_ESTADO_PROYECTO",
-    serializeAs: "state",
-    prepare: (val) => String(val) === "true" ? 1 : 0,
-    serialize: (val) => Boolean(val)
-  })
-  public status: boolean;
+  @column({ columnName: "PRY_ESTADO_PROYECTO", serializeAs: "status" })
+  public status: number;
 
   @column({ columnName: "PRY_CODPRM_PRM_PARAMETROS", serializeAs: "localitation" })
   public localitation: number;
@@ -134,7 +130,44 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_RESGUARDO", serializeAs: "shelter" })
   public shelter: string;
 
+  @column({ columnName: "PRY_FORMULADOR", serializeAs: "formulation" })
+  public formulation: string;
+
+  @column({ columnName: "PRY_ROL", serializeAs: "rol" })
+  public rol: string;
+
+  @column({ columnName: "PRY_ORDEN", serializeAs: "order" })
+  public order: string;
+
+  @column({
+    columnName: "PRY_TECNICAS",
+    serializeAs: "tecniques",
+    prepare: (val) => String(val) === "true" ? 1 : 0,
+    serialize: (val) => Boolean(val)
+  })
+  public tecniques: boolean;
+
+@column({
+  columnName: "PRY_AMBIENTAL",
+  serializeAs: "ambiental",
+  prepare: (val) => String(val) === "true" ? 1 : 0,
+  serialize: (val) => Boolean(val)
+  })
+  public ambiental: boolean;
+
+@column({
+  columnName: "PRY_SOCIOCULTURAL",
+  serializeAs: "sociocultural",
+  prepare: (val) => String(val) === "true" ? 1 : 0,
+  serialize: (val) => Boolean(val)
+  })
+  public sociocultural: boolean;
+
   
+  @column({ columnName: "PRY_OBSERVACIONES", serializeAs: "observations" })
+  public observations: string;
+  
+
 
   //RELACIONES
 
@@ -209,4 +242,11 @@ export default class Projects extends BaseModel {
     foreignKey: 'idProject',
   })
   public indicatorsIndicative: HasMany<typeof IndicatorsIndicative>;
+
+  @hasMany(() => ProjectStates, {
+    localKey: 'id',
+    foreignKey: 'status',
+  })
+  public projectStates: HasMany<typeof ProjectStates>;
+
 }

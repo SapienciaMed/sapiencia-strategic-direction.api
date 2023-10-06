@@ -108,9 +108,12 @@ export default class extends BaseSchema {
       .nullable()
       .comment("objetivo del proyecto");
       table
-      .boolean("PRY_ESTADO_PROYECTO")
-      .nullable()
-      .comment("Estado del proyecto, completado o guardado temporal	");
+      .integer("PRY_ESTADO_PROYECTO")
+      .notNullable()
+      .unsigned()
+      .references("PRS_CODIGO")
+      .inTable("PRS_PROYECTO_ESTADOS")
+      .comment("codigo de los estados del proyecto ");
       table
       .integer("PRY_CODPRM_PRM_PARAMETROS")
       .nullable()
@@ -163,6 +166,34 @@ export default class extends BaseSchema {
       .string("PRY_RESGUARDO", 100)
       .nullable()
       .comment("campo perteneciente a la tabla generica");
+      table
+      .text("PRY_FORMULADOR")
+      .nullable()
+      .comment("Formulador (nombre completo)");
+      table
+      .text("PRY_ROL")
+      .nullable()
+      .comment("rol");
+      table
+      .text("PRY_ORDEN")
+      .nullable()
+      .comment("ordenador del gasto");
+      table
+      .boolean("PRY_TECNICAS")
+      .nullable()
+      .comment("booleano con posibles valores True o False.");
+      table
+      .boolean("PRY_AMBIENTAL")
+      .nullable()
+      .comment("booleano con posibles valores True o False.");
+      table
+      .boolean("PRY_SOCIOCULTURAL")
+      .nullable()
+      .comment("booleano con posibles valores True o False.");
+      table
+      .text("PRY_OBSERVACIONES")
+      .nullable()
+      .comment("observaciones proyecto");
     })
   }
 
