@@ -26,7 +26,7 @@ export default class ProjectValidator {
   public schema = schema.create({
     id: schema.number.optional(),
     user: schema.string(),
-    status: schema.boolean(),
+    status: schema.number(),
     register: schema.object.optional().members({
       bpin: schema.string.optional(),
       project: schema.string.optional(),
@@ -333,18 +333,15 @@ export default class ProjectValidator {
         )
       })
     }),
-    transfers: schema.array.optional().members(
-      schema.object().members({
-        formulation: schema.string(),
-        rol: schema.string(),
-        order: schema.string(),
-        tecniques: schema.boolean(),
-        ambiental: schema.boolean(),
-        sociocultural: schema.boolean(),
-        observations: schema.string(),
-      })
-    )
-
+    /*transfers: schema.object.optional().members({
+      formulation: schema.string(),
+      rol: schema.string(),
+      order: schema.string(),
+      tecniques: schema.boolean(),
+      ambiental: schema.boolean(),
+      sociocultural: schema.boolean(),
+      observations: schema.string(),
+    })*/
   });
 
   /**
