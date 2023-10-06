@@ -17,12 +17,13 @@ export default class extends BaseSchema {
       .inTable("TDI_TIPO_INDICADOR")
       .comment("llave foranea Tabla  (FK TDI_TIPO_INDICADOR)");
       table
-      .integer("IDC_CODOBE_OBJETIVO_ESPECIFICO")
+      .string("IDC_CODOBE_OBJETIVO_ESPECIFICO")
       .notNullable()
-      .unsigned()
-      .references("LOE_CODIGO")
-      .inTable("LOE_OBJETIVO_ESPECIFICO")
       .comment("llave foranea tabla objetivo especifico(FK LOE_OBJETIVO_ESPECIFICO)");
+      table
+      .string("IDC_PRODUCTO_MGA")
+      .notNullable()
+      .comment("producto mga");
       table
       .integer("IDC_CODIGO_DPN")
       .notNullable()
@@ -68,12 +69,8 @@ export default class extends BaseSchema {
       .comment("Año 4");
       table
       .integer("IDC_META_GLOBAL")
-      .notNullable()
-      .comment("Año 4");
-      table
-      .boolean("IDC_ACUMULATIVO_CUATRENIO")
-      .notNullable()
-      .comment("Año 4");
+      .nullable()
+      .comment("Meta global");
       table
       .integer("IDC_CODPRY_PROYECTO")
       .notNullable()

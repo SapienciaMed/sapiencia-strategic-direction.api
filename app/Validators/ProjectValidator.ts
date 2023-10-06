@@ -257,9 +257,9 @@ export default class ProjectValidator {
           })
         )
       }),
-      risks:schema.object.optional().members({ 
-          risks: schema.array.optional().members(
-            schema.object().members({
+      risks: schema.object.optional().members({
+        risks: schema.array.optional().members(
+          schema.object().members({
             level: schema.number(),
             risk: schema.string(),
             typeRisk: schema.number(),
@@ -273,39 +273,65 @@ export default class ProjectValidator {
       }),
     }),
     programation: schema.object.optional().members({
-    profitsIncome:schema.object.optional().members({ 
+      profitsIncome: schema.object.optional().members({
         profitsIncome: schema.array.optional().members(
           schema.object().members({
-          type: schema.string(),
-          description: schema.string(),
-          unit: schema.number(),
-          period: schema.array().members(
-            schema.object().members({
-              id: schema.number.optional(),
-              period: schema.number(),
-              quantity: schema.number(),
-              unitValue: schema.number(),
-              financialValue: schema.number(),
-            })
-          ),
-        })
-      )
-    }),
-        sourceFunding :schema.object.optional().members({ 
-          sourceFunding: schema.array.optional().members(
-            schema.object().members({
-              stage: schema.number(),
-              typeEntity: schema.number(),
-              resource: schema.number(),
-              entity: schema.string(),
-              year0: schema.number(),
-              year1: schema.number(),
-              year2: schema.number(),
-              year3: schema.number(),
-              year4: schema.number(),
+            type: schema.string(),
+            description: schema.string(),
+            unit: schema.number(),
+            period: schema.array().members(
+              schema.object().members({
+                id: schema.number.optional(),
+                period: schema.number(),
+                quantity: schema.number(),
+                unitValue: schema.number(),
+                financialValue: schema.number(),
+              })
+            ),
           })
         )
       }),
+      sourceFunding: schema.object.optional().members({
+        sourceFunding: schema.array.optional().members(
+          schema.object().members({
+            stage: schema.number(),
+            typeEntity: schema.number(),
+            resource: schema.number(),
+            entity: schema.string(),
+            year0: schema.number(),
+            year1: schema.number(),
+            year2: schema.number(),
+            year3: schema.number(),
+            year4: schema.number(),
+          })
+        )
+      }),
+      indicators: schema.object.optional().members({
+        indicators: schema.array.optional().members(
+          schema.object().members({
+            type: schema.number(),
+            line: schema.number.optional(),
+            component: schema.number.optional(),
+            program: schema.number.optional(),
+            indicator: schema.number.optional(),
+            developmentPlan: schema.string.optional(),
+            objective: schema.string.optional(),
+            dpnIndicator: schema.number.optional(),
+            dpn: schema.number.optional(),
+            staticValueCode: schema.number.optional(),
+            staticValue: schema.number.optional(),
+            total: schema.number.optional(),
+            accumulative: schema.number.optional(),
+            productMGA: schema.string(),
+            measurement: schema.number(),
+            year0: schema.number(),
+            year1: schema.number(),
+            year2: schema.number(),
+            year3: schema.number(),
+            year4: schema.number(),
+          })
+        )
+      })
     })
   });
 

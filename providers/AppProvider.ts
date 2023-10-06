@@ -130,6 +130,7 @@ export default class AppProvider {
         new RisksRepository.default(),
         new ProfitsIncomeRepository.default(),
         new SourceFundingRepository.default(),
+        new IndicatorsRepository.default(),
       )
     );
 

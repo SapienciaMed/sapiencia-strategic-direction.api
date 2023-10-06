@@ -9,6 +9,8 @@ import Activities from "./Activities";
 import Risks from "./Risks"
 import ProfitsIncome from "./ProfitsIncome"
 import SourceFunding from "./EntityFinancing"
+import IndicatorsIndicative from "./IndicatorsIndicative";
+import IndicatorsAction from "./IndicatorsAction";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -195,4 +197,16 @@ export default class Projects extends BaseModel {
     foreignKey: 'idProject',
   })
   public sourceFunding: HasMany<typeof SourceFunding>;
+
+  @hasMany(() => IndicatorsAction, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public indicatorsAction: HasMany<typeof IndicatorsAction>;
+
+  @hasMany(() => IndicatorsIndicative, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public indicatorsIndicative: HasMany<typeof IndicatorsIndicative>;
 }
