@@ -103,6 +103,9 @@ export default class AppProvider {
     const IndicatorsRepository = await import(
       "App/Repositories/IndicatorsRepository"
     );
+    const LogicFrameRepository = await import(
+      "App/Repositories/LogicFrameRepository"
+    );
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -131,6 +134,7 @@ export default class AppProvider {
         new ProfitsIncomeRepository.default(),
         new SourceFundingRepository.default(),
         new IndicatorsRepository.default(),
+        new LogicFrameRepository.default(),
       )
     );
 

@@ -331,17 +331,52 @@ export default class ProjectValidator {
             year4: schema.number(),
           })
         )
-      })
+      }),
+      logicFrame: schema.object.optional().members({
+        logicFrame: schema.array.optional().members(
+          schema.object().members({
+            resume: schema.number(),
+            description: schema.string(),
+            indicator: schema.number(),
+            meta:schema.number(),
+            sourceVerification: schema.string.optional(),
+            assumptions: schema.string(),
+            indicatorType:
+              schema.object().members({
+                type: schema.number(),
+                line: schema.number.optional(),
+                component: schema.number.optional(),
+                program: schema.number.optional(),
+                indicator: schema.number.optional(),
+                developmentPlan: schema.string.optional(),
+                objective: schema.string.optional(),
+                dpnIndicator: schema.number.optional(),
+                dpn: schema.number.optional(),
+                staticValueCode: schema.number.optional(),
+                staticValue: schema.number.optional(),
+                total: schema.number.optional(),
+                accumulative: schema.number.optional(),
+                productMGA: schema.string(),
+                measurement: schema.number(),
+                year0: schema.number(),
+                year1: schema.number(),
+                year2: schema.number(),
+                year3: schema.number(),
+                year4: schema.number(),
+              })
+          }),
+        )
+      }),
     }),
-    /*transfers: schema.object.optional().members({
-      formulation: schema.string(),
-      rol: schema.string(),
-      order: schema.string(),
-      tecniques: schema.boolean(),
-      ambiental: schema.boolean(),
-      sociocultural: schema.boolean(),
-      observations: schema.string(),
-    })*/
+      transfers: schema.object.optional().members({
+      formulation: schema.string.optional(),
+      rol: schema.string.optional(),
+      order: schema.string.optional(),
+      tecniques: schema.boolean.optional(),
+      ambiental: schema.boolean.optional(),
+      sociocultural: schema.boolean.optional(),
+      observations: schema.string.optional(),
+    })
   });
 
   /**

@@ -94,6 +94,7 @@ export default class ProjectRepository implements IProjectRepository {
     await res?.load("sourceFunding");
     await res?.load("indicatorsAction");
     await res?.load("indicatorsIndicative");
+    await res?.load("logicFrame");
     if (res?.goal) {
       res.goal = Number(res.goal);
     }

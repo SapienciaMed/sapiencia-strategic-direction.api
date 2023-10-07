@@ -1,4 +1,4 @@
-import { IActivitiesProject, IActivityMGA, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Repositories/ProjectRepository";
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -14,6 +14,7 @@ import { IRisksRepository } from "App/Repositories/RisksRepository";
 import { IProfitsIncomeRepository } from "App/Repositories/ProfitsIncomeRepository"
 import { ISourceFundingRepository } from "App/Repositories/sourceFundingRepository";
 import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
+import { ILogicFrameRepository } from "App/Repositories/LogicFrameRepository";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -37,6 +38,7 @@ export default class ProjectService implements IProjectService {
     private profitsRepository: IProfitsIncomeRepository,
     private sourceFundingRepository: ISourceFundingRepository,
     private indicatorsRepository: IIndicatorsRepository,
+    private logicRepository: ILogicFrameRepository,
   ) { }
   async getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>> {
     const res = await this.projectRepository.getProjectsPaginated(filters);
@@ -77,6 +79,7 @@ export default class ProjectService implements IProjectService {
     let profitsIncome: IprofitsIncome[] | null = null;
     let sourceFunding: ISourceFunding[] | null = null;
     let indicators: IIndicator[] | null = null;
+    let logicFrame: IAddLogicFrame[] | null = null;
 
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.createCauses(project.identification.problemDescription.causes, projectCreate.id, trx);
@@ -111,6 +114,10 @@ export default class ProjectService implements IProjectService {
     if (project.programation?.indicators?.indicators) {
       indicators = await this.indicatorsRepository.createIndicators(project.programation.indicators.indicators, projectCreate.id, trx);
     }
+    if(project.programation?.logicFrame?.logicFrame){
+      logicFrame = await this.logicRepository.createLogicFrame(project.programation.logicFrame.logicFrame, projectCreate.id, trx , indicators );
+    }
+
     return new ApiResponse(
       {
         ...projectCreate,
@@ -208,6 +215,7 @@ export default class ProjectService implements IProjectService {
     let profitsIncome: IprofitsIncome[] | null = null;
     let sourceFunding: ISourceFunding[] | null = null;
     let indicators: IIndicator[] | null = null;
+    let logicFrame: IAddLogicFrame[] | null = null;
 
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.updateCauses(project.identification.problemDescription.causes, id, trx);
@@ -242,6 +250,10 @@ export default class ProjectService implements IProjectService {
     if (project.programation?.indicators?.indicators) {
       indicators = await this.indicatorsRepository.updateIndicators(project.programation.indicators.indicators, id, trx);
     }
+    if(project.programation?.logicFrame?.logicFrame){
+      logicFrame = await this.logicRepository.updateLogicFrame(project.programation.logicFrame.logicFrame, id, trx , indicators );
+    }
+
     if (!res) {
       return new ApiResponse(
         {} as IProject,

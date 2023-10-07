@@ -164,6 +164,7 @@ export interface IAddLogicFrame {
   sourceVerification?:string;
   assumptions?:string;
   indicatorType:IIndicator;
+  type?:number;
 }
 
 export interface IprofitsIncome {
@@ -274,6 +275,7 @@ export interface IActivitiesForm {
 }
 
 export interface IIndicator {
+  id?:number;
   type: number;
   
   //Producto
@@ -387,6 +389,7 @@ export interface IActivitiesProject {
 }
 
 export interface IIndicatorAction {
+  id?:number;
   type: number;
   objective?: string;
   dpnIndicator?: number;
@@ -405,6 +408,7 @@ export interface IIndicatorAction {
 }
 
 export interface IIndicatorIndicative {
+  id?:number;
   type: number;
   line?: number;
   component?: number;
@@ -471,6 +475,7 @@ export interface IProject {
   sourceFunding:ISourceFunding[] | null;
   indicatorsAction: IIndicatorAction[] | null;
   indicatorsIndicative: IIndicatorIndicative[] | null;
+  logicFrame:IAddLogicFrame[] | null;
   formulation: string | null;
   rol:string | null;
   order:string | null;

@@ -12,6 +12,7 @@ import SourceFunding from "./EntityFinancing"
 import IndicatorsIndicative from "./IndicatorsIndicative";
 import IndicatorsAction from "./IndicatorsAction";
 import ProjectStates from "./ProjectStates";
+import logicFrame from "./LogicFrame";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -248,5 +249,11 @@ export default class Projects extends BaseModel {
     foreignKey: 'status',
   })
   public projectStates: HasMany<typeof ProjectStates>;
+
+  @hasMany(() => logicFrame, {
+    localKey: 'id',
+    foreignKey: 'idProject',
+  })
+  public logicFrame: HasMany<typeof logicFrame>;
 
 }

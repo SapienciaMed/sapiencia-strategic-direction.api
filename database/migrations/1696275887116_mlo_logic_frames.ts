@@ -40,6 +40,10 @@ export default class extends BaseSchema {
       .references("PRY_CODIGO")
       .inTable("PRY_PROYECTOS")
       .comment("codigo del proyecto");
+      table
+      .integer("MLO_TIPO_INDICADOR")
+      .notNullable()
+      .comment("tipo de indicador seleccionado en indicadores");
     })
   }
 
