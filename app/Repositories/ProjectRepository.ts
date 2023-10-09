@@ -129,13 +129,21 @@ export default class ProjectRepository implements IProjectRepository {
   ): Promise<IProject> {
     const toCreate = new Projects();
     toCreate.user = project.user;
-    
+
+    const query = Projects.query();
+
+    if (project.register?.bpin) {
+      const existingProject = await query.where("bpin", project.register?.bpin);
+      if (existingProject){
+        throw new Error("Ya existe un proyecto con este BPIN.");
+      }
+      toCreate.bpin = project.register.bpin;
+    }
+
     if (project?.status !== undefined) {
       toCreate.status = project.status;
     }
-    if (project.register?.bpin) {
-      toCreate.bpin = project.register.bpin;
-    }
+
     if (project.register?.project) {
       toCreate.project = project.register.project;
     }
@@ -287,13 +295,22 @@ export default class ProjectRepository implements IProjectRepository {
     if (!toUpdate) {
       return null;
     }
+
+    const query = Projects.query();
+
+    if (project.register?.bpin && project.id) {
+      const existingProject = await query.where("bpin", project.register?.bpin).where('id', '<>', project.id).first();
+      if (existingProject){
+        throw new Error("Ya existe un proyecto con este BPIN.");
+      }
+      toUpdate.bpin = project.register.bpin;
+    }
+
     toUpdate.user = project.user;
     if (project?.status !== undefined) {
       toUpdate.status = project.status;
     }
-    if (project.register?.bpin !== undefined) {
-      toUpdate.bpin = project.register.bpin;
-    }
+
     if (project.register?.project) {
       toUpdate.project = project.register.project;
     }
