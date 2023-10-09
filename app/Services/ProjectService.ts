@@ -12,7 +12,7 @@ import { IEnvironmentalEffectsRepository } from "App/Repositories/EnvironmentalE
 import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
 import { IRisksRepository } from "App/Repositories/RisksRepository";
 import { IProfitsIncomeRepository } from "App/Repositories/ProfitsIncomeRepository"
-import { ISourceFundingRepository } from "App/Repositories/SourceFundingRepository";
+import { ISourceFundingRepository } from "App/Repositories/sourceFundingRepository";
 import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
 import { ILogicFrameRepository } from "App/Repositories/LogicFrameRepository";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";

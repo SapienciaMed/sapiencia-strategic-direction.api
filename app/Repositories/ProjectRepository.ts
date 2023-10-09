@@ -10,6 +10,7 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IPagingData } from "App/Utils/ApiResponses";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 import Status from "App/Models/Status";
+import { DateTime } from "luxon";
 
 export interface IProjectRepository {
   getProjectByUser(user: string): Promise<IProject | null>;
@@ -284,6 +285,7 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.observations = project.transfers.observations;
     }
 
+    toCreate.version = "1.0";
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IProject;
@@ -450,7 +452,12 @@ export default class ProjectRepository implements IProjectRepository {
     if (project.transfers?.observations) {
       toUpdate.observations = project.transfers.observations;
     }
+
+    toUpdate.dateModify = DateTime.local().toJSDate();
+    const updatedVersion: string = this.updateProjectVersion(toUpdate.version);
+    toUpdate.version = updatedVersion;
     toUpdate.useTransaction(trx);
+
     await toUpdate.save();
     return toUpdate.serialize() as IProject;
   }
@@ -489,4 +496,11 @@ export default class ProjectRepository implements IProjectRepository {
     const res = await Status.query().orderBy('PRS_ORDEN', 'asc');
     return res.map((i) => i.serialize() as MasterTable);
   }
+
+  private updateProjectVersion(version: string): string {
+    const [major, minor] = version.split('.').map(Number);
+    const newMinor = minor + 1;
+    return `${major}.${newMinor}`;
+  }
+
 }

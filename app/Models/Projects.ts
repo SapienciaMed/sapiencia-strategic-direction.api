@@ -13,6 +13,7 @@ import IndicatorsIndicative from "./IndicatorsIndicative";
 import IndicatorsAction from "./IndicatorsAction";
 import ProjectStates from "./ProjectStates";
 import logicFrame from "./LogicFrame";
+import { DateTime } from "luxon";
 
 export default class Projects extends BaseModel {
   public static table = "PRY_PROYECTOS";
@@ -168,7 +169,18 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_OBSERVACIONES", serializeAs: "observations" })
   public observations: string;
   
+  @column.dateTime({
+    autoCreate: true,
+    columnName: "PRY_FECHA_CREO",
+    serializeAs: "dateCreate",
+  })
+  public dateCreate: DateTime;
 
+  @column({ columnName: "PRY_FECHA_MODIFICO", serializeAs: "dateModify" })
+  public dateModify: Date;
+
+  @column({ columnName: "PRY_VERSION", serializeAs: "version" })
+  public version: string;
 
   //RELACIONES
 

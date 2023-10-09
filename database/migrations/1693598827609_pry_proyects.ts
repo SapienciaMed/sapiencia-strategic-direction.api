@@ -194,6 +194,18 @@ export default class extends BaseSchema {
       .text("PRY_OBSERVACIONES")
       .nullable()
       .comment("observaciones proyecto");
+      table
+      .timestamp("PRY_FECHA_CREO")
+      .notNullable()
+      .comment("Fecha y hora de creación del proyecto");
+      table
+      .timestamp("PRY_FECHA_MODIFICO")
+      .nullable()
+      .comment("Fecha y hora de la última modificación");
+      table
+      .text("PRY_VERSION")
+      .nullable()
+      .comment("Versiones del proyecto");
     })
   }
 
