@@ -3,6 +3,7 @@ import {
   IProjectFilters,
   IProjectPaginated,
   IProjectTemp,
+  IProjectFiltersPaginated
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -23,6 +24,8 @@ export interface IProjectRepository {
   getProjectsPaginated(
     filters: IProjectPaginated
   ): Promise<IPagingData<IProject>>;
+  getAllProjects():Promise<IProject[]>;
+  getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
@@ -430,5 +433,37 @@ export default class ProjectRepository implements IProjectRepository {
     toUpdate.useTransaction(trx);
     await toUpdate.save();
     return toUpdate.serialize() as IProject;
+  }
+
+  async getAllProjects():Promise<IProject[]> {
+    const res = await Projects.query();
+    return res as unknown as IProject[];
+  }
+
+  async getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>> {
+    const query = Projects.query();
+
+    if (filters.bpin) {
+      query.where("bpin", filters.bpin);
+    }
+
+    if (filters.project) {
+      query.where("project", filters.project);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+    
+    //await query.preload('');
+
+    const res = await query.paginate(filters.page, filters.perPage);
+
+    const { data, meta } = res.serialize();
+
+    return {
+      array: data as IProject[],
+      meta,
+    };
   }
 }

@@ -30,6 +30,8 @@ Route.group(() => {
   Route.get("/get-by-user/:user", "ProjectController.getProjectByUser");
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
+  Route.get("/get-all", "ProjectController.getAllProjects");
+  Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
 }).prefix("/api/v1/project");
 
 

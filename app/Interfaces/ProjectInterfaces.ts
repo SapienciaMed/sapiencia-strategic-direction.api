@@ -6,6 +6,14 @@ export interface IProblemDescriptionForm {
   effects?: IEffect[];
 }
 
+export interface IProjectFiltersPaginated {
+  page: number;
+  perPage: number;
+  bpin?: number;
+  project?: string;
+  status?:number;
+}
+
 export interface ICause {
   id?: number;
   consecutive: string;
