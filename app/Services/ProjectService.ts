@@ -12,9 +12,10 @@ import { IEnvironmentalEffectsRepository } from "App/Repositories/EnvironmentalE
 import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
 import { IRisksRepository } from "App/Repositories/RisksRepository";
 import { IProfitsIncomeRepository } from "App/Repositories/ProfitsIncomeRepository"
-import { ISourceFundingRepository } from "App/Repositories/sourceFundingRepository";
+import { ISourceFundingRepository } from "App/Repositories/SourceFundingRepository";
 import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
 import { ILogicFrameRepository } from "App/Repositories/LogicFrameRepository";
+import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -26,6 +27,7 @@ export interface IProjectService {
   getProjectPaginated(
     filters: IProjectFiltersPaginated
   ): Promise<ApiResponse<IPagingData<IProject>>>;
+  getAllStatus(): Promise<ApiResponse<MasterTable[]>>
 }
 
 export default class ProjectService implements IProjectService {
@@ -201,6 +203,7 @@ export default class ProjectService implements IProjectService {
             year4: indicator.year4
           }
         }) : null,
+        logicFrame: logicFrame
       },
       EResponseCodes.OK
     );
@@ -344,6 +347,7 @@ export default class ProjectService implements IProjectService {
             year4: indicator.year4
           }
         }) : null,
+        logicFrame: logicFrame
       },
       EResponseCodes.OK
     );
@@ -363,4 +367,9 @@ export default class ProjectService implements IProjectService {
     return new ApiResponse(res, EResponseCodes.OK);
   }
 
+  async getAllStatus(): Promise<ApiResponse<MasterTable[]>> {
+    const res = await this.projectRepository.getAllStatus();
+
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
 }

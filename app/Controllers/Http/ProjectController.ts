@@ -100,4 +100,13 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
     }
   }
 
+  public async getAllStatus({ response }: HttpContextContract) {
+    try {
+      return response.send(await ProjectProvider.getAllStatus());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
 }

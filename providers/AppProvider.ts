@@ -97,7 +97,7 @@ export default class AppProvider {
     );
 
     const SourceFundingRepository = await import(
-      "App/Repositories/sourceFundingRepository"
+      "App/Repositories/SourceFundingRepository"
     );
 
     const IndicatorsRepository = await import(

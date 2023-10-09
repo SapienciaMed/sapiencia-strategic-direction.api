@@ -5,7 +5,7 @@ import { IStageRepository } from "App/Repositories/StageRepository";
 import { IStage } from "App/Interfaces/StagesInterfaces";
 
 export interface IStageService {
-    getStage(): Promise<ApiResponse<IStage[]>>;
+    getStages(): Promise<ApiResponse<IStage[]>>;
 }
 
 export default class StageService implements StageService {
@@ -13,8 +13,8 @@ export default class StageService implements StageService {
     private stageRepository: IStageRepository,
   ) {}
 
-  async getStage(): Promise<ApiResponse<IComponents[]>> {
-    const res = await this.stageRepository.getStage();
+  async getStages(): Promise<ApiResponse<IComponents[]>> {
+    const res = await this.stageRepository.getStages();
 
     if (!res) {
       return new ApiResponse(

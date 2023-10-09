@@ -8,6 +8,8 @@ import {
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IPagingData } from "App/Utils/ApiResponses";
+import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
+import Status from "App/Models/Status";
 
 export interface IProjectRepository {
   getProjectByUser(user: string): Promise<IProject | null>;
@@ -24,8 +26,9 @@ export interface IProjectRepository {
   getProjectsPaginated(
     filters: IProjectPaginated
   ): Promise<IPagingData<IProject>>;
-  getAllProjects():Promise<IProject[]>;
+  getAllProjects(): Promise<IProject[]>;
   getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>>;
+  getAllStatus(): Promise<MasterTable[]>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
@@ -119,7 +122,7 @@ export default class ProjectRepository implements IProjectRepository {
         }
       });
     }
-    
+
     return res ? (res.serialize() as IProject) : null;
   }
 
@@ -134,7 +137,7 @@ export default class ProjectRepository implements IProjectRepository {
 
     if (project.register?.bpin) {
       const existingProject = await query.where("bpin", project.register?.bpin);
-      if (existingProject){
+      if (existingProject) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
       toCreate.bpin = project.register.bpin;
@@ -300,7 +303,7 @@ export default class ProjectRepository implements IProjectRepository {
 
     if (project.register?.bpin && project.id) {
       const existingProject = await query.where("bpin", project.register?.bpin).where('id', '<>', project.id).first();
-      if (existingProject){
+      if (existingProject) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
       toUpdate.bpin = project.register.bpin;
@@ -452,7 +455,7 @@ export default class ProjectRepository implements IProjectRepository {
     return toUpdate.serialize() as IProject;
   }
 
-  async getAllProjects():Promise<IProject[]> {
+  async getAllProjects(): Promise<IProject[]> {
     const res = await Projects.query();
     return res as unknown as IProject[];
   }
@@ -471,8 +474,6 @@ export default class ProjectRepository implements IProjectRepository {
     if (filters.status) {
       query.where("status", filters.status);
     }
-    
-    //await query.preload('');
 
     const res = await query.paginate(filters.page, filters.perPage);
 
@@ -482,5 +483,10 @@ export default class ProjectRepository implements IProjectRepository {
       array: data as IProject[],
       meta,
     };
+  }
+
+  async getAllStatus(): Promise<MasterTable[]> {
+    const res = await Status.query().orderBy('PRS_ORDEN', 'asc');
+    return res.map((i) => i.serialize() as MasterTable);
   }
 }

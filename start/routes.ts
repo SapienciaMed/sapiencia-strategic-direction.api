@@ -32,6 +32,7 @@ Route.group(() => {
   Route.put("/update/:id", "ProjectController.updateProject");
   Route.get("/get-all", "ProjectController.getAllProjects");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
+  Route.get("/status/get-all", "ProjectController.getAllStatus");
 }).prefix("/api/v1/project");
 
 

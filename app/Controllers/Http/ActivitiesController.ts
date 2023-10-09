@@ -40,7 +40,7 @@ export default class ActivityController {
 
     public async generateConsolidated({ request, response }: HttpContextContract) {
         try {
-            const stages = await StageProvider.getStage();
+            const stages = await StageProvider.getStages();
             const components = await ComponentsProvider.getComponents();
             const activitiesData = (await request.validate(ActivitiesValidator)).activities;
             const content: any[] = []
