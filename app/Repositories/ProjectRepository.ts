@@ -468,7 +468,7 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   async getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>> {
-    const query = Projects.query();
+    const query = Projects.query().orderBy('PRY_ESTADO_PROYECTO', 'asc').orderBy('PRY_FECHA_CREO','desc');
 
     if (filters.bpin) {
       query.where("bpin", filters.bpin);
