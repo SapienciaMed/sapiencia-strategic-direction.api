@@ -77,54 +77,56 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   async getProjectByUser(user: string): Promise<IProject | null> {
-    const res = await Projects.findBy("user", user);
-    await res?.load("causes", (query) => {
+    const query = Projects.query().where("user", user).andWhere("status", 1);
+    query.preload("causes", (query) => {
       query.preload("childrens");
     });
-    await res?.load("effects", (query) => {
+    query.preload("effects", (query) => {
       query.preload("childrens");
     });
-    await res?.load("actors");
-    await res?.load("classifications");
-    await res?.load("specificObjectives", (query) => {
+    query.preload("actors");
+    query.preload("classifications");
+    query.preload("specificObjectives", (query) => {
       query.preload("estatesService");
     });
-    await res?.load("environmentalEffects");
-    await res?.load("activities", (query) => {
+    query.preload("environmentalEffects");
+    query.preload("activities", (query) => {
       query.preload("detailActivities");
       query.preload("budgetsMGA");
     });
-    await res?.load("risks");
-    await res?.load("profitsIncome", (query) => {
+    query.preload("risks");
+    query.preload("profitsIncome", (query) => {
       query.preload("period");
     });
-    await res?.load("sourceFunding");
-    await res?.load("indicatorsAction");
-    await res?.load("indicatorsIndicative");
-    await res?.load("logicFrame");
-    if (res?.goal) {
-      res.goal = Number(res.goal);
-    }
-    if (res?.specificObjectives) {
-      res.specificObjectives.forEach((obj, index) => {
-        const objetive = res.causes.find((cause) => cause.id === obj.objetive);
-        if (objetive) {
-          res.specificObjectives[index].objetive = objetive;
-        }
-      });
-    }
-    if (res?.activities) {
-      res.activities.forEach((obj, index) => {
-        const objetive = res.causes.find(
-          (cause) => cause.id === obj.objetiveActivity
-        );
-        if (objetive) {
-          res.activities[index].objetiveActivity = objetive;
-        }
-      });
-    }
-
-    return res ? (res.serialize() as IProject) : null;
+    query.preload("sourceFunding");
+    query.preload("indicatorsAction");
+    query.preload("indicatorsIndicative");
+    query.preload("logicFrame");
+    const resQuery = await query;
+    resQuery.forEach(res => {
+      if (res?.goal) {
+        res.goal = Number(res.goal);
+      }
+      if (res?.specificObjectives) {
+        res.specificObjectives.forEach((obj, index) => {
+          const objetive = res.causes.find((cause) => cause.id === obj.objetive);
+          if (objetive) {
+            res.specificObjectives[index].objetive = objetive;
+          }
+        });
+      }
+      if (res?.activities) {
+        res.activities.forEach((obj, index) => {
+          const objetive = res.causes.find(
+            (cause) => cause.id === obj.objetiveActivity
+          );
+          if (objetive) {
+            res.activities[index].objetiveActivity = objetive;
+          }
+        });
+      }
+    })
+    return resQuery[0] ? resQuery[0].serialize() as IProject : null;
   }
 
   async createProject(
@@ -468,7 +470,7 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   async getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>> {
-    const query = Projects.query().orderBy('PRY_ESTADO_PROYECTO', 'asc').orderBy('PRY_FECHA_CREO','desc');
+    const query = Projects.query().orderBy('PRY_ESTADO_PROYECTO', 'asc').orderBy('PRY_FECHA_CREO', 'desc');
 
     if (filters.bpin) {
       query.where("bpin", filters.bpin);
