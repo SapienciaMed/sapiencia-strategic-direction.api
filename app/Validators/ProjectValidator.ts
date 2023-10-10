@@ -319,7 +319,7 @@ export default class ProjectValidator {
             dpnIndicator: schema.number.optional(),
             dpn: schema.number.optional(),
             staticValueCode: schema.number.optional(),
-            staticValue: schema.number.optional(),
+            staticValue: schema.string.optional(),
             total: schema.number.optional(),
             accumulative: schema.number.optional(),
             productMGA: schema.string(),

@@ -308,7 +308,7 @@ export interface IIndicator {
   dpnIndicator?: number;
   dpn?: number;
   staticValueCode?: number;
-  staticValue?: number;
+  staticValue?: string;
   total?: number;
   accumulative?: number;
 
@@ -413,7 +413,7 @@ export interface IIndicatorAction {
   dpnIndicator?: number;
   dpn?: number;
   staticValueCode?: number;
-  staticValue?: number;
+  staticValue?: string;
   total?: number;
   accumulative?: number;
   productMGA: string;
