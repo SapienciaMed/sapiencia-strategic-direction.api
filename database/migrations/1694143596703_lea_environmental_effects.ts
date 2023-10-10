@@ -11,7 +11,6 @@ export default class extends BaseSchema {
       .comment("Llave primaria");
       table
       .integer("LEA_CODTMP_TIPO_IMPACTO")
-      .notNullable()
       .unsigned()
       .references("TMP_CODIGO")
       .inTable("TMP_TIPO_IMPACTO")
@@ -33,7 +32,6 @@ export default class extends BaseSchema {
       .comment("llave foranea a la tabla clasificación impacto(FK CMP_CLASIFICACION_IMPACTO)");
       table
       .text("LEA_MEDIDAS_MITIGACION")
-      .notNullable()
       .comment("descripcion de la medidad de mitigacion, campo alfa numerico 500 caracteres");
       table
       .integer("LEA_CODPRY_PRY_PROYECTO")
