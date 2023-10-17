@@ -33,6 +33,8 @@ Route.group(() => {
   Route.get("/get-all", "ProjectController.getAllProjects");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
   Route.get("/status/get-all", "ProjectController.getAllStatus");
+  Route.post("/upload/:id", "ProjectController.uploadProjectsDigitals");
+  Route.get("/files/:id", "ProjectController.getProjectFiles");
 }).prefix("/api/v1/project");
 
 

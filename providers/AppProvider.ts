@@ -20,6 +20,7 @@ export default class AppProvider {
     const StageService = await import("App/Services/StageService");
     const ActivityService = await import("App/Services/ActivityService");
     const IndicatorsService = await import("App/Services/IndicatorsService");
+    const StorageService = await import("App/Services/StorageService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -103,9 +104,11 @@ export default class AppProvider {
     const IndicatorsRepository = await import(
       "App/Repositories/IndicatorsRepository"
     );
+
     const LogicFrameRepository = await import(
       "App/Repositories/LogicFrameRepository"
     );
+    
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -190,6 +193,11 @@ export default class AppProvider {
       () => new IndicatorsService.default(
         new IndicatorsRepository.default(),
       ),
+    );
+
+    this.app.container.singleton(
+      "core.StorageProvider",
+      () => new StorageService.default()
     );
   }
 
