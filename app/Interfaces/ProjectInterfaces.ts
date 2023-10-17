@@ -443,10 +443,6 @@ export interface IIndicatorIndicative {
 }
 
 export interface IProject {
-  nombreProyecto: any;
-  fechaRegistro: any;
-  codigoBpin: any;
-  ordenadorGasto: any;
   id: number;
   user: string;
   status: number;
