@@ -158,4 +158,15 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
       );
     }
   }
+
+  public async getProjectById({ request, response }: HttpContextContract) {
+    try {
+      const { id } = request.params();
+      return response.send(await ProjectProvider.getProjectById(id));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
 }

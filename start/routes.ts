@@ -37,6 +37,10 @@ Route.group(() => {
   Route.get("/files/:id", "ProjectController.getProjectFiles");
 }).prefix("/api/v1/project");
 
+Route.group(() => {
+  Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf").as("pdf.generate");
+}).prefix("/api/v1/pdf");
+
 
 Route.group(() => {
   Route.get("/get-all", "EntitiesController.getEntities");

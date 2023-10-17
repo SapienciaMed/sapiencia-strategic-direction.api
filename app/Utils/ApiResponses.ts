@@ -25,6 +25,8 @@ export interface IPagingData<T> {
 export class ApiResponse<T> {
   data: T;
   operation: IOperation;
+    responseCode: EResponseCodes;
+    message: any;
 
   constructor(data: T, code: EResponseCodes, message?: string) {
     this.data = data;

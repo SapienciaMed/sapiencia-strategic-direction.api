@@ -30,6 +30,7 @@ export interface IProjectRepository {
   getAllProjects(): Promise<IProject[]>;
   getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>>;
   getAllStatus(): Promise<MasterTable[]>;
+  getProjectById(id: number): Promise<IProject | null>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
@@ -78,6 +79,59 @@ export default class ProjectRepository implements IProjectRepository {
 
   async getProjectByUser(user: string): Promise<IProject | null> {
     const query = Projects.query().where("user", user).andWhere("status", 1);
+    query.preload("causes", (query) => {
+      query.preload("childrens");
+    });
+    query.preload("effects", (query) => {
+      query.preload("childrens");
+    });
+    query.preload("actors");
+    query.preload("classifications");
+    query.preload("specificObjectives", (query) => {
+      query.preload("estatesService");
+    });
+    query.preload("environmentalEffects");
+    query.preload("activities", (query) => {
+      query.preload("detailActivities");
+      query.preload("budgetsMGA");
+    });
+    query.preload("risks");
+    query.preload("profitsIncome", (query) => {
+      query.preload("period");
+    });
+    query.preload("sourceFunding");
+    query.preload("indicatorsAction");
+    query.preload("indicatorsIndicative");
+    query.preload("logicFrame");
+    const resQuery = await query;
+    resQuery.forEach(res => {
+      if (res?.goal) {
+        res.goal = Number(res.goal);
+      }
+      if (res?.specificObjectives) {
+        res.specificObjectives.forEach((obj, index) => {
+          const objetive = res.causes.find((cause) => cause.id === obj.objetive);
+          if (objetive) {
+            res.specificObjectives[index].objetive = objetive;
+          }
+        });
+      }
+      if (res?.activities) {
+        res.activities.forEach((obj, index) => {
+          const objetive = res.causes.find(
+            (cause) => cause.id === obj.objetiveActivity
+          );
+          if (objetive) {
+            res.activities[index].objetiveActivity = objetive;
+          }
+        });
+      }
+    })
+    return resQuery[0] ? resQuery[0].serialize() as IProject : null;
+  }
+
+  async getProjectById(id: number): Promise<IProject | null> {
+    const query = Projects.query().where("id", id).andWhere("status", 2);
     query.preload("causes", (query) => {
       query.preload("childrens");
     });

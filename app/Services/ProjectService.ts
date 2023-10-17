@@ -28,6 +28,7 @@ export interface IProjectService {
     filters: IProjectFiltersPaginated
   ): Promise<ApiResponse<IPagingData<IProject>>>;
   getAllStatus(): Promise<ApiResponse<MasterTable[]>>
+  getProjectById(id: number): Promise<ApiResponse<IProject>>;
 }
 
 export default class ProjectService implements IProjectService {
@@ -71,6 +72,8 @@ export default class ProjectService implements IProjectService {
 
     return new ApiResponse(res, EResponseCodes.OK);
   }
+
+  
 
   async createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<ApiResponse<IProject>> {
     const projectCreate = await this.projectRepository.createProject(project, trx);
@@ -372,4 +375,17 @@ export default class ProjectService implements IProjectService {
 
     return new ApiResponse(res, EResponseCodes.OK);
   }
+
+  async getProjectById(id: number): Promise<ApiResponse<IProject>> {
+    const res = await this.projectRepository.getProjectById(id);
+    if (!res) {
+      return new ApiResponse(
+        {} as IProject,
+        EResponseCodes.WARN,
+        "Registro no encontrado"
+      );
+    }
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
 }
