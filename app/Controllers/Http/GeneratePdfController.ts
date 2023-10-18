@@ -4,6 +4,8 @@ import ProjectProvider from "@ioc:core.ProjectProvider";
 import { readFileSync } from "fs";
 import Application from "@ioc:Adonis/Core/Application";
 import { format } from 'date-fns';
+import { ApiResponse } from 'App/Utils/ApiResponses';
+import { EResponseCodes } from 'App/Constants/ResponseCodesEnum';
 const { es } = require('date-fns/locale');
 
 
@@ -232,9 +234,10 @@ export default class GeneratePdfController {
       const nombreArchivo = `Registro_proyecto_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
       response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
       response.status(200).send(pdfBuffer);
-    } catch (error) {
-      console.error('Error al generar el PDF', error);
-      return response.status(500).json({ message: 'Error interno del servidor' });
+    } catch (err) {
+        return response.badRequest(
+          new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        );
     }
   }
 }
