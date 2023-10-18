@@ -4,7 +4,6 @@ import ProjectProvider from "@ioc:core.ProjectProvider";
 import { readFileSync } from "fs";
 import Application from "@ioc:Adonis/Core/Application";
 import { format } from 'date-fns';
-import { DateTime } from 'luxon';
 const { es } = require('date-fns/locale');
 
 
@@ -20,10 +19,7 @@ export default class GeneratePdfController {
 
     
     const fechaActual = new Date();
-    const dia = fechaActual.getDate().toString().padStart(2, '0');
-    const mes = (fechaActual.getMonth() + 1).toString().padStart(2, '0');
-    const anio = fechaActual.getFullYear();
-    
+
     const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
     let DateProjectArchive = "";
 
