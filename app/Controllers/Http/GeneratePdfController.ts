@@ -25,7 +25,7 @@ export default class GeneratePdfController {
     const anio = fechaActual.getFullYear();
     
     const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
-
+    let DateProjectArchive = "";
 
 
 
@@ -39,7 +39,9 @@ export default class GeneratePdfController {
         const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
         const anio = DateCreate.getFullYear();
         const DateC = `${dia}/${mes}/${anio}`;
+        const DateA = `${dia}${mes}${anio}`;
         DateProject = DateC;
+        DateProjectArchive = DateA;
     }
       const contentHTML = `
       <!DOCTYPE html>
@@ -231,7 +233,7 @@ export default class GeneratePdfController {
       await browser.close();
 
       response.header('Content-Type', 'application/pdf');
-      const nombreArchivo = `Registro_proyecto_${project.data.bpin}_ ${dia}${mes}${anio}.pdf`;
+      const nombreArchivo = `Registro_proyecto_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
       response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
       response.status(200).send(pdfBuffer);
     } catch (error) {
