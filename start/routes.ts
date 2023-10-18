@@ -38,7 +38,7 @@ Route.group(() => {
 }).prefix("/api/v1/project");
 
 Route.group(() => {
-  Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf").as("pdf.generate");
+  Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
 }).prefix("/api/v1/pdf");
 
 
