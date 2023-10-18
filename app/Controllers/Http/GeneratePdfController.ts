@@ -218,9 +218,11 @@ export default class GeneratePdfController {
       
       </html>
       `;
-
-     
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        headless: "new",
+        args: ["--no-sandbox"],
+        executablePath: "/usr/bin/chromium",
+      });
       const page = await browser.newPage();
       await page.setViewport({ width: 595, height: 842 });
       await page.setContent(contentHTML);
