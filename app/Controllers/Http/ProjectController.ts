@@ -1,11 +1,11 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { IProjectPaginated, IProjectFiltersPaginated} from "App/Interfaces/ProjectInterfaces";
 import { ApiResponse } from "App/Utils/ApiResponses";
-import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
+//import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import Database from "@ioc:Adonis/Lucid/Database";
 import ProjectProvider from "@ioc:core.ProjectProvider";
-import StorageProvider from "@ioc:core.StorageProvider";
+//import StorageProvider from "@ioc:core.StorageProvider";
 import ProjectValidator from "App/Validators/ProjectValidator";
 
 

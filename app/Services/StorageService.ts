@@ -1,7 +1,7 @@
 import { Storage } from "@google-cloud/storage";
-import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
-const keyFilename = process.env.GCLOUD_KEYFILE;
-const bucketName = process.env.GCLOUD_BUCKET ?? "";
+// import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
+// const keyFilename = process.env.GCLOUD_KEYFILE;
+// const bucketName = process.env.GCLOUD_BUCKET ?? "";
 
 export interface IStorageService {
     // uploadProjectsDigitals(filePath: MultipartFileContract, path?: string): Promise<boolean>;
