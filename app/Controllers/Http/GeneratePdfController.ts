@@ -223,13 +223,19 @@ export default class GeneratePdfController {
         args: ["--no-sandbox"],
         executablePath: "/usr/bin/chromium",
       });
+      //const browser = await puppeteer.launch();
       const page = await browser.newPage();
+     
       await page.setViewport({ width: 595, height: 842 });
-      await page.setContent(contentHTML);
+      await page.setContent(contentHTML, {
+        waitUntil: "domcontentloaded",
+      });
 
       const pdfBuffer = await page.pdf({
         format: 'A4',
     });
+    await page.emulateMediaType("screen");
+    
       await browser.close();
 
       response.header('Content-Type', 'application/pdf');
