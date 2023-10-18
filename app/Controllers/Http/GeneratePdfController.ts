@@ -225,8 +225,6 @@ export default class GeneratePdfController {
       await page.setViewport({ width: 595, height: 842 });
       await page.setContent(contentHTML);
 
-      await page.screenshot({ path: 'screenshot.png' });
-
       const pdfBuffer = await page.pdf({
         format: 'A4',
     });
