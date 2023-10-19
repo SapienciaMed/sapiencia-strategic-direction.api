@@ -177,7 +177,13 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
     try {
       const params = request.body();
       if(!params.fileName) throw(new Error("Falta una ruta"));
-      return response.send(await StorageProvider.deleteFile(params.fileName));
+      const files = JSON.parse(params.fileName);
+      const res = await Promise.all(
+        files?.map(async (file: string) => {
+          return await StorageProvider.deleteFile(file)
+        })
+      );
+      return response.send(new ApiResponse(res, EResponseCodes.OK));
     } catch (err) {
       return response.badRequest(
         new ApiResponse(false, EResponseCodes.FAIL, String(err))

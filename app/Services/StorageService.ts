@@ -10,7 +10,7 @@ export interface IStorageService {
     uploadFiles(filePath: MultipartFileContract, path?: string): Promise<boolean>;
     getFiles(path?: string): Promise<ApiResponse<IFiles[]>>;
     downloadFile(fileName: string): Promise<Buffer>;
-    deleteFile(fileName: string): Promise<ApiResponse<boolean>>;
+    deleteFile(fileName: string): Promise<boolean>;
 }
 
 export default class StorageService implements IStorageService {
@@ -52,8 +52,8 @@ export default class StorageService implements IStorageService {
         return archivo;
     }
 
-    async deleteFile(fileName: string): Promise<ApiResponse<boolean>> {
+    async deleteFile(fileName: string): Promise<boolean> {
         await this.storage.bucket(bucketName).file(fileName).delete();
-        return new ApiResponse(true, EResponseCodes.OK);
+        return true;
     }
 }
