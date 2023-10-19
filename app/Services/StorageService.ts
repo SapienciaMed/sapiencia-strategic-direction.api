@@ -44,7 +44,7 @@ export default class StorageService implements IStorageService {
                 date: file.metadata.timeCreated ?? ""
             }
         });
-        return new ApiResponse(response, EResponseCodes.OK);
+        return new ApiResponse(response.filter(file => file.name), EResponseCodes.OK);
     }
 
     async downloadFile(fileName: string): Promise<Buffer> {

@@ -151,7 +151,7 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
   public async getProjectFiles({ request, response }: HttpContextContract) {
     const { id } = request.params();
     try {
-      return response.send(await StorageProvider.getFiles(`proyectos-digitales/${id}`));
+      return response.send(await StorageProvider.getFiles(`proyectos-digitales/${id}/`));
     } catch (err) {
       return response.badRequest(
         new ApiResponse(null, EResponseCodes.FAIL, String(err))
