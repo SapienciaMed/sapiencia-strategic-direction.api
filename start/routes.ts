@@ -28,13 +28,16 @@ Route.group(() => {
   Route.post("/get-paginated", "ProjectController.getProjectsPaginated");
   Route.post("/get-by-filters", "ProjectController.getProjectsByFilters");
   Route.get("/get-by-user/:user", "ProjectController.getProjectByUser");
+  Route.get("/get-by-id/:id", "ProjectController.getProjectById");
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
   Route.get("/get-all", "ProjectController.getAllProjects");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
   Route.get("/status/get-all", "ProjectController.getAllStatus");
   Route.post("/upload/:id", "ProjectController.uploadProjectsDigitals");
-  Route.get("/files/:id", "ProjectController.getProjectFiles");
+  Route.get("/files/get-by-project/:id", "ProjectController.getProjectFiles");
+  Route.post("/files/get-file", "ProjectController.getProjectFile");
+  Route.post("/files/delete-file", "ProjectController.deleteProjectFile");
 }).prefix("/api/v1/project");
 
 Route.group(() => {

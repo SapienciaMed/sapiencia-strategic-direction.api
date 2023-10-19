@@ -131,7 +131,7 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   async getProjectById(id: number): Promise<IProject | null> {
-    const query = Projects.query().where("id", id).andWhere("status", 2);
+    const query = Projects.query().where("id", id);
     query.preload("causes", (query) => {
       query.preload("childrens");
     });

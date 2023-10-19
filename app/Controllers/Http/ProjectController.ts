@@ -120,7 +120,7 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
       const results = await Promise.all(
         files.map(async (file) => {
           if(file.tmpPath) {
-            const fileUrl = await StorageProvider.uploadProjectsDigitals(file, `proyectos-digitales/${id}/`);
+            const fileUrl = await StorageProvider.uploadFiles(file, `proyectos-digitales/${id}/`);
             return fileUrl;
           } else {
             return false;
@@ -148,16 +148,42 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
     }
   }
 
-  // public async getProjectFiles({ request, response }: HttpContextContract) {
-  //   const { id } = request.params();
-  //   try {
-  //     return response.send(await StorageProvider.getProjectFiles(`proyectos-digitales/${id}`));
-  //   } catch (err) {
-  //     return response.badRequest(
-  //       new ApiResponse(null, EResponseCodes.FAIL, String(err))
-  //     );
-  //   }
-  // }
+  public async getProjectFiles({ request, response }: HttpContextContract) {
+    const { id } = request.params();
+    try {
+      return response.send(await StorageProvider.getFiles(`proyectos-digitales/${id}`));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getProjectFile({ request, response }: HttpContextContract) {
+    try {
+      const params = request.body();
+      if(!params.fileName) throw(new Error("Falta una ruta"));
+      response.header('Content-Type', 'application/octet-stream');
+      response.header('Content-Disposition', `attachment; filename="${params.fileName}"`);
+      return response.send(await StorageProvider.downloadFile(params.fileName));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async deleteProjectFile({ request, response }: HttpContextContract) {
+    try {
+      const params = request.body();
+      if(!params.fileName) throw(new Error("Falta una ruta"));
+      return response.send(await StorageProvider.deleteFile(params.fileName));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(false, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
 
   public async getProjectById({ request, response }: HttpContextContract) {
     try {
