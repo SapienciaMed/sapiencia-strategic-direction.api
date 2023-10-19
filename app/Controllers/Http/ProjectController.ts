@@ -1,11 +1,11 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import { IProjectPaginated, IProjectFiltersPaginated} from "App/Interfaces/ProjectInterfaces";
 import { ApiResponse } from "App/Utils/ApiResponses";
-//import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
+import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import Database from "@ioc:Adonis/Lucid/Database";
 import ProjectProvider from "@ioc:core.ProjectProvider";
-//import StorageProvider from "@ioc:core.StorageProvider";
+import StorageProvider from "@ioc:core.StorageProvider";
 import ProjectValidator from "App/Validators/ProjectValidator";
 
 
@@ -113,40 +113,40 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
     }
   }
 
-  // public async uploadProjectsDigitals({ request, response }: HttpContextContract) {
-  //   const files = request.files('files');
-  //   const { id } = request.params();
-  //   if(files) {
-  //     const results = await Promise.all(
-  //       files.map(async (file) => {
-  //         if(file.tmpPath) {
-  //           const fileUrl = await StorageProvider.uploadProjectsDigitals(file, `proyectos-digitales/${id}/`);
-  //           return fileUrl;
-  //         } else {
-  //           return false;
-  //         }
-  //       })
-  //     );
-  //     const filesFailed: MultipartFileContract[] = [];
-  //     results.forEach((result, index) => {
-  //       if(!result) filesFailed.push(files[index]);
-  //     });
-  //     if(filesFailed.length > 0) {
-  //       const filesFailedStr = filesFailed.map(item => item.clientName);
-  //       return response.badRequest(
-  //         new ApiResponse(true, EResponseCodes.WARN, `No se pudieron guardar los siguientes archivos: ${filesFailedStr.join(",")}`)
-  //       );
-  //     } else {
-  //       return response.send(
-  //         new ApiResponse(true, EResponseCodes.OK, "¡Archivos guardados exitosamente!")
-  //       );
-  //     }
-  //   } else {
-  //     return response.badRequest(
-  //       new ApiResponse(false, EResponseCodes.FAIL, "Sin archivos para cargar.")
-  //     );
-  //   }
-  // }
+  public async uploadProjectsDigitals({ request, response }: HttpContextContract) {
+    const files = request.files('files');
+    const { id } = request.params();
+    if(files) {
+      const results = await Promise.all(
+        files.map(async (file) => {
+          if(file.tmpPath) {
+            const fileUrl = await StorageProvider.uploadProjectsDigitals(file, `proyectos-digitales/${id}/`);
+            return fileUrl;
+          } else {
+            return false;
+          }
+        })
+      );
+      const filesFailed: MultipartFileContract[] = [];
+      results.forEach((result, index) => {
+        if(!result) filesFailed.push(files[index]);
+      });
+      if(filesFailed.length > 0) {
+        const filesFailedStr = filesFailed.map(item => item.clientName);
+        return response.badRequest(
+          new ApiResponse(true, EResponseCodes.WARN, `No se pudieron guardar los siguientes archivos: ${filesFailedStr.join(",")}`)
+        );
+      } else {
+        return response.send(
+          new ApiResponse(true, EResponseCodes.OK, "¡Archivos guardados exitosamente!")
+        );
+      }
+    } else {
+      return response.badRequest(
+        new ApiResponse(false, EResponseCodes.FAIL, "Sin archivos para cargar.")
+      );
+    }
+  }
 
   // public async getProjectFiles({ request, response }: HttpContextContract) {
   //   const { id } = request.params();
