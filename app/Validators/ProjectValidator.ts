@@ -27,6 +27,7 @@ export default class ProjectValidator {
     id: schema.number.optional(),
     user: schema.string(),
     status: schema.number(),
+    tempTab: schema.string.optional(),
     register: schema.object.optional().members({
       bpin: schema.string.optional(),
       project: schema.string.optional(),

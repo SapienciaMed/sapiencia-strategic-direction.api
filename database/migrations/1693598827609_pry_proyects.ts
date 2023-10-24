@@ -206,6 +206,10 @@ export default class extends BaseSchema {
       .text("PRY_VERSION")
       .nullable()
       .comment("Versiones del proyecto");
+      table
+      .text("PRY_TEMPTAB")
+      .nullable()
+      .comment("Ultima tab visitada en guardado temporal");
     })
   }
 
