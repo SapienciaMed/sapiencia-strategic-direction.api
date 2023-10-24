@@ -184,6 +184,9 @@ export default class Projects extends BaseModel {
 
   @column({ columnName: "PRY_OBSERVACIONES_PROYECTO", serializeAs: "projectObservation" })
   public projectObservation: string;
+  
+  @column({ columnName: "PRY_TEMPTAB", serializeAs: "tempTab" })
+  public tempTab: string;
 
   //RELACIONES
 
