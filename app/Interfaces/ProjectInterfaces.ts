@@ -325,6 +325,10 @@ export interface IIndicatorsForm {
   indicators?: IIndicator[];
 }
 
+export interface IFinishProjectForm {
+  observations: string;
+}
+
 export interface IProjectTemp {
   id?: number;
   user: string;
@@ -504,4 +508,5 @@ export interface IProject {
   dateCreate?: DateTime | null;
   dateModify?: Date | null;
   version: string | null;
+  projectObservation: string | null;
 }

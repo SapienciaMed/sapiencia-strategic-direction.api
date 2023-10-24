@@ -38,6 +38,7 @@ Route.group(() => {
   Route.get("/files/get-by-project/:id", "ProjectController.getProjectFiles");
   Route.post("/files/get-file", "ProjectController.getProjectFile");
   Route.post("/files/delete-file", "ProjectController.deleteProjectFile");
+  Route.put("/finish-project/:id", "ProjectController.finishProject");
 }).prefix("/api/v1/project");
 
 Route.group(() => {

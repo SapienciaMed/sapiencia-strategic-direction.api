@@ -7,6 +7,7 @@ import Database from "@ioc:Adonis/Lucid/Database";
 import ProjectProvider from "@ioc:core.ProjectProvider";
 import StorageProvider from "@ioc:core.StorageProvider";
 import ProjectValidator from "App/Validators/ProjectValidator";
+import FinishProjectValidator from "App/Validators/FinishProjectValidator";
 
 
 export default class ProjectController {
@@ -200,5 +201,22 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
         new ApiResponse(null, EResponseCodes.FAIL, String(err))
       );
     }
+  }
+
+  public async finishProject({ request, response }: HttpContextContract) {
+    await Database.transaction(async (trx) => {
+      try {
+        const { id } = request.params();
+        const data = await request.validate(FinishProjectValidator);
+        return response.send(
+          await ProjectProvider.finishProject(data, id, trx)
+        );
+      } catch (err) {
+        await trx.rollback();
+        return response.badRequest(
+          new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        );
+      }
+    });
   }
 }
