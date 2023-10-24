@@ -3,7 +3,8 @@ import {
   IProjectFilters,
   IProjectPaginated,
   IProjectTemp,
-  IProjectFiltersPaginated
+  IProjectFiltersPaginated,
+  IFinishProjectForm
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -31,6 +32,11 @@ export interface IProjectRepository {
   getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>>;
   getAllStatus(): Promise<MasterTable[]>;
   getProjectById(id: number): Promise<IProject | null>;
+  finishProject(
+    data: IFinishProjectForm,
+    id: number,
+    trx: TransactionClientContract
+  ): Promise<IProject | null>;
 }
 
 export default class ProjectRepository implements IProjectRepository {
@@ -564,4 +570,20 @@ export default class ProjectRepository implements IProjectRepository {
     return `${major}.${newMinor}`;
   }
 
+  async finishProject(
+    data: IFinishProjectForm,
+    id: number,
+    trx: TransactionClientContract
+  ): Promise<IProject | null> {
+    const toUpdate = await Projects.find(id);
+    if (!toUpdate) {
+      return null;
+    }
+    toUpdate.projectObservation = data.observations;
+    toUpdate.status = 4;
+    toUpdate.useTransaction(trx);
+
+    await toUpdate.save();
+    return toUpdate.serialize() as IProject;
+  }
 }
