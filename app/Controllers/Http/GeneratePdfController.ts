@@ -6,6 +6,8 @@ import Application from "@ioc:Adonis/Core/Application";
 import { format } from 'date-fns';
 import { ApiResponse } from 'App/Utils/ApiResponses';
 import { EResponseCodes } from 'App/Constants/ResponseCodesEnum';
+import IndicatorsProvider from "@ioc:core.IndicatorsProvider";
+
 const { es } = require('date-fns/locale');
 
 
@@ -218,12 +220,14 @@ export default class GeneratePdfController {
       
       </html>
       `;
-      const browser = await puppeteer.launch({
-        headless: "new",
-        args: ["--no-sandbox"],
-        executablePath: "/usr/bin/chromium",
-      });
-      //const browser = await puppeteer.launch();
+    // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
+    //   const browser = await puppeteer.launch({
+    //     headless: "new",
+    //     args: ["--no-sandbox"],
+    //     executablePath: "/usr/bin/chromium",
+    //   });
+
+      const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
@@ -248,4 +252,1230 @@ export default class GeneratePdfController {
         );
     }
   }
+
+  public async CreatePdfConsolidate({ params, response }: HttpContextContract) { 
+
+    const projectId = params.id;
+    const basePath = "images/";
+
+    const logoPath = Application.makePath(basePath, "logo.png");
+    const footerPath = Application.makePath(basePath, "footer.png");
+
+    let DateProjectArchive = "";
+
+
+
+    try {
+     const project = await ProjectProvider.getProjectById(projectId);
+     const typeIndicators = await IndicatorsProvider.getIndicatorType();
+
+     
+
+     let DateProject = ""
+     if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
+        const fechaIso = project.data.dateCreate.toString();
+        const DateCreate = new Date(fechaIso);
+        const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
+        const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
+        const anio = DateCreate.getFullYear();
+        const DateC = `${dia}/${mes}/${anio}`;
+        const DateA = `${dia}${mes}${anio}`;
+        DateProject = DateC;
+        DateProjectArchive = DateA;
+    }
+      const contentHTML = `
+      <!DOCTYPE html>
+      <html lang="en">
+      
+      <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Registro Proyecto de Inversión</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+          <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap" rel="stylesheet" />
+          <style>
+            body {
+                margin: 0;
+                font-family: "Rubik", sans-serif;
+                padding: 0;
+            }
+
+            .mt-small {
+                margin-top: 1.5rem;
+            }
+
+            .container {
+                margin: 0 auto;
+                max-width: 600px;
+            }
+
+            .container .section {
+                margin-bottom: 15px;
+                margin-top: 15px;
+            }
+
+            .container  .section-title {
+                font-size: 17px;
+                font-weight: 700;
+            }
+
+            .container  .section-content-name{
+                font-size: 16px;
+            }
+
+            .container .section-name {
+                display: flex;
+                align-items: center;
+               
+            }
+
+            .container  .section-title-name {
+                font-size: 17px;
+                font-weight: 700;
+                margin-right: 10px;
+                margin-bottom: 20px;
+                margin-top: 15px;
+            }
+
+            .container  .section-content {
+                margin-top: 12px;
+                margin-bottom: 12px;
+            }
+
+            .container-direction {
+                text-align: center;
+                margin-bottom: 5px;
+                margin-top: 8px;
+            }
+
+            .container-direction p {
+                font-size: 17px;
+                font-weight: 700;
+            }
+
+
+            .section-object{
+                grid-template-columns: 0.6fr 3fr;
+                grid-template-rows: 1fr;
+                padding: 0.9rem 0px;
+                row-gap: 1.7rem;
+                column-gap: 1rem;
+                display: grid;
+            }
+
+            .section-object-2{
+                grid-template-columns: 2fr 5fr;
+                grid-template-rows: 1fr;
+                padding: 0.5rem 0px;
+                row-gap: 1rem;
+                column-gap: 1rem;
+                display: grid;
+            }
+
+
+
+            .container-grid-registro{
+                grid-template-columns: 1fr 1fr 1fr;
+                grid-template-rows: 1fr;
+                row-gap: 0.1rem;
+                column-gap: 3rem;
+                display: grid;
+            }
+
+            .container-grid-registro .section {
+                margin-bottom: 0;
+                font-size: 16px;
+            }
+            
+            .container-grid-registro .section-title {
+                font-size: 16px;
+                font-weight: 700;
+                margin-bottom: 5px;
+            }
+            
+            .container-grid-registro .section-content {
+                margin-top: 10px;
+                font-size: 16px;
+            }
+
+            ## ESTILOS PARA LA TABLA DE CAUSAS 
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 25px; /* Espaciado superior */
+                margin-bottom:25px;
+            }
+        
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: center;
+                padding: 10px;
+            }
+        
+            th {
+                background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+            }
+        
+            tr:nth-child(even) {
+                background-color: #f2f2f2; /* Color de fondo para filas pares */
+            }
+        
+            tr:nth-child(odd) {
+                background-color: #ffffff; /* Color de fondo para filas impares */
+            }
+
+            ## estilos tabla actividades
+
+            .tabla {
+                display: grid;
+                grid-template-rows: 1fr;
+              }
+              
+              .item {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                row-gap: 30px;
+                column-gap: 45px;
+              }
+              
+              .prop {
+                display: flex;
+                flex-direction: column;
+              }
+              
+              .title {
+                font-weight: bold;
+                margin-bottom : 10px; 
+                margin-top: 10px;
+              }
+
+              .table-container {
+                max-width: 100px;        
+            }
+
+          </style>
+      </head>
+      
+      <body>
+          <div class="container">
+                <div class="section">
+                  <div class="section-title">1. Registro</div>
+                </div>
+                <div class="section-name">
+                    <div class="section-title-name">Nombre del proyecto:</div> 
+                    <div class="section-content-name">${project.data.project}</div>
+                </div>
+
+                <div class ="container-grid-registro">
+                    <div class="section">
+                        <div class="section-title">Código BPIN</div>
+                        <div class="section-content">${project.data.bpin}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Período inicial</div>
+                        <div class="section-content">${project.data.dateFrom}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Período final</div>
+                        <div class="section-content">${project.data.dateTo}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Proceso</div>
+                        <div class="section-content">${project.data.process}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Localización</div>
+                        <div class="section-content">${project.data.localitation}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Dependencia</div>
+                        <div class="section-content">${project.data.dependency}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Fecha de creación</div>
+                        <div class="section-content">${DateProject}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Formulador</div>
+                        <div class="section-content">${project.data.formulation}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Rol</div>
+                        <div class="section-content">${project.data.rol}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Ordenador del gasto</div>
+                        <div class="section-content">${project.data.order}</div>
+                    </div>
+                    <div class="section">
+                        <div class="section-title">Versión</div>
+                        <div class="section-content">${project.data.version}</div>
+                    </div>
+                </div>
+                
+              <div class="section-object">
+                    <div class="section-title">Objeto</div>
+                    <div>${project.data.object}</div>
+                </div>
+
+                <div class="section">
+                  <div class="section-title">2. Identificación</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Plan de desarrollo</div> 
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Plan nacional de desarrollo</div> 
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Pacto</div>
+                    <div>${project.data.pnd_pacto}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Línea</div>
+                    <div>${project.data.pnd_linea}</div>
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Programa</div>
+                    <div>${project.data.pnd_programa}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Plan de desarrollo departamental</div> 
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Línea</div>
+                    <div>${project.data.pdd_linea}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Componente</div>
+                    <div>${project.data.pdd_componentes}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Programa</div>
+                    <div>${project.data.pdd_programa}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Plan de desarrollo distirtal</div> 
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Línea</div>
+                    <div>${project.data.pdi_linea}</div>
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Componente</div>
+                    <div>${project.data.pdi_componentes}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Programa</div>
+                    <div>${project.data.pdi_programa}</div>
+                </div>
+
+
+                <div class="section-name">
+                    <div class="section-title-name">Descripción del problema</div> 
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Descripción del problema</div>
+                    <div>${project.data.problemDescription}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Magnitud del problema</div>
+                    <div>${project.data.magnitude}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Problema central</div>
+                    <div>${project.data.centerProblem}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Causas que generan el problema</div> 
+                 </div>
+
+                 <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.causes?.map(directa => `
+                            <tr>
+                                <td>Directo</td>
+                                <td>${directa.description}</td>
+                            </tr>
+                            ${directa.childrens?.map(indirecta => `
+                                <tr>
+                                    <td>Indirecto</td>
+                                    <td>${indirecta.description}</td>
+                                </tr>
+                            `).join('')}`).join('')
+                    }
+                    </tbody>
+                </table>
+
+                <div class="section-name">
+                     <div class="section-title-name">Efectos del problema</div> 
+                </div>
+
+                
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.effects?.map(directa => `
+                            <tr>
+                                <td>Directo</td>
+                                <td>${directa.description}</td>
+                            </tr>
+                            ${directa.childrens?.map(indirecta => `
+                                <tr>
+                                    <td>Indirecto</td>
+                                    <td>${indirecta.description}</td>
+                                </tr>
+                            `).join('')}`).join('')
+                    }
+                    </tbody>
+                </table>
+
+                </br>
+
+                <div class="section-name">
+                     <div class="section-title-name">Objetivos</div> 
+                </div>
+                
+                <div class="section-object">
+                    <div class="section-title">Objetivo general</div>
+                    <div>${project.data.centerProblem}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Listado de objetivos específicos</div> 
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.causes?.map(directa => `
+                            <tr>
+                                <td>Directo</td>
+                                <td>${directa.description}</td>
+                            </tr>
+                            ${directa.childrens?.map(indirecta => `
+                                <tr>
+                                    <td>Indirecto</td>
+                                    <td>${indirecta.description}</td>
+                                </tr>
+                            `).join('')}`).join('')
+                    }
+                    </tbody>
+                </table>
+
+                <div class="section-name">
+                    <div class="section-title-name">Listado de fines</div> 
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.effects?.map(directa => `
+                            <tr>
+                                <td>Directo</td>
+                                <td>${directa.description}</td>
+                            </tr>
+                            ${directa.childrens?.map(indirecta => `
+                                <tr>
+                                    <td>Indirecto</td>
+                                    <td>${indirecta.description}</td>
+                                </tr>
+                            `).join('')}`).join('')
+                    }
+                    </tbody>
+                </table>
+
+                </br>
+
+                <div class="section-object-2">
+                    <div class="section-title">Indicadores objetivo central </div>
+                    <div>${project.data.indicators}</div>
+                </div>
+
+                <div class="section-object-2">
+                    <div class="section-title">Unidad de medida</div>
+                    <div>${project.data.measurement}</div>
+                </div>
+
+                <div class="section-object-2">
+                    <div class="section-title">Meta</div>
+                    <div>$ ${project.data.goal}</div>
+                </div>
+
+                <br> <br> <br> <br>  <br> <br>  <br> <br>
+
+
+                <div class="section-name">
+                    <div class="section-title-name">Actores participantes</div> 
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Actor</th>
+                            <th>Interés/Expectativa</th>
+                            <th>Posición</th>
+                            <th>Contribución</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.actors?.map(actors => `
+                            <tr>
+                                <td>${actors.actor}</td>
+                                <td>${actors.expectation}</td>
+                                <td>${actors.position}</td>
+                                <td>${actors.contribution}</td>
+                            </tr>
+                        `).join('')
+                    }
+                    </tbody>
+                </table>
+
+                </br> </br>
+
+                <div class="section-name">
+                    <div class="section-title-name">Población</div> 
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Población objetivo de la intervención</div> 
+                </div>
+
+                <div class="section-object-2">
+                    <div class="section-title">Número de personas objetivo</div>
+                    <div>${project.data.objectivePeople}</div>
+                </div>
+                <div class="section-object-2">
+                    <div class="section-title">Fuente de la información</div>
+                    <div>${project.data.informationSource}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Localización</div> 
+                </div>
+
+                <div class="section-object-2">
+                    <div class="section-title">Región</div>
+                    <div>${project.data.region}</div>
+                </div>
+                <div class="section-object-2">
+                    <div class="section-title">Departamento</div>
+                    <div>${project.data.departament}</div>
+                </div>
+
+                <div class="section-object-2">
+                    <div class="section-title">Distrito/Municipio</div>
+                    <div>${project.data.district}</div>
+                </div>
+                <div class="section-object-2">
+                    <div class="section-title">Resguardo</div>
+                    <div>${project.data.shelter}</div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Clasificación</th>
+                            <th>Detalle</th>
+                            <th>No. de personas</th>
+                            <th>Fuente de Información</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.classifications?.map(Classifications => `
+                            <tr>
+                                <td>${Classifications.clasification}</td>
+                                <td>${Classifications.detail}</td>
+                                <td>${Classifications.numPerson}</td>
+                                <td>${Classifications.infoSource}</td>
+                            </tr>
+                        `).join('')
+                    }
+                    </tbody>
+                </table>
+
+                <div class="section">
+                    <div class="section-title">3. Preparación</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Análisis Técnico</div> 
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Nombre alternativa</div>
+                    <div>${project.data.alternative}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Resumen alternativa</div>
+                    <div>${project.data.resumeAlternative}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Necesidades</div> 
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Nombre alternativa</div>
+                    <div>${project.data.alternative}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Objetivo general</div>
+                    <div>${project.data.centerProblem}</div>
+                </div>
+
+                <br> <br>  <br> <br>
+
+                <div class="section-name">
+                    <div class="section-title-name">Listado objetivos específicos</div> 
+                </div>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Objetivo</th>
+                            <th>Acciones de intervención</th>
+                            <th>Bienes/Servicios</th>
+                            <th>Cuantificación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.specificObjectives?.map(specificObjectives => `
+                            <tr>
+                                <td>${specificObjectives.objetive.consecutive} ${specificObjectives.objetive.description}</td>
+                                <td>${specificObjectives.interventionActions}</td>
+                                <td>
+                                ${specificObjectives.estatesService.map(estatesService => `
+                                    <div style = "margin-bottom : 20px; margin-top: 10px;" >
+                                    ${estatesService.id}.${estatesService.description}
+                                    </div>
+                                `).join('')}
+                                </td>
+                                <td>${specificObjectives.quantification}</td>
+                            </tr>
+                        `).join('')
+                    }
+                    </tbody>
+                </table>
+
+                <div class="section-name">
+                    <div class="section-title-name">Capacidad</div> 
+                 </div>
+
+                <div class="section-object">
+                    <div class="section-title">Nombre alternativa</div>
+                    <div>${project.data.alternative}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Descripción Tecnica</div>
+                    <div>${project.data.descriptionCapacity}</div>
+                </div>
+
+                <div class="section-object">
+                    <div class="section-title">Unidad de medida</div>
+                    <div>${project.data.unitCapacity}</div>
+                </div>
+                <div class="section-object">
+                    <div class="section-title">Capacidad generada</div>
+                    <div>${project.data.capacityGenerated}</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Ánalisis ambiental</div> 
+                 </div>
+
+                <div class="section-object">
+                    <div class="section-title">Diagnóstico ambiental</div>
+                    <div>${project.data.environmentDiagnosis}</div>
+                </div>
+
+                </br> </br>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo de impacto</th>
+                            <th>Impacto</th>
+                            <th>Nivel de impacto</th>
+                            <th>Clasificación</th>
+                            <th>Medidas de mitigación</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.environmentalEffects?.map(environmentalEffects => `
+                            <tr>
+                                <td>${environmentalEffects.type}</td>
+                                <td>${environmentalEffects.impact}</td>
+                                <td>${environmentalEffects.level}</td>
+                                <td>${environmentalEffects.classification}</td>
+                                <td>${environmentalEffects.measures}</td>
+                            </tr>
+                        `).join('')
+                    }
+                    </tbody>
+                </table>
+
+            <div class="section-name">
+                <div class="section-title-name">Actividades</div> 
+            </div>
+
+            ${
+                project.data.activities?.map(activities => `
+
+                <div class="section-object-2">
+                    <div class="section-title">Objetivo específico</div>
+                    <div>${activities.objetiveActivity.description}</div>
+                </div>
+
+                <br>
+                    <div class="tabla" style = "margin-bottom: 90px;">
+                        <div class="item">
+                            <div class="prop">
+                                <span class="title">Producto MGA</span>
+                                <span>${activities.productMGA}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="title">Etapa</span>
+                                <span>${activities.stageActivity}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="title">Actividad MGA</span>
+                                <span>${activities.activityMGA} ${activities.activityDescriptionMGA}</span>
+                            </div>
+                            ${
+                                activities.budgetsMGA?.map(budget => `
+                                <div class="prop">
+                                    <span class="title">Año ${budget.year}</span>
+                                    <span> $ ${budget.budget}</span>
+                                </div>
+                              
+                                `).join('')
+                            }
+
+                            <div class="prop">
+                            <span class="title">Presupuesto</span>
+                                <span>$ ${activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget}</span>
+                            </div>
+
+                            <div class="prop">
+                            <span class="title">Vigencia</span>
+                                <span>$ ${activities.validity}</span>
+                            </div>
+
+                            <div class="prop">
+                            <span class="title">Año</span>
+                                <span>$ ${activities.year}</span>
+                            </div>
+
+                            ${
+                                activities.detailActivities?.map(detailActivities => `
+                                <div class="prop">
+                                    <span class="title">No. y descripción actividad detallada</span>
+                                    <span> ${detailActivities.consecutive} ${detailActivities.detailActivity}</span>
+                                </div>
+                                  
+                                <div class="prop">
+                                    <span class="title"> Unidad de medida</span>
+                                    <span> ${detailActivities.measurement}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Componente </span>
+                                    <span> ${detailActivities.component}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Cantidad </span>
+                                    <span> ${detailActivities.amount}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Costo unitario </span>
+                                    <span>$ ${detailActivities.unitCost}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Costo total </span>
+                                    <span> ${detailActivities.totalCost ? "$" + detailActivities.totalCost : "" }</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">POSPRE </span>
+                                    <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Validador CPC </span>
+                                    <span>  ${detailActivities.validatorCPC ? detailActivities.validatorCPC : ""}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Clasificador CPC </span>
+                                    <span> ${detailActivities.clasificatorCPC ? detailActivities.clasificatorCPC : ""}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Validador sección CPC </span>
+                                    <span> ${detailActivities.sectionValidatorCPC ? detailActivities.sectionValidatorCPC : ""}</span>
+                                </div>
+
+                                <div class="prop">
+                                    <span class="title">Costo total actividades detalladas </span>
+                                    <span>  ${detailActivities.totalCost ? "$" + detailActivities.totalCost : ""}</span>
+                                </div>
+                              
+                                `).join('')
+                            }
+                        </div>
+                    </div>
+                `).join('')
+            }
+
+                <div class="section-name">
+                    <div class="section-title-name">Riesgos</div> 
+                </div>
+
+                <div class="table-container">
+                    <table style = "  font-size: 11px; ">
+                        <thead>
+                            <tr>
+                                <th>Nivel</th>
+                                <th>Riesgo relacionado</th>
+                                <th>Tipo de riesgo</th>
+                                <th>Descripción riesgo</th>
+                                <th>Probabilidad</th>
+                                <th>Impacto</th>
+                                <th>Efectos</th>
+                                <th>Medidas de mitigación</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        ${
+                            project.data.risks?.map(risks => `
+                                <tr>
+                                    <td>${risks.level}</td>
+                                    <td>${risks.risk}</td>
+                                    <td>${risks.typeRisk}</td>
+                                    <td>${risks.descriptionRisk}</td>
+                                    <td>${risks.probability}</td>
+                                    <td>${risks.impact}</td>
+                                    <td>${risks.effects}</td>
+                                    <td>${risks.mitigation}</td>
+                                </tr>
+                            `).join('')
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+                <br> <br> <br> <br>
+
+                <div class="section">
+                    <div class="section-title">4. Programación</div>
+                </div>
+
+                <div class="section-name">
+                    <div class="section-title-name">Ingresos y beneficios </div> 
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Unidad de medida</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                    ${
+                        project.data.profitsIncome?.map(profitsIncome => `
+                            <tr>
+                                <td>${profitsIncome.type}</td>
+                                <td>${profitsIncome.description}</td>
+                                <td>${profitsIncome.unit}</td>
+                            </tr>
+                        `).join('')
+                    }
+                    </tbody>
+                </table>
+
+                <div class="section-name">
+                    <div class="section-title-name">Clasificación</div> 
+                </div>
+                ${
+                    project.data.profitsIncome?.map(profitsIncome => `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>periodo</th>
+                                    <th>cantidad</th>
+                                    <th>valor unitario</th>
+                                    <th>valor total financiero</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${
+                                    profitsIncome.period?.map(periodData => `
+                                        <tr>
+                                            <td>${periodData.period}</td>
+                                            <td>${periodData.quantity}</td>
+                                            <td>${periodData.unitValue}</td>
+                                            <td>${periodData.financialValue}</td>
+                                        </tr>
+                                    `).join('')
+                                }
+                            </tbody>
+                        </table>
+                    `).join('')
+                }
+                <br><br><br>
+
+            <div class="section-name">
+                <div class="section-title-name">Fuentes de financiación</div> 
+            </div>
+
+            ${
+                project.data.sourceFunding?.map(sourceFunding => `
+        
+                    <div class="tabla" style = "margin-bottom: 70px;">
+                        <div class="item">
+                            <div class="prop">
+                                <span class="title">Etapa</span>
+                                <span>${sourceFunding.stage}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="title">Tipo entidad</span>
+                                <span>${sourceFunding.typeEntity}</span>
+                            </div>
+                            <div class="prop">
+                                <span class="title">Entidad</span>
+                                <span>${sourceFunding.entity} </span>
+                            </div>
+
+                            <div class="prop">
+                            <span class="title">Tipo de recurso</span>
+                                <span>$ ${sourceFunding.resource}</span>
+                            </div>
+
+                            <div class="prop">
+                            <span class="title">Año 0 </span>
+                                <span>$ ${sourceFunding.year0}</span>
+                            </div>
+
+                            <div class="prop">
+                            <span class="title">Año 1 </span>
+                                <span>$ ${sourceFunding.year1}</span>
+                            </div>
+                            <div class="prop">
+                            <span class="title">Año 2 </span>
+                                <span>$ ${sourceFunding.year2}</span>
+                            </div>
+                            <div class="prop">
+                            <span class="title">Año 3 </span>
+                                <span>$ ${sourceFunding.year3}</span>
+                            </div>
+                            <div class="prop">
+                            <span class="title">Año 4 </span>
+                                <span>$ ${sourceFunding.year4}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')
+            }
+
+            
+        <div class="section-name">
+            <div class="section-title-name">Indicadores</div> 
+        </div>
+
+        ${
+            project.data.indicatorsIndicative?.map(indicatorsIndicative => `
+          
+            <div class="section-object-2">
+                <div class="section-title">Tipo de indicador:</div>
+                <div>${typeIndicators.data.find(type => type.id == indicatorsIndicative.type)?.description}</div>
+            </div>
+    
+                <div class="tabla" style = "margin-bottom: 70px;">
+                    <div class="item">
+                        <div class="prop">
+                            <span class="title">Línea estratégica</span>
+                            <span>${indicatorsIndicative.line ? indicatorsIndicative?.line :""}</span>
+                        </div>
+                        <div class="prop">
+                            <span class="title">Componente</span>
+                            <span>${indicatorsIndicative.component ? indicatorsIndicative?.component :"" }</span>
+                        </div>
+                        <div class="prop">
+                            <span class="title">Programa</span>
+                            <span>${indicatorsIndicative.program ? indicatorsIndicative?.program :"" } </span>
+                        </div>
+
+                        <div class="prop">
+                            <span class="title">Nombre indicador</span>
+                            <span>${indicatorsIndicative.indicator ? indicatorsIndicative?.indicator :""} </span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Unidad de medida</span>
+                            <span> ${indicatorsIndicative.measurement}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Plan de desarrollo </span>
+                            <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan :""}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Meta Año 0 </span>
+                            <span>$ ${indicatorsIndicative.year0}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Meta Año 1 </span>
+                            <span>$ ${indicatorsIndicative.year1}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta Año 2 </span>
+                            <span>$ ${indicatorsIndicative.year2}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta Año 3 </span>
+                            <span>$ ${indicatorsIndicative.year3}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta Año 4 </span>
+                            <span>$ ${indicatorsIndicative.year4}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta global </span>
+                            <span> ${ indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        ${
+            project.data.indicatorsAction?.map(indicatorsAction => `
+          
+            <div class="section-object-2">
+                <div class="section-title">Tipo de indicador:</div>
+                <div>${typeIndicators.data.find(type => type.id == indicatorsAction.type)?.description}</div>
+            </div>
+    
+                <div class="tabla" style = "margin-bottom: 70px;">
+                    <div class="item">
+                        <div class="prop">
+                            <span class="title">Objetivo específico directo</span>
+                            <span>${indicatorsAction.objective ? indicatorsAction?.objective :""}</span>
+                        </div>
+                        <div class="prop">
+                            <span class="title">Producto MGA</span>
+                            <span>${indicatorsAction.productMGA}</span>
+                        </div>
+                        <div class="prop">
+                            <span class="title">Indicador DNP</span>
+                            <span>${indicatorsAction.dpnIndicator ? indicatorsAction?.dpnIndicator :""} </span>
+                        </div>
+
+                        <div class="prop">
+                            <span class="title">Código DNP indicador</span>
+                            <span>${indicatorsAction.dpn ? indicatorsAction?.dpn :""} </span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Unidad de medida</span>
+                            <span> ${indicatorsAction.measurement}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Código valor estadístico
+                        </span>
+                            <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode :""}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Nombre valor estadístico</span>
+                            <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue :""}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Meta Año 0 </span>
+                            <span>$ ${indicatorsAction.year0}</span>
+                        </div>
+
+                        <div class="prop">
+                        <span class="title">Meta Año 1 </span>
+                            <span>$ ${indicatorsAction.year1}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta Año 2 </span>
+                            <span>$ ${indicatorsAction.year2}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta Año 3 </span>
+                            <span>$ ${indicatorsAction.year3}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta Año 4 </span>
+                            <span>$ ${indicatorsAction.year4}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Acumulativo cuatrienio </span>
+                            <span> ${indicatorsAction.accumulative ? "$" +  indicatorsAction?.accumulative :""}</span>
+                        </div>
+                        <div class="prop">
+                        <span class="title">Meta global </span>
+                            <span> ${indicatorsAction.total ? "$ " + indicatorsAction?.total :""}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+            <div class="section-name">
+                <div class="section-title-name">Matriz de marco lógico</div> 
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Resumen narrativo</th>
+                        <th>Descripción</th>
+                        <th>Nombre indicador</th>
+                        <th>Meta indicador</th>
+                        <th>Fuente de verificación</th>
+                        <th>Supuestos</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                ${
+                    project.data.logicFrame?.map(logicFrame => `
+                        <tr>
+                            <td>${logicFrame.resume}</td>
+                            <td>${logicFrame.description}</td>
+                            <td>${logicFrame.indicator}</td>
+                            <td>${logicFrame.meta}</td>
+                            <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification:"" }</td>
+                            <td>${logicFrame.assumptions ? logicFrame.assumptions:"" }</td>
+
+                        </tr>
+                    `).join('')
+                }
+                </tbody>
+            </table>
+
+          </div>
+          
+      </body>
+      
+      </html>
+      `;
+    // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
+       const browser = await puppeteer.launch({
+         headless: "new",
+         args: ["--no-sandbox"],
+        executablePath: "/usr/bin/chromium",
+       });
+
+      //const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+     
+      await page.setViewport({ width: 595, height: 842 });
+      await page.setContent(contentHTML, {
+        waitUntil: "domcontentloaded",
+      });
+
+      const headerHTML = `
+      <div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
+            <span class="pageNumber"></span> de <span class="totalPages"></span>
+        </div>
+        <div style="text-align: center;  margin-bottom: 10px;">
+            <img src="data:image/png;base64,${readFileSync(logoPath).toString("base64")}" alt="Logo" style="width: 40%" />
+            <div style="text-align: center; margin-bottom: 5px; margin-top: 2px;">
+                <p style="font-size: 15px; font-weight: 700;">FICHA TÉCNICA DEL PROYECTO</p>
+            </div>
+            
+        </div>
+
+        `;
+
+    const footerHTML = `
+    <div style="text-align: center; padding: 0 !important; margin: 0;">
+        <img src="data:image/png;base64,${readFileSync(footerPath).toString("base64")}" alt="Footer" style=" width: 30%" />
+    </div>
+    
+    `
+    
+    ;
+      const pdfBuffer = await page.pdf({
+        format: 'A4',
+        displayHeaderFooter: true,
+        headerTemplate: headerHTML,
+        footerTemplate: footerHTML,
+        margin: { top: 220, bottom: 90 }
+    });
+    await page.emulateMediaType("screen");
+    
+      await browser.close();
+
+      response.header('Content-Type', 'application/pdf');
+      const nombreArchivo = `Ficha_técnica_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
+      response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
+      response.status(200).send(pdfBuffer);
+    } catch (err) {
+        return response.badRequest(
+          new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        );
+    }
+
+}
+
+
+
 }

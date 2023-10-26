@@ -210,6 +210,10 @@ export default class extends BaseSchema {
       .text("PRY_TEMPTAB")
       .nullable()
       .comment("Ultima tab visitada en guardado temporal");
+      table
+      .text("PRY_OBSERVACIONES_PROYECTO")
+      .nullable()
+      .comment("observaciones del proyecto");
     })
   }
 
