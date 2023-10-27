@@ -25,6 +25,7 @@ export default class AppProvider {
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
     /**************************************************************************/
+    const CoreService = await import("App/Services/External/CoreService")
 
     /**************************************************************************/
     /******************************** REPOSITORIES ****************************/
@@ -199,7 +200,14 @@ export default class AppProvider {
       "core.StorageProvider",
       () => new StorageService.default()
     );
+
+    this.app.container.singleton(
+      "core.CoreProvider",
+      () => new CoreService.default()
+    );
   }
+
+  
 
   public async boot() {
     // IoC container is ready
