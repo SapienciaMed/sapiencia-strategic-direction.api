@@ -229,13 +229,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-    //   const browser = await puppeteer.launch({
-    //     headless: "new",
-    //     args: ["--no-sandbox"],
-    //     executablePath: "/usr/bin/chromium",
-    //   });
+      const browser = await puppeteer.launch({
+         headless: "new",
+         args: ["--no-sandbox"],
+         executablePath: "/usr/bin/chromium",
+      });
 
-      const browser = await puppeteer.launch();
+      //const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
@@ -278,6 +278,7 @@ export default class GeneratePdfController {
     try {
      const project = await ProjectProvider.getProjectById(projectId);
      const typeIndicators = await IndicatorsProvider.getIndicatorType();
+     
      const processData = await EntitiesProvider.getEntities();
      const dependencyData = await EntitiesProvider.getEntitiesDependency();
      const positionActorsData = await EntitiesProvider.getEntitiesPosition();
@@ -294,11 +295,32 @@ export default class GeneratePdfController {
      const  lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
      const stages = await StageProvider.getStages();
      const components = await ComponentsProvider.getComponents();
+     const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
+     const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
+     const indicatorsLine = await IndicatorsProvider.getStrategicLine();
+     const indicatorProgramation = await IndicatorsProvider.getProgramation();
+     const indicatorName = await IndicatorsProvider.getIndicatorName();
+     const entity = await EntitiesProvider.getEntity();
+     const  resource = await EntitiesProvider.getResource();
+     //const typeRisk = await EntitiesProvider.getEntitiesTypesRisks();
+     //const impactRisk = await EntitiesProvider.getEntitiesImpact()
+     //const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
 
 
-     
-     
+     const objectivesData =  project.data.causes?.map(cause => {
+        return {
+            name: `${cause.consecutive}. ${cause.description}`,
+            value: cause.consecutive
+        }
+    });
 
+    const productsData=  project.data.activities?.map(data => {
+        return {
+            name: `${data.productMGA}. ${data.productDescriptionMGA}`,
+            value: data.productMGA
+        }
+    }) ;
+   const  dataAcumulativo= [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
 
         const clasification = project.data.classifications?.map(Classifications => {
             switch (Classifications.clasification) {
@@ -307,8 +329,8 @@ export default class GeneratePdfController {
                         <td>
                             Género
                         </td>
-                    <td>${generesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
-                            `;
+                   <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                `;
                 case 2:
                     return `
                         <td>
@@ -887,16 +909,16 @@ export default class GeneratePdfController {
                 </div>
                 <div class="section-object-2">
                     <div class="section-title">Departamento</div>
-                    <div>${departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription}</div>
+                    <div>${departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription != undefined ? departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription : "" }</div>
                 </div>
 
                 <div class="section-object-2">
                     <div class="section-title">Distrito/Municipio</div>
-                    <div>${MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription }</div>
+                    <div>${MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription != undefined ? MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription : "" }</div>
                 </div>
                 <div class="section-object-2">
                     <div class="section-title">Resguardo</div>
-                    <div>${project.data.shelter}</div>
+                    <div>${project.data.shelter  != null ? project.data.shelter : ""}</div>
                 </div>
 
                 <table>
@@ -913,7 +935,7 @@ export default class GeneratePdfController {
                         project.data.classifications?.map(Classifications => `
                             <tr>
                                      ${clasification}
-                                <td>${Classifications.numPerson}</td>
+                                <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
                                 <td>${Classifications.infoSource}</td>
                             </tr>
                         `).join('')
@@ -951,7 +973,9 @@ export default class GeneratePdfController {
                     <div>${project.data.centerProblem}</div>
                 </div>
 
-                <br> <br>  <br> <br>
+
+
+                <br> <br>  <br> <br> <br> <br>
 
                 <div class="section-name">
                     <div class="section-title-name">Listado objetivos específicos</div> 
@@ -1001,7 +1025,7 @@ export default class GeneratePdfController {
 
                 <div class="section-object">
                     <div class="section-title">Unidad de medida</div>
-                    <div>${unidadEncontrada}</div>
+                    <div>${ unidadEncontrada}</div>
                 </div>
                 <div class="section-object">
                     <div class="section-title">Capacidad generada</div>
@@ -1034,10 +1058,10 @@ export default class GeneratePdfController {
                         project.data.environmentalEffects?.map(environmentalEffects => `
                             <tr>
                                 <td>${impactTypeData.data.find(type => type.id == environmentalEffects.type)?.description }</td>
-                                <td>${environmentalEffects.impact}</td>
+                                <td>${environmentalEffects.impact != null ? environmentalEffects.impact : ""}</td>
                                 <td>${impactLevelData.data.find(type => type.id == environmentalEffects.level)?.description }</td>
                                 <td>${impactRatingData.data.find(type => type.id ==  environmentalEffects.classification)?.description}</td>
-                                <td>${environmentalEffects.measures}</td>
+                                <td>${environmentalEffects.measures != null  ? environmentalEffects.measures :"" }</td>
                             </tr>
                         `).join('')
                     }
@@ -1065,7 +1089,7 @@ export default class GeneratePdfController {
                             </div>
                             <div class="prop">
                                 <span class="title">Etapa</span>
-                                <span>${stages.data.find(stage => stage.id === activities.stageActivity) }</span>
+                                <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description }</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Actividad MGA</span>
@@ -1089,73 +1113,76 @@ export default class GeneratePdfController {
 
                             <div class="prop">
                             <span class="title">Vigencia</span>
-                                <span>$ ${activities.validity}</span>
+                                <span>${activities.validity}</span>
                             </div>
 
                             <div class="prop">
                             <span class="title">Año</span>
-                                <span>$ ${activities.year}</span>
+                                <span> ${activities.year}</span>
                             </div>
 
                             ${
-                                activities.detailActivities?.map(detailActivities => `
-                                <div class="prop">
-                                    <span class="title">No. y descripción actividad detallada</span>
-                                    <span> ${detailActivities.consecutive} ${detailActivities.detailActivity}</span>
-                                </div>
-                                  
-                                <div class="prop">
-                                    <span class="title"> Unidad de medida</span>
-                                    <span> ${measurementData.find(item => parseInt(item.itemCode) === detailActivities.measurement)?.itemDescription}</span>
-                                </div>
-
-                                <div class="prop">
-                                    <span class="title">Componente </span>
-                                    <span> ${components.data.find(stage => stage.id === detailActivities.component) }</span>
-                                </div>
-
-                                <div class="prop">
-                                    <span class="title">Cantidad </span>
-                                    <span> ${detailActivities.amount}</span>
-                                </div>
-
-                                <div class="prop">
-                                    <span class="title">Costo unitario </span>
-                                    <span>$ ${formaterNumberToCurrency(detailActivities.unitCost)}</span>
-                                </div>
-
-                                <div class="prop">
-                                    <span class="title">Costo total </span>
-                                    <span> ${detailActivities.totalCost ?  formaterNumberToCurrency(detailActivities.totalCost)  : "" }</span>
-                                </div>
-
-                                <div class="prop">
-                                    <span class="title">POSPRE </span>
+                                activities.detailActivities?.map(detailActivities => {
+                                    let totalCost = detailActivities.amount * detailActivities.unitCost;
+                                    return `
+                                    <div class="prop">
+                                        <span class="title">No. y descripción actividad detallada</span>
+                                        <span> ${detailActivities.consecutive} ${detailActivities.detailActivity}</span>
+                                    </div>
                                     
-                                    <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
-                                </div>
+                                    <div class="prop">
+                                        <span class="title"> Unidad de medida</span>
+                                        <span> ${measurementData.find(item => parseInt(item.itemCode) === detailActivities.measurement)?.itemDescription}</span>
+                                    </div>
 
-                                <div class="prop">
-                                    <span class="title">Validador CPC </span>
-                                    <span>  ${detailActivities.validatorCPC ? detailActivities.validatorCPC : ""}</span>
-                                </div>
+                                    <div class="prop">
+                                        <span class="title">Componente </span>
+                                        <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description }</span>
+                                    </div>
 
-                                <div class="prop">
-                                    <span class="title">Clasificador CPC </span>
-                                    <span> ${detailActivities.clasificatorCPC ? detailActivities.clasificatorCPC : ""}</span>
-                                </div>
+                                    <div class="prop">
+                                        <span class="title">Cantidad </span>
+                                        <span> ${detailActivities.amount}</span>
+                                    </div>
 
-                                <div class="prop">
-                                    <span class="title">Validador sección CPC </span>
-                                    <span> ${detailActivities.sectionValidatorCPC ? detailActivities.sectionValidatorCPC : ""}</span>
-                                </div>
+                                    <div class="prop">
+                                        <span class="title">Costo unitario </span>
+                                        <span> ${formaterNumberToCurrency(detailActivities.unitCost)}</span>
+                                    </div>
 
-                                <div class="prop">
-                                    <span class="title">Costo total actividades detalladas </span>
-                                    <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(detailActivities.amount * detailActivities.unitCost)  : ""}</span>
-                                </div>
-                              
-                                `).join('')
+                                    <div class="prop">
+                                        <span class="title">Costo total </span>
+                                        <span> ${  formaterNumberToCurrency(totalCost)  }</span>
+                                    </div>
+
+                                    <div class="prop">
+                                        <span class="title">POSPRE </span>
+                                        
+                                        <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
+                                    </div>
+
+                                    <div class="prop">
+                                        <span class="title">Validador CPC </span>
+                                        <span>  ${detailActivities.validatorCPC ? detailActivities.validatorCPC : ""}</span>
+                                    </div>
+
+                                    <div class="prop">
+                                        <span class="title">Clasificador CPC </span>
+                                        <span> ${detailActivities.clasificatorCPC ? detailActivities.clasificatorCPC : ""}</span>
+                                    </div>
+
+                                    <div class="prop">
+                                        <span class="title">Validador sección CPC </span>
+                                        <span> ${detailActivities.sectionValidatorCPC ? detailActivities.sectionValidatorCPC : ""}</span>
+                                    </div>
+
+                                    <div class="prop">
+                                        <span class="title">Costo total actividades detalladas </span>
+                                        <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(totalCost++)  : ""}</span>
+                                    </div>
+                            
+                                    `;
+                                }).join('')
                             }
                         </div>
                     </div>
@@ -1224,7 +1251,7 @@ export default class GeneratePdfController {
                             <tr>
                                 <td>${profitsIncome.type}</td>
                                 <td>${profitsIncome.description}</td>
-                                <td>${profitsIncome.unit}</td>
+                                <td>${measurementData.find(item => parseInt(item.itemCode) === profitsIncome.unit)?.itemDescription}</td>
                             </tr>
                         `).join('')
                     }
@@ -1239,10 +1266,10 @@ export default class GeneratePdfController {
                         <table>
                             <thead>
                                 <tr>
-                                    <th>periodo</th>
-                                    <th>cantidad</th>
-                                    <th>valor unitario</th>
-                                    <th>valor total financiero</th>
+                                    <th>Período</th>
+                                    <th>Cantidad</th>
+                                    <th>Valor unitario</th>
+                                    <th>Valor total financiero</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1251,8 +1278,8 @@ export default class GeneratePdfController {
                                         <tr>
                                             <td>${periodData.period}</td>
                                             <td>${periodData.quantity}</td>
-                                            <td>${periodData.unitValue}</td>
-                                            <td>${periodData.financialValue}</td>
+                                            <td>${formaterNumberToCurrency(periodData.unitValue)}</td>
+                                            <td>${formaterNumberToCurrency(periodData.financialValue)}</td>
                                         </tr>
                                     `).join('')
                                 }
@@ -1273,11 +1300,11 @@ export default class GeneratePdfController {
                         <div class="item">
                             <div class="prop">
                                 <span class="title">Etapa</span>
-                                <span>${sourceFunding.stage}</span>
+                                <span>${ stages.data.find(stage => stage.id === sourceFunding.stage)?.description  }</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Tipo entidad</span>
-                                <span>${sourceFunding.typeEntity}</span>
+                                <span>${ entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description  }</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Entidad</span>
@@ -1286,7 +1313,7 @@ export default class GeneratePdfController {
 
                             <div class="prop">
                             <span class="title">Tipo de recurso</span>
-                                <span> ${sourceFunding.resource}</span>
+                                <span> ${ resource.data.find(stage => stage.id === sourceFunding.resource)?.description  }</span>
                             </div>
 
                             <div class="prop">
@@ -1332,25 +1359,25 @@ export default class GeneratePdfController {
                     <div class="item">
                         <div class="prop">
                             <span class="title">Línea estratégica</span>
-                            <span>${indicatorsIndicative.line ? indicatorsIndicative?.line :""}</span>
+                            <span>${ indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description  }</span>
                         </div>
                         <div class="prop">
                             <span class="title">Componente</span>
-                            <span>${indicatorsIndicative.component ? indicatorsIndicative?.component :"" }</span>
+                            <span>${ indicatorsComponent.data.find(process => process.id ==  indicatorsIndicative?.component)?.description   }</span>
                         </div>
                         <div class="prop">
                             <span class="title">Programa</span>
-                            <span>${indicatorsIndicative.program ? indicatorsIndicative?.program :"" } </span>
+                            <span>${ indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description } </span>
                         </div>
 
                         <div class="prop">
                             <span class="title">Nombre indicador</span>
-                            <span>${indicatorsIndicative.indicator ? indicatorsIndicative?.indicator :""} </span>
+                            <span>${ indicatorName.data.find(process => process.id ==  indicatorsIndicative?.indicator )?.description   } </span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Unidad de medida</span>
-                            <span> ${indicatorsIndicative.measurement}</span>
+                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription }</span>
                         </div>
 
                         <div class="prop">
@@ -1359,25 +1386,30 @@ export default class GeneratePdfController {
                         </div>
 
                         <div class="prop">
+                            <span class="title">Producto MGA</span>
+                            <span>${productsData?.find(stage => stage.value === indicatorsIndicative.productMGA)?.name}</span>
+                        </div>
+
+                        <div class="prop">
                         <span class="title">Meta Año 0 </span>
-                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year0)}</span>
+                            <span> ${formaterNumberToCurrency(indicatorsIndicative.year0)}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Meta Año 1 </span>
-                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year1)}</span>
+                            <span>${formaterNumberToCurrency(indicatorsIndicative.year1)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 2 </span>
-                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year2)}</span>
+                            <span>${formaterNumberToCurrency(indicatorsIndicative.year2)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 3 </span>
-                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year3)}</span>
+                            <span>${formaterNumberToCurrency(indicatorsIndicative.year3)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 4 </span>
-                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year4)}</span>
+                            <span>${formaterNumberToCurrency(indicatorsIndicative.year4)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
@@ -1400,15 +1432,15 @@ export default class GeneratePdfController {
                     <div class="item">
                         <div class="prop">
                             <span class="title">Objetivo específico directo</span>
-                            <span>${indicatorsAction.objective ? indicatorsAction?.objective :""}</span>
+                            <span> ${objectivesData?.find(stage => stage.value === indicatorsAction?.objective)?.name}</span>
                         </div>
                         <div class="prop">
                             <span class="title">Producto MGA</span>
-                            <span>${indicatorsAction.productMGA}</span>
+                            <span>${productsData?.find(stage => stage.value === indicatorsAction.productMGA)?.name}</span>
                         </div>
                         <div class="prop">
                             <span class="title">Indicador DNP</span>
-                            <span>${indicatorsAction.dpnIndicator ? indicatorsAction?.dpnIndicator :""} </span>
+                            <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description } </span>
                         </div>
 
                         <div class="prop">
@@ -1418,7 +1450,7 @@ export default class GeneratePdfController {
 
                         <div class="prop">
                         <span class="title">Unidad de medida</span>
-                            <span> ${indicatorsAction.measurement}</span>
+                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription }</span>
                         </div>
 
                         <div class="prop">
@@ -1455,7 +1487,7 @@ export default class GeneratePdfController {
                         </div>
                         <div class="prop">
                         <span class="title">Acumulativo cuatrienio </span>
-                            <span> ${indicatorsAction.accumulative ? formaterNumberToCurrency(indicatorsAction?.accumulative) :""}</span>
+                            <span> ${ indicatorsAction?.accumulative != undefined  ?  dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative )?.name : ""}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
@@ -1509,10 +1541,10 @@ export default class GeneratePdfController {
        const browser = await puppeteer.launch({
          headless: "new",
          args: ["--no-sandbox"],
-        executablePath: "/usr/bin/chromium",
-      });
+         executablePath: "/usr/bin/chromium",
+       });
 
-      //const browser = await puppeteer.launch();
+     // const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
