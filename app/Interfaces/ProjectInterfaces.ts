@@ -367,6 +367,7 @@ export interface IDetailedActivityFilter {
 
 export interface IActivityFilter {
   year?: number
+  projectId?: number
 }
 
 export interface IDetailedActivityPaginated {

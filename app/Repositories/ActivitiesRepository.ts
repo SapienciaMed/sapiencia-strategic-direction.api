@@ -22,6 +22,10 @@ export default class ActivitiesRepository implements IActivitiesRepository {
             query.where('validity', filters.year)
         }
 
+        if(filters.projectId) {
+            query.where('idProject', filters.projectId)
+        }
+
         const res = await query
 
         return res.map(i => i.serialize() as IActivityMGA)
