@@ -23,6 +23,20 @@ export default class ActivityController {
         }
     }
 
+
+    public async getActivitiesByFilters({ request, response }: HttpContextContract) {
+        try {
+          const data = request.all();
+          return response.send(
+            await ActivityProvider.getActivitiesByFilters(data)
+          );
+        } catch (err) {
+          return response.badRequest(
+            new ApiResponse(null, EResponseCodes.FAIL, String(err))
+          );
+        }
+    }
+
     public async getDetailedActivitiesByFilters({ request, response }: HttpContextContract) {
         try {
           const data = request.all();

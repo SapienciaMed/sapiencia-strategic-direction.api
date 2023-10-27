@@ -109,7 +109,10 @@ Route.group(() => {
   Route.post("/generate-consolidated", "ActivitiesController.generateConsolidated");
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
+  Route.post("/mga/get-by-filters", "ActivitiesController.getActivitiesByFilters")
 }).prefix("/api/v1/activities");
+
+
 
 Route.group(() => {
   Route.get("/dpn/get-all", "IndicatorsController.getIndicatorDNP");

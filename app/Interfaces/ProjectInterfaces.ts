@@ -365,6 +365,10 @@ export interface IDetailedActivityFilter {
   detail?: string
 }
 
+export interface IActivityFilter {
+  year?: number
+}
+
 export interface IDetailedActivityPaginated {
   detail?: string
   page: number;
