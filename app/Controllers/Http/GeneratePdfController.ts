@@ -229,13 +229,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-    //   const browser = await puppeteer.launch({
-    //     headless: "new",
-    //     args: ["--no-sandbox"],
-    //     executablePath: "/usr/bin/chromium",
-    //   });
+       const browser = await puppeteer.launch({
+         headless: "new",
+         args: ["--no-sandbox"],
+         executablePath: "/usr/bin/chromium",
+       });
 
-      const browser = await puppeteer.launch();
+     // const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
