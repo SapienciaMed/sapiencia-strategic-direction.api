@@ -7,6 +7,14 @@ import { format } from 'date-fns';
 import { ApiResponse } from 'App/Utils/ApiResponses';
 import { EResponseCodes } from 'App/Constants/ResponseCodesEnum';
 import IndicatorsProvider from "@ioc:core.IndicatorsProvider";
+import EntitiesProvider from '@ioc:core.EntitiesProvider';
+import CoreProvider from '@ioc:core.CoreProvider';
+import ImpactRatingProvider from '@ioc:core.ImpactRatingProvider';
+import ImpactLevelProvider from '@ioc:core.ImpactLevelProvider';
+import ImpactTypeProvider from '@ioc:core.ImpactTypeProvider';
+import StageProvider from '@ioc:core.StageProvider';
+import ComponentsProvider from '@ioc:core.ComponentsProvider';
+
 
 const { es } = require('date-fns/locale');
 
@@ -265,10 +273,87 @@ export default class GeneratePdfController {
 
 
 
+
+
     try {
      const project = await ProjectProvider.getProjectById(projectId);
      const typeIndicators = await IndicatorsProvider.getIndicatorType();
+     const processData = await EntitiesProvider.getEntities();
+     const dependencyData = await EntitiesProvider.getEntitiesDependency();
+     const positionActorsData = await EntitiesProvider.getEntitiesPosition();
+     const impactRatingData = await ImpactRatingProvider.getImpactRating();
+     const impactLevelData = await ImpactLevelProvider.getImpactLevel();
+     const impactTypeData = await ImpactTypeProvider.getImpactType();
+     const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
+     const regionData = await CoreProvider.getParametersByGrouper("REGION")
+     const departamentData = await CoreProvider.getParametersByGrouper("DEPARTAMENTOS")
+     const MunicipioData = await CoreProvider.getParametersByGrouper("MUNICIPIOS");
+     const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
+     const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
+     const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
+     const  lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
+     const stages = await StageProvider.getStages();
+     const components = await ComponentsProvider.getComponents();
 
+
+     
+     
+
+
+        const clasification = project.data.classifications?.map(Classifications => {
+            switch (Classifications.clasification) {
+                case 1:
+                    return `
+                        <td>
+                            Género
+                        </td>
+                    <td>${generesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                            `;
+                case 2:
+                    return `
+                        <td>
+                        Rango de edad
+                        </td>
+                         <td>${oldData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                            `;
+                case 3:
+                    return `
+                        <td>
+                        Grupo étnico
+                        </td>
+                        <td>${etniquesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                            `;
+                case 4:
+                    return `
+                        <td>
+                        Grupo étnico
+                         </td>
+                        <td>${lge.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                            `;
+                default:
+                    return ''; // En caso de otras clasificaciones, devuelve una cadena vacía
+            }
+        }).join('');
+
+     
+
+     const measurement = project.data.measurement;
+
+     const unidadEncontrada = measurementData.find(item => parseInt(item.itemCode) === measurement)?.itemDescription;
+
+
+
+   
+
+      function formaterNumberToCurrency(number) {
+        const formatter = new Intl.NumberFormat("es-CO", {
+          style: "currency",
+          currency: "COP",
+          minimumFractionDigits: 2,
+        });
+      
+        return formatter.format(number);
+      }
      
 
      let DateProject = ""
@@ -483,15 +568,15 @@ export default class GeneratePdfController {
                     </div>
                     <div class="section">
                         <div class="section-title">Proceso</div>
-                        <div class="section-content">${project.data.process}</div>
+                        <div class="section-content">${processData.data.find(process => process.id == project.data.process)?.description}</div>
                     </div>
                     <div class="section">
                         <div class="section-title">Localización</div>
-                        <div class="section-content">${project.data.localitation}</div>
+                        <div class="section-content">Postsecundaria - SAPIENCIA</div>
                     </div>
                     <div class="section">
                         <div class="section-title">Dependencia</div>
-                        <div class="section-content">${project.data.dependency}</div>
+                        <div class="section-content">${dependencyData.data.find(dependency => dependency.id == project.data.dependency)?.description}</div>
                     </div>
                     <div class="section">
                         <div class="section-title">Fecha de creación</div>
@@ -614,12 +699,12 @@ export default class GeneratePdfController {
                         project.data.causes?.map(directa => `
                             <tr>
                                 <td>Directo</td>
-                                <td>${directa.description}</td>
+                                <td>${directa.consecutive} ${directa.description}</td>
                             </tr>
                             ${directa.childrens?.map(indirecta => `
                                 <tr>
                                     <td>Indirecto</td>
-                                    <td>${indirecta.description}</td>
+                                    <td>${indirecta.consecutive} ${indirecta.description}</td>
                                 </tr>
                             `).join('')}`).join('')
                     }
@@ -644,12 +729,12 @@ export default class GeneratePdfController {
                         project.data.effects?.map(directa => `
                             <tr>
                                 <td>Directo</td>
-                                <td>${directa.description}</td>
+                                <td> ${directa.consecutive} ${directa.description}</td>
                             </tr>
                             ${directa.childrens?.map(indirecta => `
                                 <tr>
                                     <td>Indirecto</td>
-                                    <td>${indirecta.description}</td>
+                                    <td> ${indirecta.consecutive} ${indirecta.description}</td>
                                 </tr>
                             `).join('')}`).join('')
                     }
@@ -681,16 +766,16 @@ export default class GeneratePdfController {
                     <tbody>
                     ${
                         project.data.causes?.map(directa => `
+                        <tr>
+                            <td>Directo</td>
+                            <td>${directa.consecutive} ${directa.description}</td>
+                        </tr>
+                        ${directa.childrens?.map(indirecta => `
                             <tr>
-                                <td>Directo</td>
-                                <td>${directa.description}</td>
+                                <td>Indirecto</td>
+                                <td>${indirecta.consecutive} ${indirecta.description}</td>
                             </tr>
-                            ${directa.childrens?.map(indirecta => `
-                                <tr>
-                                    <td>Indirecto</td>
-                                    <td>${indirecta.description}</td>
-                                </tr>
-                            `).join('')}`).join('')
+                        `).join('')}`).join('')
                     }
                     </tbody>
                 </table>
@@ -711,12 +796,12 @@ export default class GeneratePdfController {
                         project.data.effects?.map(directa => `
                             <tr>
                                 <td>Directo</td>
-                                <td>${directa.description}</td>
+                                <td> ${directa.consecutive} ${directa.description}</td>
                             </tr>
                             ${directa.childrens?.map(indirecta => `
                                 <tr>
                                     <td>Indirecto</td>
-                                    <td>${indirecta.description}</td>
+                                    <td> ${indirecta.consecutive} ${indirecta.description}</td>
                                 </tr>
                             `).join('')}`).join('')
                     }
@@ -732,15 +817,18 @@ export default class GeneratePdfController {
 
                 <div class="section-object-2">
                     <div class="section-title">Unidad de medida</div>
-                    <div>${project.data.measurement}</div>
+                    ${
+                        unidadEncontrada
+                    }
+                  
                 </div>
 
                 <div class="section-object-2">
                     <div class="section-title">Meta</div>
-                    <div>$ ${project.data.goal}</div>
+                    <div> ${formaterNumberToCurrency(project.data.goal)}</div>
                 </div>
 
-                <br> <br> <br> <br>  <br> <br>  <br> <br>
+                <br> <br> <br> 
 
 
                 <div class="section-name">
@@ -762,7 +850,7 @@ export default class GeneratePdfController {
                             <tr>
                                 <td>${actors.actor}</td>
                                 <td>${actors.expectation}</td>
-                                <td>${actors.position}</td>
+                                <td>${positionActorsData.data.find(position => position.id == actors.position)?.description}</td>
                                 <td>${actors.contribution}</td>
                             </tr>
                         `).join('')
@@ -795,16 +883,16 @@ export default class GeneratePdfController {
 
                 <div class="section-object-2">
                     <div class="section-title">Región</div>
-                    <div>${project.data.region}</div>
+                    <div>${regionData.find(item => parseInt(item.itemCode) === project.data.region)?.itemDescription}</div>
                 </div>
                 <div class="section-object-2">
                     <div class="section-title">Departamento</div>
-                    <div>${project.data.departament}</div>
+                    <div>${departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription}</div>
                 </div>
 
                 <div class="section-object-2">
                     <div class="section-title">Distrito/Municipio</div>
-                    <div>${project.data.district}</div>
+                    <div>${MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription }</div>
                 </div>
                 <div class="section-object-2">
                     <div class="section-title">Resguardo</div>
@@ -824,8 +912,7 @@ export default class GeneratePdfController {
                     ${
                         project.data.classifications?.map(Classifications => `
                             <tr>
-                                <td>${Classifications.clasification}</td>
-                                <td>${Classifications.detail}</td>
+                                     ${clasification}
                                 <td>${Classifications.numPerson}</td>
                                 <td>${Classifications.infoSource}</td>
                             </tr>
@@ -914,7 +1001,7 @@ export default class GeneratePdfController {
 
                 <div class="section-object">
                     <div class="section-title">Unidad de medida</div>
-                    <div>${project.data.unitCapacity}</div>
+                    <div>${unidadEncontrada}</div>
                 </div>
                 <div class="section-object">
                     <div class="section-title">Capacidad generada</div>
@@ -946,10 +1033,10 @@ export default class GeneratePdfController {
                     ${
                         project.data.environmentalEffects?.map(environmentalEffects => `
                             <tr>
-                                <td>${environmentalEffects.type}</td>
+                                <td>${impactTypeData.data.find(type => type.id == environmentalEffects.type)?.description }</td>
                                 <td>${environmentalEffects.impact}</td>
-                                <td>${environmentalEffects.level}</td>
-                                <td>${environmentalEffects.classification}</td>
+                                <td>${impactLevelData.data.find(type => type.id == environmentalEffects.level)?.description }</td>
+                                <td>${impactRatingData.data.find(type => type.id ==  environmentalEffects.classification)?.description}</td>
                                 <td>${environmentalEffects.measures}</td>
                             </tr>
                         `).join('')
@@ -978,7 +1065,7 @@ export default class GeneratePdfController {
                             </div>
                             <div class="prop">
                                 <span class="title">Etapa</span>
-                                <span>${activities.stageActivity}</span>
+                                <span>${stages.data.find(stage => stage.id === activities.stageActivity) }</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Actividad MGA</span>
@@ -996,7 +1083,8 @@ export default class GeneratePdfController {
 
                             <div class="prop">
                             <span class="title">Presupuesto</span>
-                                <span>$ ${activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget}</span>
+                                <span>$ ${
+                                    activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget}</span>
                             </div>
 
                             <div class="prop">
@@ -1018,12 +1106,12 @@ export default class GeneratePdfController {
                                   
                                 <div class="prop">
                                     <span class="title"> Unidad de medida</span>
-                                    <span> ${detailActivities.measurement}</span>
+                                    <span> ${measurementData.find(item => parseInt(item.itemCode) === detailActivities.measurement)?.itemDescription}</span>
                                 </div>
 
                                 <div class="prop">
                                     <span class="title">Componente </span>
-                                    <span> ${detailActivities.component}</span>
+                                    <span> ${components.data.find(stage => stage.id === detailActivities.component) }</span>
                                 </div>
 
                                 <div class="prop">
@@ -1033,16 +1121,17 @@ export default class GeneratePdfController {
 
                                 <div class="prop">
                                     <span class="title">Costo unitario </span>
-                                    <span>$ ${detailActivities.unitCost}</span>
+                                    <span>$ ${formaterNumberToCurrency(detailActivities.unitCost)}</span>
                                 </div>
 
                                 <div class="prop">
                                     <span class="title">Costo total </span>
-                                    <span> ${detailActivities.totalCost ? "$" + detailActivities.totalCost : "" }</span>
+                                    <span> ${detailActivities.totalCost ?  formaterNumberToCurrency(detailActivities.totalCost)  : "" }</span>
                                 </div>
 
                                 <div class="prop">
                                     <span class="title">POSPRE </span>
+                                    
                                     <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
                                 </div>
 
@@ -1063,7 +1152,7 @@ export default class GeneratePdfController {
 
                                 <div class="prop">
                                     <span class="title">Costo total actividades detalladas </span>
-                                    <span>  ${detailActivities.totalCost ? "$" + detailActivities.totalCost : ""}</span>
+                                    <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(detailActivities.amount * detailActivities.unitCost)  : ""}</span>
                                 </div>
                               
                                 `).join('')
@@ -1197,29 +1286,29 @@ export default class GeneratePdfController {
 
                             <div class="prop">
                             <span class="title">Tipo de recurso</span>
-                                <span>$ ${sourceFunding.resource}</span>
+                                <span> ${sourceFunding.resource}</span>
                             </div>
 
                             <div class="prop">
                             <span class="title">Año 0 </span>
-                                <span>$ ${sourceFunding.year0}</span>
+                                <span>${formaterNumberToCurrency(sourceFunding.year0)}</span>
                             </div>
 
                             <div class="prop">
                             <span class="title">Año 1 </span>
-                                <span>$ ${sourceFunding.year1}</span>
+                                <span>${formaterNumberToCurrency(sourceFunding.year1)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Año 2 </span>
-                                <span>$ ${sourceFunding.year2}</span>
+                                <span>${formaterNumberToCurrency(sourceFunding.year2)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Año 3 </span>
-                                <span>$ ${sourceFunding.year3}</span>
+                                <span> ${formaterNumberToCurrency(sourceFunding.year3)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Año 4 </span>
-                                <span>$ ${sourceFunding.year4}</span>
+                                <span> ${formaterNumberToCurrency(sourceFunding.year4)}</span>
                             </div>
                         </div>
                     </div>
@@ -1271,28 +1360,28 @@ export default class GeneratePdfController {
 
                         <div class="prop">
                         <span class="title">Meta Año 0 </span>
-                            <span>$ ${indicatorsIndicative.year0}</span>
+                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year0)}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Meta Año 1 </span>
-                            <span>$ ${indicatorsIndicative.year1}</span>
+                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year1)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 2 </span>
-                            <span>$ ${indicatorsIndicative.year2}</span>
+                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year2)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 3 </span>
-                            <span>$ ${indicatorsIndicative.year3}</span>
+                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year3)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 4 </span>
-                            <span>$ ${indicatorsIndicative.year4}</span>
+                            <span>$ ${formaterNumberToCurrency(indicatorsIndicative.year4)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
-                            <span> ${ indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4}</span>
+                            <span> ${ formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                         </div>
                     </div>
                 </div>
@@ -1345,32 +1434,32 @@ export default class GeneratePdfController {
 
                         <div class="prop">
                         <span class="title">Meta Año 0 </span>
-                            <span>$ ${indicatorsAction.year0}</span>
+                            <span>${formaterNumberToCurrency(indicatorsAction.year0)}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Meta Año 1 </span>
-                            <span>$ ${indicatorsAction.year1}</span>
+                            <span>${formaterNumberToCurrency(indicatorsAction.year1)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 2 </span>
-                            <span>$ ${indicatorsAction.year2}</span>
+                            <span>${formaterNumberToCurrency(indicatorsAction.year2)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 3 </span>
-                            <span>$ ${indicatorsAction.year3}</span>
+                            <span>${formaterNumberToCurrency(indicatorsAction.year3)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 4 </span>
-                            <span>$ ${indicatorsAction.year4}</span>
+                            <span>${formaterNumberToCurrency(indicatorsAction.year4)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Acumulativo cuatrienio </span>
-                            <span> ${indicatorsAction.accumulative ? "$" +  indicatorsAction?.accumulative :""}</span>
+                            <span> ${indicatorsAction.accumulative ? formaterNumberToCurrency(indicatorsAction?.accumulative) :""}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
-                            <span> ${indicatorsAction.total ? "$ " + indicatorsAction?.total :""}</span>
+                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) :""}</span>
                         </div>
                     </div>
                 </div>
@@ -1421,7 +1510,7 @@ export default class GeneratePdfController {
          headless: "new",
          args: ["--no-sandbox"],
         executablePath: "/usr/bin/chromium",
-       });
+      });
 
       //const browser = await puppeteer.launch();
       const page = await browser.newPage();
