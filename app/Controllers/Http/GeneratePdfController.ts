@@ -14,6 +14,7 @@ import ImpactLevelProvider from '@ioc:core.ImpactLevelProvider';
 import ImpactTypeProvider from '@ioc:core.ImpactTypeProvider';
 import StageProvider from '@ioc:core.StageProvider';
 import ComponentsProvider from '@ioc:core.ComponentsProvider';
+import logicFrame from 'App/Models/LogicFrame';
 
 
 const { es } = require('date-fns/locale');
@@ -451,9 +452,44 @@ export default class GeneratePdfController {
         }).join('');
 
 
+        const logicFrameIndicator = project.data.logicFrame?.map(logicFrame => {
+            switch (logicFrame.type) {
+                case 1:
+                    const logicFrameIndicatorI = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
+                        indicatorsIndicative.id == logicFrame?.indicator ) 
+                    
+                    const logicFrameIndicator = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI?.indicator )?.description 
+
+                    return `
+                    <td>
+                    ${logicFrameIndicator}
+                    </td>
+            `;
+          
+                 case 2:                    
+                 const logicFrameIndicatorI2 = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
+                    indicatorsIndicative.id == logicFrame?.indicator ) 
+                
+                const logicFrameIndicator2 = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI2?.indicator )?.description 
+
+                 return `
+                 <td>
+                 ${logicFrameIndicator2}
+                 </td>
+                `;
+            case 3:                    
+                return `
+                <td>
+                ${logicFrame.indicator}
+                </td>
+            `;
+                default:
+                    return ''
+            }
+        }).join('');
 
        
-
+        
      
 
      const measurement = project.data.measurement;
@@ -1617,7 +1653,7 @@ export default class GeneratePdfController {
                         <tr>
                             <td>${ResumeData.find(item => item.value === logicFrame.resume)?.name  }</td>
                                 ${DescriptionLogicFrame}
-                            <td>${logicFrame.indicator}</td>
+                                ${logicFrameIndicator}
                             <td>${logicFrame.meta}</td>
                             <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification:"" }</td>
                             <td>${logicFrame.assumptions ? logicFrame.assumptions:"" }</td>
