@@ -302,9 +302,106 @@ export default class GeneratePdfController {
      const indicatorName = await IndicatorsProvider.getIndicatorName();
      const entity = await EntitiesProvider.getEntity();
      const  resource = await EntitiesProvider.getResource();
-     //const typeRisk = await EntitiesProvider.getEntitiesTypesRisks();
-     //const impactRisk = await EntitiesProvider.getEntitiesImpact()
-     //const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
+     const typeRisk = await EntitiesProvider.getEntitiesTypesRisks();
+     const impactRisk = await EntitiesProvider.getEntitiesImpact()
+     const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
+
+     const LevelData  = [
+        {
+            name: "Objetivo general",
+            value: 1,
+        },
+        {
+            name: "Producto",
+            value: 2,
+        },
+        {
+            name: "Actividad",
+            value: 3,
+        }
+    ];
+
+    const ResumeData = [
+        {
+            name: "Objetivo general",
+            value: 1,
+        },
+        {
+            name: "objetivo específico",
+            value: 2,
+        },
+        {
+            name: "Actividades",
+            value: 3,
+        }
+    ];
+
+    type IndicatorAction = {
+        id?: number;
+        type: number;
+        objective?: string;
+        dpnIndicator?: number;
+        dpn?: number;
+        staticValueCode?: number;
+        staticValue?: string;
+        total?: number;
+        accumulative?: number;
+        productMGA: string;
+        measurement: number;
+        year0: number;
+        year1: number;
+        year2: number;
+        year3: number;
+        year4: number;
+      }
+      
+      type IndicatorIndicative =  {
+        id?: number;
+        type: number;
+        line?: number;
+        component?: number;
+        program?: number;
+        indicator?: number;
+        developmentPlan?: string;
+        productMGA: string;
+        measurement: number;
+        year0: number;
+        year1: number;
+        year2: number;
+        year3: number;
+        year4: number;
+      }
+      type CombinedIndicator = IndicatorIndicative | IndicatorAction;
+
+
+      const indicatorsIndicative: IndicatorIndicative[] = project.data.indicatorsIndicative || [];
+      const indicatorsAction: IndicatorAction[] = project.data.indicatorsAction || [];
+      
+      const combinedIndicators: (IndicatorIndicative | IndicatorAction)[] = (indicatorsIndicative.concat(indicatorsAction) as (IndicatorIndicative | IndicatorAction)[]).filter(Boolean);
+      
+
+
+
+    //   const indicators: (CombinedIndicator & { name: string, value: number })[] = combinedIndicators
+    //   .map((indicator, index): CombinedIndicator & { name: string, value: number } | null => {        let keyToMatch;
+    //     if ('indicator' in indicator) {
+    //         keyToMatch = 'indicator'; // Si es indicatorsIndicative, la clave a comparar es 'indicator'
+    //     } else if ('dpn' in indicator) {
+    //         keyToMatch = 'dpn'; // Si es indicatorsAction, la clave a comparar es 'dpn'
+    //     } else {
+    //         // Trata los objetos sin clave válida como objetos predeterminados
+    //         indicator = { indicator: 0 /* Valor predeterminado */, ...indicator };
+    //         keyToMatch = 'indicator'; // Establece la clave a comparar como 'indicator'
+    //     }
+    
+    //     const matchedData = indicatorName.data?.find(data => data[keyToMatch] === indicator[keyToMatch]);
+    //     return {
+    //         name: matchedData ? `${matchedData.description}` : `${indicator.type === 'IndicatorIndicative' ? indicator.type : indicator.staticValue}`,
+    //         value: index
+    //     };
+    // }).filter((indicator): indicator is CombinedIndicator & { name: string, value: number } => indicator !== null);
+
+    
 
 
      const objectivesData =  project.data.causes?.map(cause => {
@@ -320,6 +417,13 @@ export default class GeneratePdfController {
             value: data.productMGA
         }
     }) ;
+
+    const activities = project.data.activities?.map((cause) => {
+        return {
+            name: `${cause.activityMGA}. ${cause.activityDescriptionMGA}`,
+            value: cause.activityMGA
+        }
+    });
    const  dataAcumulativo= [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
 
         const clasification = project.data.classifications?.map(Classifications => {
@@ -356,6 +460,71 @@ export default class GeneratePdfController {
                     return ''; // En caso de otras clasificaciones, devuelve una cadena vacía
             }
         }).join('');
+
+
+
+        const risksRelacionated = project.data.risks?.map(risks => {
+            switch (risks.level) {
+                case 1:
+                    return `
+                    <td>
+                        ${project.data.centerProblem}
+                    </td>
+            `;
+          
+                 case 2:
+                    const levelRisk = productsData?.find(item => item.value == risks.risk)?.name
+                    
+                    return `
+                    <td>
+                        ${levelRisk}
+                    </td>
+            `;
+                case 3:
+                    const levelActivities = activities?.find(item => item.value == risks.risk)?.name
+                    return `
+                    <td>
+                        ${levelActivities}
+                    </td>
+            `;
+                default:
+                    return ''
+            }
+        }).join('');
+
+        
+        const DescriptionLogicFrame = project.data.logicFrame?.map(logicFrame => {
+            switch (logicFrame.resume) {
+                case 1:
+                    return `
+                    <td>
+                        ${project.data.centerProblem}
+                    </td>
+            `;
+          
+                 case 2:
+                    const objetiveSpecific = objectivesData?.find(item => item.value == logicFrame.description)?.name
+                    
+                    return `
+                    <td>
+                        ${objetiveSpecific}
+                    </td>
+            `;
+                case 3:
+                    const activitiesLogicFrame = activities?.find(item => item.value == logicFrame.description)?.name
+                    return `
+                    <td>
+                        ${activitiesLogicFrame}
+                    </td>
+            `;
+                default:
+                    return ''
+            }
+        }).join('');
+
+
+
+       
 
      
 
@@ -1194,7 +1363,7 @@ export default class GeneratePdfController {
                 </div>
 
                 <div class="table-container">
-                    <table style = "  font-size: 11px; ">
+                    <table style = "  font-size: 10px; ">
                         <thead>
                             <tr>
                                 <th>Nivel</th>
@@ -1211,14 +1380,14 @@ export default class GeneratePdfController {
                         ${
                             project.data.risks?.map(risks => `
                                 <tr>
-                                    <td>${risks.level}</td>
-                                    <td>${risks.risk}</td>
-                                    <td>${risks.typeRisk}</td>
+                                    <td>${LevelData.find(item => item.value === risks.level)?.name }</td>
+                                        ${risksRelacionated != undefined ? risksRelacionated : "" }
+                                    <td>${typeRisk.data.find(position => position.id == risks.typeRisk)?.description }</td>
                                     <td>${risks.descriptionRisk}</td>
-                                    <td>${risks.probability}</td>
-                                    <td>${risks.impact}</td>
-                                    <td>${risks.effects}</td>
-                                    <td>${risks.mitigation}</td>
+                                    <td>${probabilityRisk.data.find(position => position.id == risks.probability)?.description}</td>
+                                    <td>${impactRisk.data.find(position => position.id ==  risks.impact)?.description}</td>
+                                    <td>${risks.effects != null ? risks.effects : "" }</td>
+                                    <td>${risks.mitigation != null ? risks.mitigation : ""}</td>
                                 </tr>
                             `).join('')
                         }
@@ -1502,7 +1671,7 @@ export default class GeneratePdfController {
                 <div class="section-title-name">Matriz de marco lógico</div> 
             </div>
 
-            <table>
+            <table style = "  font-size: 10px; ">
                 <thead>
                     <tr>
                         <th>Resumen narrativo</th>
@@ -1518,8 +1687,8 @@ export default class GeneratePdfController {
                 ${
                     project.data.logicFrame?.map(logicFrame => `
                         <tr>
-                            <td>${logicFrame.resume}</td>
-                            <td>${logicFrame.description}</td>
+                            <td>${ResumeData.find(item => item.value === logicFrame.resume)?.name  }</td>
+                                ${DescriptionLogicFrame}
                             <td>${logicFrame.indicator}</td>
                             <td>${logicFrame.meta}</td>
                             <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification:"" }</td>
@@ -1539,12 +1708,12 @@ export default class GeneratePdfController {
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
        const browser = await puppeteer.launch({
-         headless: "new",
-         args: ["--no-sandbox"],
-         executablePath: "/usr/bin/chromium",
-       });
+          headless: "new",
+          args: ["--no-sandbox"],
+          executablePath: "/usr/bin/chromium",
+        });
 
-     // const browser = await puppeteer.launch();
+     //const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
