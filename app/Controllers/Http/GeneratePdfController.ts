@@ -229,13 +229,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-       const browser = await puppeteer.launch({
+      const browser = await puppeteer.launch({
          headless: "new",
          args: ["--no-sandbox"],
          executablePath: "/usr/bin/chromium",
-       });
+      });
 
-     // const browser = await puppeteer.launch();
+      //const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
@@ -1584,7 +1584,7 @@ export default class GeneratePdfController {
                         </div>
                         <div class="prop">
                         <span class="title">Acumulativo cuatrienio </span>
-                            <span> ${ indicatorsAction?.accumulative != undefined  ?  dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative )?.name : ""}</span>
+                            <span> ${ indicatorsAction?.accumulative != undefined ?  dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative )?.name : "Si"}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
@@ -1635,13 +1635,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-    //    const browser = await puppeteer.launch({
-    //      headless: "new",
-    //      args: ["--no-sandbox"],
-    //      executablePath: "/usr/bin/chromium",
-    //    });
+        const browser = await puppeteer.launch({
+          headless: "new",
+          args: ["--no-sandbox"],
+          executablePath: "/usr/bin/chromium",
+        });
 
-     const browser = await puppeteer.launch();
+     //const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
