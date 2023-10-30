@@ -271,10 +271,6 @@ export default class GeneratePdfController {
 
     let DateProjectArchive = "";
 
-
-
-
-
     try {
      const project = await ProjectProvider.getProjectById(projectId);
      const typeIndicators = await IndicatorsProvider.getIndicatorType();
@@ -335,74 +331,6 @@ export default class GeneratePdfController {
             value: 3,
         }
     ];
-
-    type IndicatorAction = {
-        id?: number;
-        type: number;
-        objective?: string;
-        dpnIndicator?: number;
-        dpn?: number;
-        staticValueCode?: number;
-        staticValue?: string;
-        total?: number;
-        accumulative?: number;
-        productMGA: string;
-        measurement: number;
-        year0: number;
-        year1: number;
-        year2: number;
-        year3: number;
-        year4: number;
-      }
-      
-      type IndicatorIndicative =  {
-        id?: number;
-        type: number;
-        line?: number;
-        component?: number;
-        program?: number;
-        indicator?: number;
-        developmentPlan?: string;
-        productMGA: string;
-        measurement: number;
-        year0: number;
-        year1: number;
-        year2: number;
-        year3: number;
-        year4: number;
-      }
-      type CombinedIndicator = IndicatorIndicative | IndicatorAction;
-
-
-      const indicatorsIndicative: IndicatorIndicative[] = project.data.indicatorsIndicative || [];
-      const indicatorsAction: IndicatorAction[] = project.data.indicatorsAction || [];
-      
-      const combinedIndicators: (IndicatorIndicative | IndicatorAction)[] = (indicatorsIndicative.concat(indicatorsAction) as (IndicatorIndicative | IndicatorAction)[]).filter(Boolean);
-      
-
-
-
-    //   const indicators: (CombinedIndicator & { name: string, value: number })[] = combinedIndicators
-    //   .map((indicator, index): CombinedIndicator & { name: string, value: number } | null => {        let keyToMatch;
-    //     if ('indicator' in indicator) {
-    //         keyToMatch = 'indicator'; // Si es indicatorsIndicative, la clave a comparar es 'indicator'
-    //     } else if ('dpn' in indicator) {
-    //         keyToMatch = 'dpn'; // Si es indicatorsAction, la clave a comparar es 'dpn'
-    //     } else {
-    //         // Trata los objetos sin clave válida como objetos predeterminados
-    //         indicator = { indicator: 0 /* Valor predeterminado */, ...indicator };
-    //         keyToMatch = 'indicator'; // Establece la clave a comparar como 'indicator'
-    //     }
-    
-    //     const matchedData = indicatorName.data?.find(data => data[keyToMatch] === indicator[keyToMatch]);
-    //     return {
-    //         name: matchedData ? `${matchedData.description}` : `${indicator.type === 'IndicatorIndicative' ? indicator.type : indicator.staticValue}`,
-    //         value: index
-    //     };
-    // }).filter((indicator): indicator is CombinedIndicator & { name: string, value: number } => indicator !== null);
-
-    
-
 
      const objectivesData =  project.data.causes?.map(cause => {
         return {
@@ -1707,13 +1635,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-       const browser = await puppeteer.launch({
-          headless: "new",
-          args: ["--no-sandbox"],
-          executablePath: "/usr/bin/chromium",
-        });
+    //    const browser = await puppeteer.launch({
+    //      headless: "new",
+    //      args: ["--no-sandbox"],
+    //      executablePath: "/usr/bin/chromium",
+    //    });
 
-     //const browser = await puppeteer.launch();
+     const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
