@@ -14,7 +14,6 @@ import ImpactLevelProvider from '@ioc:core.ImpactLevelProvider';
 import ImpactTypeProvider from '@ioc:core.ImpactTypeProvider';
 import StageProvider from '@ioc:core.StageProvider';
 import ComponentsProvider from '@ioc:core.ComponentsProvider';
-import logicFrame from 'App/Models/LogicFrame';
 
 
 const { es } = require('date-fns/locale');
