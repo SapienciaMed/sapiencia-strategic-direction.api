@@ -282,7 +282,13 @@ export interface IActivityMGA {
   activityMGA: string;
   productDescriptionMGA: string;
   activityDescriptionMGA: string;
-  budgetsMGA: IBudgetMGA;
+  budgetsMGA: {
+    id?: number;
+    activityId?: number;
+    year: number;
+    validity: number;
+    budget: number;
+  }[];
   validity: number;
   year: number;
   detailActivities: IDetailActivity[];
