@@ -3,7 +3,7 @@ import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import { IFiles } from "App/Interfaces/StorageInterfaces";
 import { ApiResponse } from "App/Utils/ApiResponses";
-//const keyFilename = process.env.GCLOUD_KEYFILE;
+const keyFilename = process.env.GCLOUD_KEYFILE;
 const bucketName = process.env.GCLOUD_BUCKET ?? "";
 
 export interface IStorageService {
@@ -16,8 +16,8 @@ export interface IStorageService {
 export default class StorageService implements IStorageService {
     storage: Storage;
     constructor() {
-        //this.storage = new Storage({ keyFilename });
-        this.storage = new Storage();
+        this.storage = new Storage({ keyFilename });
+        //this.storage = new Storage();
     }
 
     async uploadFiles(file: MultipartFileContract, path?: string): Promise<boolean> {

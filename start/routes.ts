@@ -38,10 +38,13 @@ Route.group(() => {
   Route.get("/files/get-by-project/:id", "ProjectController.getProjectFiles");
   Route.post("/files/get-file", "ProjectController.getProjectFile");
   Route.post("/files/delete-file", "ProjectController.deleteProjectFile");
+  Route.put("/finish-project/:id", "ProjectController.finishProject");
 }).prefix("/api/v1/project");
 
 Route.group(() => {
   Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
+  Route.get("/generate-pdf-consolidate/:id/generate-pdf-consolidate", "GeneratePdfController.CreatePdfConsolidate");
+
 }).prefix("/api/v1/pdf");
 
 

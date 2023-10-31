@@ -182,6 +182,9 @@ export default class Projects extends BaseModel {
   @column({ columnName: "PRY_VERSION", serializeAs: "version" })
   public version: string;
 
+  @column({ columnName: "PRY_OBSERVACIONES_PROYECTO", serializeAs: "projectObservation" })
+  public projectObservation: string;
+  
   @column({ columnName: "PRY_TEMPTAB", serializeAs: "tempTab" })
   public tempTab: string;
 
