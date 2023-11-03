@@ -41,7 +41,7 @@ const filters = {
 }
 
 test.group("Project Service TEST for getAllHistorical", () => {
-  test("class service must have a method getAllTypesCoverage with a return", async (assert) => {
+  test("class service must have a method getAllHistorical with a return", async (assert) => {
     const result = service.getAllHistorical( 12 );
     assert.isNotNull(result);
   });
