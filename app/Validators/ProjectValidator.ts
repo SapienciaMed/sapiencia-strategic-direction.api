@@ -341,7 +341,7 @@ export default class ProjectValidator {
             indicator: schema.number(),
             meta:schema.number(),
             sourceVerification: schema.string.optional(),
-            assumptions: schema.string(),
+            assumptions: schema.string.optional(),
             indicatorType:
               schema.object().members({
                 type: schema.number(),

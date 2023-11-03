@@ -27,11 +27,11 @@ export default class extends BaseSchema {
       .comment("Meta indicador, se carga de indicadores meta global");
       table
       .text("MLO_FUENTE_VERIFICACION")
-      .notNullable()
+      .nullable()
       .comment("fuenta de verificacion 500 caracteres");
       table
       .text("MLO_SUPUESTO")
-      .notNullable()
+      .nullable()
       .comment("supuestos 500 caracteres");
       table
       .integer("MLO_CODPRY_PROYECTO")

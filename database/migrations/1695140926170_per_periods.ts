@@ -10,11 +10,11 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .integer("PER_PERIODO")
+      .double("PER_PERIODO")
       .notNullable()
       .comment("periodo");
       table
-      .integer("PER_CANTIDAD")
+      .double("PER_CANTIDAD")
       .notNullable()
       .comment("cantidad");
     })
