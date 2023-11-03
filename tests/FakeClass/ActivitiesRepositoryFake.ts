@@ -6,6 +6,11 @@ import { IActivityMGA,
          IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
 import { IPagingData } from "App/Utils/ApiResponses";
 import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
+
+interface IActivityFilter {
+  page: number,
+  perPage: number
+}
 export default class ActivitiesRepositoryFake implements IActivitiesRepository {
   createActivities(
     _activities: IActivityMGA[], 
@@ -26,6 +31,9 @@ export default class ActivitiesRepositoryFake implements IActivitiesRepository {
   }
   getDetailedActivitiesPaginated( _filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>> {
     return Promise.resolve( {} as IPagingData<IDetailActivity>);
+  }
+  getActivitiesByFilters( _filters: IActivityFilter ): Promise<IActivityMGA[]> {
+    return Promise.resolve( {} as Promise<IActivityMGA[]>);
   }
 
 }
