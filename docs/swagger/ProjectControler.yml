@@ -1,0 +1,191 @@
+/api/v1/project/get-all-historical:
+  get:
+    tags:
+      - histórico proyectos
+    summary: Permite obtener todas las versiones de un proyecto
+    produces:
+      - application/json
+    responses:
+      200:
+        description: Operación realizada correctamente
+        content:
+          application/json:
+            schema:
+              type: object
+            examples:
+              OK:
+                value:
+                  {
+                    "data": [
+                        {
+                          "id": 40,
+                          "bpin": "9200113",
+                          "project": "Ampliación del acceso y la permanencia en la educación postsecundaria SAPIENCIA.",
+                          "dateFrom": 2012,
+                          "dateTo": 2028,
+                          "process": 5,
+                          "dependency": 1,
+                          "pnd_pacto": "sfdhfjgjgbk",
+                          "pnd_linea": "Nunc ac eros sit amet ante malesuada vulputate blandit quis nisl.",
+                          "pnd_programa": "Maecenas aliquam massa vitae nisi tristique malesuada nec in mauris. Integer eu suscipit tellus.",
+                          "pdd_linea": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                          "pdd_componentes": "Aliquam dignissim massa in volutpat mollis. Suspendisse potenti. Curabitur condimentum fermentum convallis.",
+                          "pdd_programa": "Quisque eros quam, porta ac pretium nec, sagittis sed dui.",
+                          "pdi_linea": "Nam nec risus quis justo dignissim finibus molestie at arcu.",
+                          "pdi_componentes": "Sed varius enim molestie, sagittis dui non, placerat ante.",
+                          "pdi_programa": "Nulla nunc lorem, posuere ut sodales dapibus, ornare in magna.",
+                          "problemDescription": "Aenean at magna eget arcu finibus dignissim et ut metus. Curabitur auctor sapien ut purus rhoncus, id feugiat enim porttitor.",
+                          "magnitude": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                          "centerProblem": "Duis auctor molestie venenatis.",
+                          "indicators": "Maecenas dictum condimentum leo ut varius.",
+                          "measurement": 0,
+                          "goal": "9999999.00",
+                          "object": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                          "user": "797940",
+                          "localitation": 999,
+                          "alternative": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                          "resumeAlternative": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                          "descriptionCapacity": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                          "unitCapacity": 2,
+                          "capacityGenerated": 999,
+                          "environmentDiagnosis": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                          "objectivePeople": 9999999,
+                          "informationSource": "Sapiencia",
+                          "region": 2,
+                          "departament": 5,
+                          "district": 1,
+                          "shelter": "Fuente de la información ",
+                          "formulation": "g",
+                          "rol": "g",
+                          "order": "g",
+                          "tecniques": true,
+                          "ambiental": false,
+                          "sociocultural": false,
+                          "observations": "a",
+                          "status": 2,
+                          "dateCreate": "2023-11-02T19:31:22.000-05:00",
+                          "dateModify": "2023-11-02T19:27:11.000Z",
+                          "version": "1.10",
+                          "projectObservation": null,
+                          "tempTab": null
+                        }
+                    ],
+                    "operation": {
+                        "code": "OK",
+                        "messageCode": 200
+                    }
+                }
+    security:
+      - apiAuth: []
+
+/api/v1/project/get-all-historical-paginated:
+    get:
+      tags:
+        - histórico proyectos
+      summary: Permite obtener todas las versiones de un proyecto páginadas
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                page:
+                  type: number
+                  description: Número de página.
+                perPage:
+                  type: number
+                  description: Resultados por página
+                bpin:
+                    type: number
+                    description: Código bpin.
+                project: 
+                    type: string
+                    description: Nombre del proyecto.
+                status: 
+                    type: number
+                    description: Estado del proyecto.
+      responses:
+        200:
+          description: Operación realizada correctamente
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                OK:
+                  value:
+                    {
+                      "data": [
+                          "array": [
+                              {
+                                "id": 40,
+                                "bpin": "9200113",
+                                "project": "Ampliación del acceso y la permanencia en la educación postsecundaria SAPIENCIA.",
+                                "dateFrom": 2012,
+                                "dateTo": 2028,
+                                "process": 5,
+                                "dependency": 1,
+                                "pnd_pacto": "sfdhfjgjgbk",
+                                "pnd_linea": "Nunc ac eros sit amet ante malesuada vulputate blandit quis nisl.",
+                                "pnd_programa": "Maecenas aliquam massa vitae nisi tristique malesuada nec in mauris. Integer eu suscipit tellus.",
+                                "pdd_linea": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                                "pdd_componentes": "Aliquam dignissim massa in volutpat mollis. Suspendisse potenti. Curabitur condimentum fermentum convallis.",
+                                "pdd_programa": "Quisque eros quam, porta ac pretium nec, sagittis sed dui.",
+                                "pdi_linea": "Nam nec risus quis justo dignissim finibus molestie at arcu.",
+                                "pdi_componentes": "Sed varius enim molestie, sagittis dui non, placerat ante.",
+                                "pdi_programa": "Nulla nunc lorem, posuere ut sodales dapibus, ornare in magna.",
+                                "problemDescription": "Aenean at magna eget arcu finibus dignissim et ut metus. Curabitur auctor sapien ut purus rhoncus, id feugiat enim porttitor.",
+                                "magnitude": "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                                "centerProblem": "Duis auctor molestie venenatis.",
+                                "indicators": "Maecenas dictum condimentum leo ut varius.",
+                                "measurement": 0,
+                                "goal": "9999999.00",
+                                "object": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                                "user": "797940",
+                                "localitation": 999,
+                                "alternative": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                                "resumeAlternative": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                                "descriptionCapacity": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                                "unitCapacity": 2,
+                                "capacityGenerated": 999,
+                                "environmentDiagnosis": "PROYECTO PARA CONSUMO DESDE MÓDULO PRESUPUESTO",
+                                "objectivePeople": 9999999,
+                                "informationSource": "Sapiencia",
+                                "region": 2,
+                                "departament": 5,
+                                "district": 1,
+                                "shelter": "Fuente de la información ",
+                                "formulation": "g",
+                                "rol": "g",
+                                "order": "g",
+                                "tecniques": true,
+                                "ambiental": false,
+                                "sociocultural": false,
+                                "observations": "a",
+                                "status": 2,
+                                "dateCreate": "2023-11-02T19:31:22.000-05:00",
+                                "dateModify": "2023-11-02T19:27:11.000Z",
+                                "version": "1.10",
+                                "projectObservation": null,
+                                "tempTab": null
+                              },
+                              "meta": {
+                                  "total": 25,
+                                  "per_page": 10,
+                                  "current_page": 2,
+                                  "last_page": 3,
+                                  "first_page": 1,
+                                  "first_page_url": "/?page=1",
+                                  "last_page_url": "/?page=3",
+                                  "next_page_url": "/?page=3",
+                                  "previous_page_url": "/?page=1"
+                              }
+                          ]  
+                      ],
+                      "operation": {
+                          "code": "OK",
+                          "messageCode": 200
+                      }
+                  }
+      security:
+        - apiAuth: []
