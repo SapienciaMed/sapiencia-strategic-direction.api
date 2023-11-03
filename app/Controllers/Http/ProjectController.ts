@@ -1,5 +1,5 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
-import { IProjectPaginated, IProjectFiltersPaginated} from "App/Interfaces/ProjectInterfaces";
+import { IProjectPaginated, IProjectFiltersPaginated, IHistoricalFiltersPaginated} from "App/Interfaces/ProjectInterfaces";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import { MultipartFileContract } from '@ioc:Adonis/Core/BodyParser';
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
@@ -67,6 +67,7 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
   }
 
   public async updateProject({ request, response }: HttpContextContract) {
+
     await Database.transaction(async (trx) => {
       try {
         const { id } = request.params();
@@ -86,6 +87,28 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
   public async getAllProjects({ response }: HttpContextContract) {
     try {
       return response.send(await ProjectProvider.getAllProjects());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getAllHistorical({ request, response }: HttpContextContract) {
+    try {
+      const { bpin } = request.params();
+      return response.send(await ProjectProvider.getAllHistorical( bpin ));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getAllHistoricalPaginated({ request, response }: HttpContextContract) {
+    try {
+      const data = request.body() as IHistoricalFiltersPaginated;
+      return response.send(await ProjectProvider.getAllHistoricalPaginated( data ));
     } catch (err) {
       return response.badRequest(
         new ApiResponse(null, EResponseCodes.FAIL, String(err))

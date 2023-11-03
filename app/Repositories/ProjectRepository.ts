@@ -4,7 +4,8 @@ import {
   IProjectPaginated,
   IProjectTemp,
   IProjectFiltersPaginated,
-  IFinishProjectForm
+  IFinishProjectForm,
+  IHistoricalFiltersPaginated
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -12,32 +13,7 @@ import { IPagingData } from "App/Utils/ApiResponses";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 import Status from "App/Models/Status";
 import { DateTime } from "luxon";
-
-export interface IProjectRepository {
-  getProjectByUser(user: string): Promise<IProject | null>;
-  createProject(
-    project: IProjectTemp,
-    trx: TransactionClientContract
-  ): Promise<IProject>;
-  updateProject(
-    project: IProjectTemp,
-    id: number,
-    trx: TransactionClientContract
-  ): Promise<IProject | null>;
-  getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]>;
-  getProjectsPaginated(
-    filters: IProjectPaginated
-  ): Promise<IPagingData<IProject>>;
-  getAllProjects(): Promise<IProject[]>;
-  getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>>;
-  getAllStatus(): Promise<MasterTable[]>;
-  getProjectById(id: number): Promise<IProject | null>;
-  finishProject(
-    data: IFinishProjectForm,
-    id: number,
-    trx: TransactionClientContract
-  ): Promise<IProject | null>;
-}
+import { IProjectRepository } from "App/Interfaces/repositories/IProjectRepository";
 
 export default class ProjectRepository implements IProjectRepository {
   async getProjectsPaginated(
@@ -198,11 +174,18 @@ export default class ProjectRepository implements IProjectRepository {
 
     const query = Projects.query();
 
+    toCreate.version = "1.00";
+
     if (project.register?.bpin) {
-      const existingProject = await query.where("bpin", project.register?.bpin);
-      if (existingProject && existingProject.length > 0) {
+      const existingProject = await query.where("bpin", project.register?.bpin)
+                                         .orderBy('PRY_VERSION','desc')
+                                         .limit(1);
+      if (existingProject && existingProject.length > 0 && ( project?.status !== 2 && project?.status  !== 3 ) ) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
+      const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version);
+      toCreate.dateModify = DateTime.local().toJSDate();
+      toCreate.version = updatedVersion;
       toCreate.bpin = project.register.bpin;
     }
 
@@ -347,7 +330,6 @@ export default class ProjectRepository implements IProjectRepository {
       toCreate.observations = project.transfers.observations;
     }
 
-    toCreate.version = "1.0";
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IProject;
@@ -529,14 +511,67 @@ export default class ProjectRepository implements IProjectRepository {
     return toUpdate.serialize() as IProject;
   }
 
+
+  async getAllHistorical( bpin: number ): Promise<IProject[]> {
+    const res = await Projects.query()
+                              .where('PRY_CODIGO_BPIN', bpin )
+                              .orderBy('PRY_ESTADO_PROYECTO', 'asc')
+                              .orderBy('PRY_FECHA_CREO', 'desc');
+    return res as unknown as IProject[];
+  }
+
+  async getAllHistoricalPaginated( filters: IHistoricalFiltersPaginated ): Promise<IPagingData<IProject>> {
+    if( !filters.bpin || isNaN(filters.bpin) ){
+      throw new Error("Se debe proporcionar un código BPIN válido.");
+    }
+    const query = Projects.query()
+                          .where("bpin", filters.bpin )
+                          .orderBy('PRY_ESTADO_PROYECTO', 'asc')
+                          .orderBy('PRY_FECHA_CREO', 'desc');
+    if (filters.project) {
+      query.where("project", filters.project);
+    }
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+    const res = await query.paginate(filters.page, filters.perPage);
+    const { data, meta } = res.serialize();
+    return {
+      array: data as IProject[],
+      meta,
+    };
+  }
+
+
   async getAllProjects(): Promise<IProject[]> {
-    const res = await Projects.query();
+    const res = await Projects.query()
+                              .where(
+                                "PRY_VERSION",
+                                "=",
+                                Projects.query()
+                                  .max('PRY_VERSION')
+                                  .from("PRY_PROYECTOS as p2")
+                                  .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
+                                  .groupBy("PRY_CODIGO_BPIN")
+                              )
+                              .distinct();
     return res as unknown as IProject[];
   }
 
   async getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>> {
-    const query = Projects.query().orderBy('PRY_ESTADO_PROYECTO', 'asc').orderBy('PRY_FECHA_CREO', 'desc');
-
+    const query = Projects.query()
+                          .where(
+                            "PRY_VERSION",
+                            "=",
+                            Projects.query()
+                              .max('PRY_VERSION')
+                              .from("PRY_PROYECTOS as p2")
+                              .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
+                              .groupBy("PRY_CODIGO_BPIN")
+                          )
+                          .distinct()
+                          .orderBy('PRY_ESTADO_PROYECTO', 'asc')
+                          .orderBy('PRY_FECHA_CREO', 'desc');
     if (filters.bpin) {
       query.where("bpin", filters.bpin);
     }
@@ -567,7 +602,7 @@ export default class ProjectRepository implements IProjectRepository {
   private updateProjectVersion(version: string): string {
     const [major, minor] = version.split('.').map(Number);
     const newMinor = minor + 1;
-    return `${major}.${newMinor}`;
+    return newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
   }
 
   async finishProject(

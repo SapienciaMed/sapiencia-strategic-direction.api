@@ -32,6 +32,8 @@ Route.group(() => {
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
   Route.get("/get-all", "ProjectController.getAllProjects");
+  Route.get("/get-all-historical/:bpin", "ProjectController.getAllHistorical");
+  Route.post("/get-all-historical-paginated", "ProjectController.getAllHistoricalPaginated");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
   Route.get("/status/get-all", "ProjectController.getAllStatus");
   Route.post("/upload/:id", "ProjectController.uploadProjectsDigitals");

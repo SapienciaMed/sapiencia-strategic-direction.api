@@ -1,5 +1,5 @@
-import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IProjectFiltersPaginated ,IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome, IFinishProjectForm } from "App/Interfaces/ProjectInterfaces";
-import { IProjectRepository } from "App/Repositories/ProjectRepository";
+import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IProjectFiltersPaginated ,IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome, IFinishProjectForm, IHistoricalFiltersPaginated } from "App/Interfaces/ProjectInterfaces";
+import { IProjectRepository } from "App/Interfaces/repositories/IProjectRepository";
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
 import { ICausesRepository } from "App/Repositories/CausesRepository";
@@ -24,6 +24,10 @@ export interface IProjectService {
   getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>>;
   getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>>
   getAllProjects(): Promise<ApiResponse<IProject[]>>;
+  getAllHistorical( bpin: number ): Promise<ApiResponse<IProject[]>>;
+  getAllHistoricalPaginated( 
+    filters: IHistoricalFiltersPaginated 
+  ): Promise<ApiResponse<IPagingData<IProject>>>;
   getProjectPaginated(
     filters: IProjectFiltersPaginated
   ): Promise<ApiResponse<IPagingData<IProject>>>;
@@ -53,12 +57,10 @@ export default class ProjectService implements IProjectService {
     return new ApiResponse(res, EResponseCodes.OK)
   }
 
-
   async getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>> {
     const res = await this.projectRepository.getProjectsByFilters(filters);
     return new ApiResponse(res, EResponseCodes.OK)
   }
-
 
   async getProjectByUser(user: string): Promise<ApiResponse<IProject>> {
     const res = await this.projectRepository.getProjectByUser(user);
@@ -73,8 +75,6 @@ export default class ProjectService implements IProjectService {
 
     return new ApiResponse(res, EResponseCodes.OK);
   }
-
-  
 
   async createProject(project: IProjectTemp, trx: TransactionClientContract): Promise<ApiResponse<IProject>> {
     const projectCreate = await this.projectRepository.createProject(project, trx);
@@ -214,6 +214,11 @@ export default class ProjectService implements IProjectService {
   }
 
   async updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>> {
+
+    if( project.status === 2 || project.status === 3 ){
+      return await this.createProject( project, trx );
+    }
+
     const res = await this.projectRepository.updateProject(project, id, trx);
     let causes: ICause[] | null = null;
     let effects: IEffect[] | null = null;
@@ -231,6 +236,7 @@ export default class ProjectService implements IProjectService {
     if (project.identification?.problemDescription?.causes) {
       causes = await this.causesRepository.updateCauses(project.identification.problemDescription.causes, id, trx);
     }
+
     if (project.identification?.problemDescription?.effects) {
       effects = await this.effectsRepository.updateEffects(project.identification.problemDescription.effects, id, trx);
     }
@@ -360,6 +366,16 @@ export default class ProjectService implements IProjectService {
   async getAllProjects(): Promise<ApiResponse<IProject[]>> {
     const res = await this.projectRepository.getAllProjects();
 
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
+  async getAllHistorical( bpin: number ): Promise<ApiResponse<IProject[]>> {
+    const res = await this.projectRepository.getAllHistorical( bpin );
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
+  async getAllHistoricalPaginated( filters: IHistoricalFiltersPaginated ): Promise<ApiResponse<IPagingData<IProject>>> {
+    const res = await this.projectRepository.getAllHistoricalPaginated( filters );
     return new ApiResponse(res, EResponseCodes.OK);
   }
 
