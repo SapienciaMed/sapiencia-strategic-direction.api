@@ -342,7 +342,7 @@ export interface IProjectTemp {
   id?: number;
   user: string;
   status: number;
-  tempTab: string;
+  tempTab?: string;
   register?: IRegisterForm;
   identification?: {
     problemDescription?: IProblemDescriptionForm;

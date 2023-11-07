@@ -360,8 +360,7 @@ export default class ProjectRepository implements IProjectRepository {
       toUpdate.status = project.status;
     }
 
-    toUpdate.tempTab = project.tempTab;
-    if (project?.tempTab !== undefined) {
+    if (project.tempTab !== undefined && project.tempTab !== null) {
       toUpdate.tempTab = project.tempTab;
     }
 
