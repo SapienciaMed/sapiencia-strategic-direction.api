@@ -24,7 +24,7 @@ export interface IProjectService {
   getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>>;
   getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>>
   getAllProjects(): Promise<ApiResponse<IProject[]>>;
-  getAllHistorical( bpin: number ): Promise<ApiResponse<IProject[]>>;
+  getAllHistorical(): Promise<ApiResponse<IProject[]>>;
   getAllHistoricalPaginated( 
     filters: IHistoricalFiltersPaginated 
   ): Promise<ApiResponse<IPagingData<IProject>>>;
@@ -369,8 +369,8 @@ export default class ProjectService implements IProjectService {
     return new ApiResponse(res, EResponseCodes.OK);
   }
 
-  async getAllHistorical( bpin: number ): Promise<ApiResponse<IProject[]>> {
-    const res = await this.projectRepository.getAllHistorical( bpin );
+  async getAllHistorical(): Promise<ApiResponse<IProject[]>> {
+    const res = await this.projectRepository.getAllHistorical();
     return new ApiResponse(res, EResponseCodes.OK);
   }
 

@@ -178,9 +178,9 @@ export default class ProjectRepository implements IProjectRepository {
 
     if (project.register?.bpin) {
       const existingProject = await query.where("bpin", project.register?.bpin)
-                                         .orderBy('PRY_VERSION','desc')
-                                         .limit(1);
-      if (existingProject && existingProject.length > 0 && ( project?.status !== 2 && project?.status  !== 3 ) ) {
+        .orderBy('PRY_VERSION', 'desc')
+        .limit(1);
+      if (existingProject && existingProject.length > 0 && (project?.status !== 2 && project?.status !== 3)) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
       const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version);
@@ -511,22 +511,20 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
 
-  async getAllHistorical( bpin: number ): Promise<IProject[]> {
+  async getAllHistorical(): Promise<IProject[]> {
     const res = await Projects.query()
-                              .where('PRY_CODIGO_BPIN', bpin )
-                              .orderBy('PRY_ESTADO_PROYECTO', 'asc')
-                              .orderBy('PRY_FECHA_CREO', 'desc');
+      .orderBy('PRY_VERSION', 'desc')
     return res as unknown as IProject[];
   }
 
-  async getAllHistoricalPaginated( filters: IHistoricalFiltersPaginated ): Promise<IPagingData<IProject>> {
-    if( !filters.bpin || isNaN(filters.bpin) ){
+  async getAllHistoricalPaginated(filters: IHistoricalFiltersPaginated): Promise<IPagingData<IProject>> {
+    if (!filters.bpin || isNaN(filters.bpin)) {
       throw new Error("Se debe proporcionar un código BPIN válido.");
     }
     const query = Projects.query()
-                          .where("bpin", filters.bpin )
-                          .orderBy('PRY_ESTADO_PROYECTO', 'asc')
-                          .orderBy('PRY_FECHA_CREO', 'desc');
+      .where("bpin", filters.bpin)
+      .orderBy('PRY_ESTADO_PROYECTO', 'asc')
+      .orderBy('PRY_FECHA_CREO', 'desc');
     if (filters.project) {
       query.where("project", filters.project);
     }
@@ -544,33 +542,33 @@ export default class ProjectRepository implements IProjectRepository {
 
   async getAllProjects(): Promise<IProject[]> {
     const res = await Projects.query()
-                              .where(
-                                "PRY_VERSION",
-                                "=",
-                                Projects.query()
-                                  .max('PRY_VERSION')
-                                  .from("PRY_PROYECTOS as p2")
-                                  .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
-                                  .groupBy("PRY_CODIGO_BPIN")
-                              )
-                              .distinct();
+      .where(
+        "PRY_VERSION",
+        "=",
+        Projects.query()
+          .max('PRY_VERSION')
+          .from("PRY_PROYECTOS as p2")
+          .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
+          .groupBy("PRY_CODIGO_BPIN")
+      )
+      .distinct();
     return res as unknown as IProject[];
   }
 
   async getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>> {
     const query = Projects.query()
-                          .where(
-                            "PRY_VERSION",
-                            "=",
-                            Projects.query()
-                              .max('PRY_VERSION')
-                              .from("PRY_PROYECTOS as p2")
-                              .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
-                              .groupBy("PRY_CODIGO_BPIN")
-                          )
-                          .distinct()
-                          .orderBy('PRY_ESTADO_PROYECTO', 'asc')
-                          .orderBy('PRY_FECHA_CREO', 'desc');
+      .where(
+        "PRY_VERSION",
+        "=",
+        Projects.query()
+          .max('PRY_VERSION')
+          .from("PRY_PROYECTOS as p2")
+          .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
+          .groupBy("PRY_CODIGO_BPIN")
+      )
+      .distinct()
+      .orderBy('PRY_ESTADO_PROYECTO', 'asc')
+      .orderBy('PRY_FECHA_CREO', 'desc');
     if (filters.bpin) {
       query.where("bpin", filters.bpin);
     }
