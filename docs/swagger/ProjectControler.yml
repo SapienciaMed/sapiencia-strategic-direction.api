@@ -79,7 +79,7 @@
       - apiAuth: []
 
 /api/v1/project/get-all-historical-paginated:
-    get:
+    post:
       tags:
         - histórico proyectos
       summary: Permite obtener todas las versiones de un proyecto páginadas
