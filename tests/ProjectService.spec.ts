@@ -42,27 +42,27 @@ const filters = {
 
 test.group("Project Service TEST for getAllHistorical", () => {
   test("class service must have a method getAllTypesCoverage with a return", async (assert) => {
-    const result = service.getAllHistorical( 12 );
+    const result = service.getAllHistorical();
     assert.isNotNull(result);
   });
 
   test("the method getAllHistorical must be a promise", async (assert) => {
-    const result = service.getAllHistorical( 12 );
+    const result = service.getAllHistorical();
     assert.typeOf(result, "Promise");
   });
 
   test("the method getAllHistorical must return a ApiResponse", async (assert) => {
-    const result = service.getAllHistorical( 12 );
+    const result = service.getAllHistorical();
     assert.instanceOf( ( await result ) , ApiResponse);
   });
 
   test("the method getAllHistorical must return a Success code ", async (assert) => {
-    const result = service.getAllHistorical( 12 );
+    const result = service.getAllHistorical();
     assert.isTrue( ( await result ).operation.code === EResponseCodes.OK);
   });
 
   test("the method getAllHistorical must return a intance of Array ", async (assert) => {
-    const result = service.getAllHistorical( 12 );
+    const result = service.getAllHistorical();
     assert.isArray( ( await result).data );
   });
 });

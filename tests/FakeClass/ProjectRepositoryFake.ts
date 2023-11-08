@@ -29,7 +29,7 @@ export default class ProjectRepositoryFake implements IProjectRepository {
   getProjectsByFilters( _filters: IProjectFilters ): Promise<IProject[]> {
     return Promise.resolve([ projects.serialize() ] as IProject[]);
   }
-  getAllHistorical( _bpin: number ): Promise<IProject[]> {
+  getAllHistorical(): Promise<IProject[]> {
     return Promise.resolve([] as IProject[]);
   }
   getAllHistoricalPaginated( _filters: IHistoricalFiltersPaginated ): Promise<IPagingData<IProject>> {
