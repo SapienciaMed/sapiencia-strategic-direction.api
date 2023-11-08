@@ -215,14 +215,9 @@ export default class ProjectService implements IProjectService {
 
   async updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>> {
 
-    console.log('project?.createHistory: ', project?.createHistory );
-    console.log('project?.oldStatus: ', project?.oldStatus );
-    if( project.status === 2 
-      || project.status === 3 
-      && project?.createHistory 
-      && project?.oldStatus !=  project?.status 
+    if((project.status === 2 || project.status === 3) 
+    && (project?.createHistory && project?.oldStatus != project?.status)
     ){
-      console.log('entro');
       return await this.createProject( project, trx );
     }
 
