@@ -32,7 +32,7 @@ Route.group(() => {
   Route.post("/create", "ProjectController.createProject");
   Route.put("/update/:id", "ProjectController.updateProject");
   Route.get("/get-all", "ProjectController.getAllProjects");
-  Route.get("/get-all-historical/:bpin", "ProjectController.getAllHistorical");
+  Route.get("/get-all-historical", "ProjectController.getAllHistorical");
   Route.post("/get-all-historical-paginated", "ProjectController.getAllHistoricalPaginated");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
   Route.get("/status/get-all", "ProjectController.getAllStatus");
@@ -111,7 +111,10 @@ Route.group(() => {
   Route.post("/generate-consolidated", "ActivitiesController.generateConsolidated");
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
+  Route.post("/mga/get-by-filters", "ActivitiesController.getActivitiesByFilters")
 }).prefix("/api/v1/activities");
+
+
 
 Route.group(() => {
   Route.get("/dpn/get-all", "IndicatorsController.getIndicatorDNP");

@@ -1,5 +1,5 @@
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
-import { IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter, IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
+import { IActivityFilter, IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter, IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
 import Activities from "App/Models/Activities";
 import Budgets from "App/Models/Budgets";
 import DetailActivities from "App/Models/DetailsActivities";
@@ -10,9 +10,28 @@ export interface IActivitiesRepository {
     updateActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]>;
     getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]>
     getDetailedActivitiesPaginated(filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>>;
+    getActivitiesByFilters(filters: IActivityFilter): Promise<IActivityMGA[]>
+
 }
 
 export default class ActivitiesRepository implements IActivitiesRepository {
+    async getActivitiesByFilters(filters: IActivityFilter): Promise<IActivityMGA[]> {
+        const query = Activities.query().preload("detailActivities")
+
+        if(filters.year) {
+            query.where('validity', filters.year)
+        }
+
+        if(filters.projectId) {
+            query.where('idProject', filters.projectId)
+        }
+
+        const res = await query
+
+        return res.map(i => i.serialize() as IActivityMGA)
+
+    }
+
     async getDetailedActivitiesPaginated(filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>> {
         const query = DetailActivities.query().preload('activity')
 

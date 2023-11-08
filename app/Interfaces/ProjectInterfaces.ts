@@ -342,7 +342,7 @@ export interface IProjectTemp {
   id?: number;
   user: string;
   status: number;
-  tempTab: string;
+  tempTab?: string;
   register?: IRegisterForm;
   identification?: {
     problemDescription?: IProblemDescriptionForm;
@@ -374,6 +374,11 @@ export interface IDetailedActivityFilter {
   idList?: number[];
   description?: string;
   detail?: string
+}
+
+export interface IActivityFilter {
+  year?: number
+  projectId?: number
 }
 
 export interface IDetailedActivityPaginated {

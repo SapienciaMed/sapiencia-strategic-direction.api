@@ -1,6 +1,8 @@
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
 import {
+  IActivityFilter,
+  IActivityMGA,
   IDetailActivity,
   IDetailedActivityFilter,
   IDetailedActivityPaginated,
@@ -14,10 +16,16 @@ export interface IActivityService {
   getDetailedActivitiesPaginated(
     filters: IDetailedActivityPaginated
   ): Promise<ApiResponse<IPagingData<IDetailActivity>>>;
+  getActivitiesByFilters(filters: IActivityFilter): Promise<ApiResponse<IActivityMGA[]>>
 }
 
 export default class ActivityService implements IActivityService {
   constructor(private activitiesRepository: IActivitiesRepository) {}
+
+  async getActivitiesByFilters(filters: IActivityFilter): Promise<ApiResponse<IActivityMGA[]>> {
+    const res = await this.activitiesRepository.getActivitiesByFilters(filters)
+    return new ApiResponse(res, EResponseCodes.OK)
+  }
 
   async getDetailedActivitiesPaginated(
     filters: IDetailedActivityPaginated

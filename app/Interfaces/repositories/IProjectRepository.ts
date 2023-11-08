@@ -23,7 +23,7 @@ export interface IProjectRepository {
       trx: TransactionClientContract
     ): Promise<IProject | null>;
     getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]>;
-    getAllHistorical( bpin: number ): Promise<IProject[]>;
+    getAllHistorical(): Promise<IProject[]>;
     getAllHistoricalPaginated(
       filters: IHistoricalFiltersPaginated
     ): Promise<IPagingData<IProject>>;

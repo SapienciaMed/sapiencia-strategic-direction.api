@@ -94,10 +94,9 @@ public async getProjectsPaginated({ request, response }: HttpContextContract) {
     }
   }
 
-  public async getAllHistorical({ request, response }: HttpContextContract) {
+  public async getAllHistorical({ response }: HttpContextContract) {
     try {
-      const { bpin } = request.params();
-      return response.send(await ProjectProvider.getAllHistorical( bpin ));
+      return response.send(await ProjectProvider.getAllHistorical());
     } catch (err) {
       return response.badRequest(
         new ApiResponse(null, EResponseCodes.FAIL, String(err))
