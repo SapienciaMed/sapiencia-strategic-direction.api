@@ -348,12 +348,14 @@ export default class ProjectRepository implements IProjectRepository {
     const query = Projects.query();
 
     if (project.register?.bpin && project.id) {
-      const existingProject = await query.where("bpin", project.register?.bpin).where('id', '<>', project.id).first();
-      if (existingProject) {
-        throw new Error("Ya existe un proyecto con este BPIN.");
+      const findProject = await query.where('id', '=', project.id);
+      if (findProject.at(0)?.bpin != project.register?.bpin) {
+        const existingProject = await query.where("bpin", project.register?.bpin);
+        if (existingProject) throw new Error("Ya existe un proyecto con este BPIN.");
       }
       toUpdate.bpin = project.register.bpin;
     }
+
 
     toUpdate.user = project.user;
     if (project?.status !== undefined) {

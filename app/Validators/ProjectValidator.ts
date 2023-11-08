@@ -377,7 +377,9 @@ export default class ProjectValidator {
       ambiental: schema.boolean.optional(),
       sociocultural: schema.boolean.optional(),
       observations: schema.string.optional(),
-    })
+    }),
+    createHistory: schema.boolean.optional(),
+    oldStatus: schema.number.optional()
   });
 
   /**
