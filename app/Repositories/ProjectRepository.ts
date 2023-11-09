@@ -5,7 +5,8 @@ import {
   IProjectTemp,
   IProjectFiltersPaginated,
   IFinishProjectForm,
-  IHistoricalFiltersPaginated
+  IHistoricalFiltersPaginated,
+  IProjectFiltersHistorical
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -509,9 +510,19 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
 
-  async getAllHistorical(): Promise<IProject[]> {
-    const res = await Projects.query()
-      .orderBy('PRY_VERSION', 'desc')
+  async getAllHistorical(data: IProjectFiltersHistorical): Promise<IProject[]> {
+    const query = Projects.query();
+    if(data.bpin) {
+      query.where('bpin', data.bpin);
+    }
+    if(data.project) {
+      query.where('project', data.project);
+    }
+    if(data.validity) {
+      query.whereRaw("YEAR(PRY_FECHA_CREO) = ?", [data.validity])
+    }
+    query.orderBy('PRY_VERSION', 'desc')
+    const res = await query;
     return res as unknown as IProject[];
   }
 

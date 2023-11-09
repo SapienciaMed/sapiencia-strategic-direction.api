@@ -5,7 +5,8 @@ import {
     IProjectTemp,
     IProjectFiltersPaginated,
     IFinishProjectForm,
-    IHistoricalFiltersPaginated
+    IHistoricalFiltersPaginated,
+    IProjectFiltersHistorical
   } from "App/Interfaces/ProjectInterfaces";
   import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
   import { IPagingData } from "App/Utils/ApiResponses";
@@ -23,7 +24,7 @@ export interface IProjectRepository {
       trx: TransactionClientContract
     ): Promise<IProject | null>;
     getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]>;
-    getAllHistorical(): Promise<IProject[]>;
+    getAllHistorical(data: IProjectFiltersHistorical): Promise<IProject[]>;
     getAllHistoricalPaginated(
       filters: IHistoricalFiltersPaginated
     ): Promise<IPagingData<IProject>>;

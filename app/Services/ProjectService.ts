@@ -1,4 +1,4 @@
-import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IProjectFiltersPaginated ,IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome, IFinishProjectForm, IHistoricalFiltersPaginated } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IProjectFiltersPaginated ,IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome, IFinishProjectForm, IHistoricalFiltersPaginated, IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Interfaces/repositories/IProjectRepository";
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -24,7 +24,7 @@ export interface IProjectService {
   getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>>;
   getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>>
   getAllProjects(): Promise<ApiResponse<IProject[]>>;
-  getAllHistorical(): Promise<ApiResponse<IProject[]>>;
+  getAllHistorical(data: IProjectFiltersHistorical): Promise<ApiResponse<IProject[]>>;
   getAllHistoricalPaginated( 
     filters: IHistoricalFiltersPaginated 
   ): Promise<ApiResponse<IPagingData<IProject>>>;
@@ -371,8 +371,8 @@ export default class ProjectService implements IProjectService {
     return new ApiResponse(res, EResponseCodes.OK);
   }
 
-  async getAllHistorical(): Promise<ApiResponse<IProject[]>> {
-    const res = await this.projectRepository.getAllHistorical();
+  async getAllHistorical(data: IProjectFiltersHistorical): Promise<ApiResponse<IProject[]>> {
+    const res = await this.projectRepository.getAllHistorical(data);
     return new ApiResponse(res, EResponseCodes.OK);
   }
 

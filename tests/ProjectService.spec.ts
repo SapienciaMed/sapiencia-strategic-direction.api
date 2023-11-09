@@ -16,7 +16,7 @@ import ProfitsIncomeRepositoryFake from "./FakeClass/ProfitsIncomeRepositoryFake
 import SourceFundingRepositoryFake from "./FakeClass/SourceFundingRepositoryFake";
 import IndicatorsRepositoryFake from "./FakeClass/IndicatorsRepositoryFake";
 import LogicFrameRepositoryFake from "./FakeClass/LogicFrameRepositoryFake";
-import { IProject } from "App/Interfaces/ProjectInterfaces";
+import { IProject, IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
 
 const service = new ProjectService(
   new ProjectRepositoryFake(),
@@ -40,29 +40,35 @@ const filters = {
   bpin: 2909
 }
 
+const filtersHistorical: IProjectFiltersHistorical = {
+  bpin: "2909",
+  project: "test",
+  validity: "2023"
+}
+
 test.group("Project Service TEST for getAllHistorical", () => {
   test("class service must have a method getAllTypesCoverage with a return", async (assert) => {
-    const result = service.getAllHistorical();
+    const result = service.getAllHistorical(filtersHistorical);
     assert.isNotNull(result);
   });
 
   test("the method getAllHistorical must be a promise", async (assert) => {
-    const result = service.getAllHistorical();
+    const result = service.getAllHistorical(filtersHistorical);
     assert.typeOf(result, "Promise");
   });
 
   test("the method getAllHistorical must return a ApiResponse", async (assert) => {
-    const result = service.getAllHistorical();
+    const result = service.getAllHistorical(filtersHistorical);
     assert.instanceOf( ( await result ) , ApiResponse);
   });
 
   test("the method getAllHistorical must return a Success code ", async (assert) => {
-    const result = service.getAllHistorical();
+    const result = service.getAllHistorical(filtersHistorical);
     assert.isTrue( ( await result ).operation.code === EResponseCodes.OK);
   });
 
   test("the method getAllHistorical must return a intance of Array ", async (assert) => {
-    const result = service.getAllHistorical();
+    const result = service.getAllHistorical(filtersHistorical);
     assert.isArray( ( await result).data );
   });
 });
