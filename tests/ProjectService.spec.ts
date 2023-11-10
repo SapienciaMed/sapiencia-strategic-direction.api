@@ -47,7 +47,7 @@ const filtersHistorical: IProjectFiltersHistorical = {
 }
 
 test.group("Project Service TEST for getAllHistorical", () => {
-  test("class service must have a method getAllTypesCoverage with a return", async (assert) => {
+  test("class service must have a method getAllHistorical with a return", async (assert) => {
     const result = service.getAllHistorical(filtersHistorical);
     assert.isNotNull(result);
   });
