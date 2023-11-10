@@ -2048,6 +2048,10 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     <div class="section">
                         <div class="section-title">2. IDENTIFICACIÓN</div>
                     </div>
+
+                    <div class="section">
+                         <div class="section-title">Población</div>
+                    </div>
     
                     <table>
                     <thead>
@@ -2568,7 +2572,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
           await browser.close();
     
           response.header('Content-Type', 'application/pdf');
-          const nombreArchivo = `Ficha_técnica_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
+          const nombreArchivo = `Proyecto_${project.data.bpin}_ ${project.data.version}.pdf`;
           response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
           response.status(200).send(pdfBuffer);
         } catch (err) {
@@ -2984,6 +2988,10 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             <div class="section">
                                 <div class="section-title">2. IDENTIFICACIÓN</div>
                             </div>
+
+                            <div class="section">
+                                <div class="section-title">Población</div>
+                             </div>
 
                             <table>
                             <thead>
@@ -3543,7 +3551,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
           await browser.close();
     
           response.header('Content-Type', 'application/pdf');
-          const nombreArchivo = `Ficha_técnica_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
+          const nombreArchivo = `Proyecto_${project.data.bpin}_ ${project.data.version}.pdf`;
           response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
           response.status(200).send(pdfBuffer);
         } catch (err) {
