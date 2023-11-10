@@ -605,7 +605,7 @@ export default class ProjectRepository implements IProjectRepository {
     return res.map((i) => i.serialize() as MasterTable);
   }
 
-  private updateProjectVersion(version: string): string {
+  private updateProjectVersion(version: string = "0.0"): string {
     const [major, minor] = version.split('.').map(Number);
     const newMinor = minor + 1;
     return newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
