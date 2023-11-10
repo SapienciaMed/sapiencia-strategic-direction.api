@@ -1820,7 +1820,6 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
             const anio = DateCreate.getFullYear();
             const DateC = `${dia}/${mes}/${anio}`;
-            const DateA = `${dia}${mes}${anio}`;
             DateProject = DateC;
         }
           const contentHTML = `
@@ -2743,7 +2742,6 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
             const anio = DateCreate.getFullYear();
             const DateC = `${dia}/${mes}/${anio}`;
-            const DateA = `${dia}${mes}${anio}`;
             DateProject = DateC;
         }
           const contentHTML = `
