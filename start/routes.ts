@@ -41,14 +41,18 @@ Route.group(() => {
   Route.post("/files/get-file", "ProjectController.getProjectFile");
   Route.post("/files/delete-file", "ProjectController.deleteProjectFile");
   Route.put("/finish-project/:id", "ProjectController.finishProject");
-}).prefix("/api/v1/project");
+})
+.prefix("/api/v1/project")
+.middleware("auth");
 
 Route.group(() => {
   Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
   Route.get("/generate-pdf-consolidate/:id/generate-pdf-consolidate", "GeneratePdfController.CreatePdfConsolidate");
   Route.get("/generate-pdf-historic/:id/:oldId/generate-pdf-historic", "GeneratePdfController.CreatePdfHistoric");
 
-}).prefix("/api/v1/pdf");
+})
+.prefix("/api/v1/pdf")
+.middleware("auth");
 
 
 Route.group(() => {
@@ -60,7 +64,10 @@ Route.group(() => {
   Route.get("/get-all-impact", "EntitiesController.getEntitiesImpact")
   Route.get("/get-all-entity", "EntitiesController.getEntity")
   Route.get("/get-all-resource", "EntitiesController.getResource")
-}).prefix("/api/v1/entities");
+})
+.prefix("/api/v1/entities")
+.middleware("auth");
+
 
 Route.group(() => {
   Route.get(
@@ -76,44 +83,58 @@ Route.group(() => {
     "/update/:id",
     "MeasurementCapacityController.updateMeasurementCapacity"
   );
-}).prefix("/api/v1/measurement-capacity");
+})
+.prefix("/api/v1/measurement-capacity")
+.middleware("auth");
 
 Route.group(() => {
   Route.get("/get-by-id/:id", "ImpactLevelController.getImpactLevelById");
   Route.get("/", "ImpactLevelController.getImpactLevel");
   Route.post("/create", "ImpactLevelController.createImpactLevel");
   Route.put("/update/:id", "ImpactLevelController.updateImpactLevel");
-}).prefix("/api/v1/impact-level");
+})
+.prefix("/api/v1/impact-level")
+.middleware("auth");
 
 Route.group(() => {
   Route.get("/get-by-id/:id", "ImpactTypeController.getImpactTypeById");
   Route.get("/", "ImpactTypeController.getImpactType");
   Route.post("/create", "ImpactTypeController.createImpactType");
   Route.put("/update/:id", "ImpactTypeController.updateImpactType");
-}).prefix("/api/v1/impact-type");
+})
+.prefix("/api/v1/impact-type")
+.middleware("auth");
 
 Route.group(() => {
   Route.get("/get-by-id/:id", "ImpactRatingController.getImpactRatingById");
   Route.get("/", "ImpactRatingController.getImpactRating");
   Route.post("/create", "ImpactRatingController.createImpactRating");
   Route.put("/update/:id", "ImpactRatingController.updateImpactRating");
-}).prefix("/api/v1/impact-rating");
+})
+.prefix("/api/v1/impact-rating")
+.middleware("auth");
 // .middleware("auth");
 
 Route.group(() => {
   Route.get("/get-all", "ComponentsController.getComponents");
-}).prefix("/api/v1/components");
+})
+.prefix("/api/v1/components")
+.middleware("auth");
 
 Route.group(() => {
   Route.get("/get-all", "StageController.getStages");
-}).prefix("/api/v1/stages");
+})
+.prefix("/api/v1/stages")
+.middleware("auth");
 
 Route.group(() => {
   Route.post("/generate-consolidated", "ActivitiesController.generateConsolidated");
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
   Route.post("/mga/get-by-filters", "ActivitiesController.getActivitiesByFilters")
-}).prefix("/api/v1/activities");
+})
+.prefix("/api/v1/activities")
+.middleware("auth");
 
 
 
@@ -124,4 +145,6 @@ Route.group(() => {
   Route.get("/component/get-all", "IndicatorsController.getIndicatorsComponent");
   Route.get("/programation/get-all", "IndicatorsController.getProgramation");
   Route.get("/strategic-line/get-all", "IndicatorsController.getStrategicLine");
-}).prefix("/api/v1/indicators");
+})
+.prefix("/api/v1/indicators")
+.middleware("auth");
