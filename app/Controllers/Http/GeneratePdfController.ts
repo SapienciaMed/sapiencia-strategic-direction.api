@@ -230,11 +230,11 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-      const browser = await puppeteer.launch({
-         headless: "new",
-         args: ["--no-sandbox"],
-         executablePath: "/usr/bin/chromium",
-      });
+       const browser = await puppeteer.launch({
+          headless: "new",
+          args: ["--no-sandbox"],
+          executablePath: "/usr/bin/chromium",
+       });
 
       //const browser = await puppeteer.launch();
       const page = await browser.newPage();
@@ -357,114 +357,17 @@ export default class GeneratePdfController {
     let totalCostDetail = 0;
 
     project.data.activities?.map(activitiesDetail => {
-        totalCostDetail = activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
-            return accumulator + (detailActivities.amount * detailActivities.unitCost);
+        activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
+            return  totalCostDetail = accumulator + (detailActivities.amount * detailActivities.unitCost);
         }, 0)
     });
+
 
 
    const  dataAcumulativo= [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
 
 
-        const risksRelacionated = project.data.risks?.map(risks => {
-            switch (risks.level) {
-                case 1:
-                    return `
-                    <td>
-                        ${project.data.centerProblem}
-                    </td>
-            `;
-          
-                 case 2:
-                    const levelRisk = productsData?.find(item => item.value == risks.risk)?.name
-                    
-                    return `
-                    <td>
-                        ${levelRisk}
-                    </td>
-            `;
-                case 3:
-                    const levelActivities = activities?.find(item => item.value == risks.risk)?.name
-                    return `
-                    <td>
-                        ${levelActivities}
-                    </td>
-            `;
-                default:
-                    return ''
-            }
-        }).join('');
 
-        
-        const DescriptionLogicFrame = project.data.logicFrame?.map(logicFrame => {
-            switch (logicFrame.resume) {
-                case 1:
-                    return `
-                    <td>
-                        ${project.data.centerProblem}
-                    </td>
-            `;
-          
-                 case 2:
-                    const objetiveSpecific = objectivesData?.find(item => item.value == logicFrame.description)?.name
-                    
-                    return `
-                    <td>
-                        ${objetiveSpecific}
-                    </td>
-            `;
-                case 3:
-                    const activitiesLogicFrame = activities?.find(item => item.value == logicFrame.description)?.name
-                    return `
-                    <td>
-                        ${activitiesLogicFrame}
-                    </td>
-            `;
-                default:
-                    return ''
-            }
-        }).join('');
-
-
-        const logicFrameIndicator = project.data.logicFrame?.map(logicFrame => {
-            switch (logicFrame.type) {
-                case 1:
-                    const logicFrameIndicatorI = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
-                        indicatorsIndicative.id == logicFrame?.indicator ) 
-                    
-                    const logicFrameIndicator = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI?.indicator )?.description 
-
-                    return `
-                    <td>
-                    ${logicFrameIndicator}
-                    </td>
-            `;
-          
-                 case 2:                    
-                 const logicFrameIndicatorI2 = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
-                    indicatorsIndicative.id == logicFrame?.indicator ) 
-                
-                const logicFrameIndicator2 = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI2?.indicator )?.description 
-
-                 return `
-                 <td>
-                 ${logicFrameIndicator2}
-                 </td>
-                `;
-            case 3:                    
-                return `
-                <td>
-                ${logicFrame.indicator}
-                </td>
-            `;
-                default:
-                    return ''
-            }
-        }).join('');
-
-       
-        
-     
 
      const measurement = project.data.measurement;
 
@@ -625,11 +528,16 @@ export default class GeneratePdfController {
             th, td {
                 border: 1px solid #dddddd;
                 text-align: center;
-                padding: 10px;
+                padding: 10px 10px;
+                margin-bottom:20px;
+                margin-top:20px;
+                
             }
         
             th {
                 background-color: #f2f2f2; /* Color de fondo para las celdas de encabezado */
+                margin-bottom:10px;
+                margin-top:20px;
             }
         
             tr:nth-child(even) {
@@ -1058,21 +966,21 @@ export default class GeneratePdfController {
                                     <td>
                                         Rango de edad
                                     </td>
-                                    <td>${oldData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                    <td>${oldData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
                                 `;
                             } else if (Classifications.clasification === 3) {
                                 entity = `
                                     <td>
                                         Grupo étnico
                                     </td>
-                                    <td>${etniquesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                    <td>${etniquesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
                                 `;
                             } else if (Classifications.clasification === 4) {
                                 entity = `
                                     <td>
                                         Población vulnerable
                                     </td>
-                                    <td>${lge.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                    <td>${lge.find(item => item.id === Classifications.detail)?.itemDescription }</td>
                                 `;
                             } 
                             return`
@@ -1125,7 +1033,7 @@ export default class GeneratePdfController {
                     <div class="section-title-name">Listado objetivos específicos</div> 
                 </div>
                 
-                <table>
+                <table style = "  font-size: 15px; ">
                     <thead>
                         <tr>
                             <th>Objetivo</th>
@@ -1142,7 +1050,7 @@ export default class GeneratePdfController {
                                 <td>${specificObjectives.interventionActions}</td>
                                 <td>
                                 ${specificObjectives.estatesService.map(estatesService => `
-                                    <div style = "margin-bottom : 20px; margin-top: 10px;" >
+                                    <div style = "margin-bottom : 20px; margin-top: 20px;" >
                                     ${estatesService.id}.${estatesService.description}
                                     </div>
                                 `).join('')}
@@ -1153,6 +1061,8 @@ export default class GeneratePdfController {
                     }
                     </tbody>
                 </table>
+
+                <br><br>
 
                 <div class="section-name">
                     <div class="section-title-name">Capacidad</div> 
@@ -1322,7 +1232,7 @@ export default class GeneratePdfController {
 
                                     <div class="prop">
                                         <span class="title">Costo total actividades detalladas </span>
-                                        <span>  ${detailActivities.unitCost ?  totalCostDetail : ""}</span>
+                                        <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
                                     </div>
                             
                                     `;
@@ -1353,18 +1263,47 @@ export default class GeneratePdfController {
                         </thead>
                         <tbody>
                         ${
-                            project.data.risks?.map(risks => `
-                                <tr>
+                            project.data.risks?.map(risks => 
+                            {
+                                let entity = "";
+                                
+                                if (risks.level === 1) {
+                                    entity = `
+                                        <td>
+                                            ${project.data.centerProblem}
+                                         </td>
+                                    `;
+                                } else if (risks.level === 2) {
+                                    const levelRisk = productsData?.find(item => item.value == risks.risk)?.name
+        
+                                    entity = `
+                                    <td>
+                                        ${levelRisk}
+                                    </td>                          
+                                    `;
+                                } else if (risks.level === 3) {
+                                    
+                                    const levelActivities = activities?.find(item => item.value == risks.risk)?.name
+        
+                                    entity = `
+                                        <td>
+                                            ${levelActivities}
+                                        </td>                          
+                                    `;
+                                }
+                                return`
+                                    <tr>
                                     <td>${LevelData.find(item => item.value === risks.level)?.name }</td>
-                                        ${risksRelacionated != undefined ? risksRelacionated : "" }
+                                        ${entity}
                                     <td>${typeRisk.data.find(position => position.id == risks.typeRisk)?.description }</td>
                                     <td>${risks.descriptionRisk}</td>
                                     <td>${probabilityRisk.data.find(position => position.id == risks.probability)?.description}</td>
                                     <td>${impactRisk.data.find(position => position.id ==  risks.impact)?.description}</td>
                                     <td>${risks.effects != null ? risks.effects : "" }</td>
                                     <td>${risks.mitigation != null ? risks.mitigation : ""}</td>
-                                </tr>
-                            `).join('')
+                                    </tr>
+                                `
+                            }).join('')
                         }
                         </tbody>
                     </table>
@@ -1659,18 +1598,77 @@ export default class GeneratePdfController {
                     </tr>
                 </thead>
                 <tbody>
-                ${
-                    project.data.logicFrame?.map(logicFrame => `
-                        <tr>
-                            <td>${ResumeData.find(item => item.value === logicFrame.resume)?.name  }</td>
-                                ${DescriptionLogicFrame}
-                                ${logicFrameIndicator}
-                            <td>${logicFrame.meta}</td>
-                            <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification:"" }</td>
-                            <td>${logicFrame.assumptions ? logicFrame.assumptions:"" }</td>
 
-                        </tr>
-                    `).join('')
+                ${
+                    project.data.logicFrame?.map(logicFrame =>
+                    {
+                        let entity = "";
+                        let entity2 = "";
+                        if (logicFrame.resume === 1) {
+                            entity = `
+                                <td>
+                                    ${project.data.centerProblem}
+                                 </td>
+                            `;
+                        } else if (logicFrame.resume=== 2) {
+                            const objetiveSpecific = objectivesData?.find(item => item.value == logicFrame.description)?.name
+
+                            entity = `
+                            <td>
+                                ${objetiveSpecific}
+                            </td>                          
+                            `;
+                        } else if (logicFrame.resume === 3) {
+                            
+                            const activitiesLogicFrame = activities?.find(item => item.value == logicFrame.description)?.name
+
+                            entity = `
+                                <td>
+                                ${activitiesLogicFrame}
+                                </td>                          
+                            `;
+                        }
+                        if (logicFrame.type === 1) {
+                            const logicFrameIndicatorI = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
+                                indicatorsIndicative.id == logicFrame?.indicator ) 
+                            
+                            const logicFrameIndicator = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI?.indicator )?.description 
+        
+                            entity2 = `
+                                <td>
+                                    ${logicFrameIndicator}
+                                 </td>
+                            `;
+                        } else if (logicFrame.type === 2) {
+                            const logicFrameIndicatorI2 = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
+                                indicatorsIndicative.id == logicFrame?.indicator ) 
+                            
+                            const logicFrameIndicator2 = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI2?.indicator )?.description 
+            
+                            entity2 = `
+                            <td>
+                                ${logicFrameIndicator2}
+                            </td>                          
+                            `;
+                        } else if (logicFrame.type === 3) {
+                            
+                            entity2 = `
+                                <td>
+                                    ${logicFrame.indicator}
+                                </td>                          
+                            `;
+                        }
+                        return`
+                            <tr>
+                                <td>${ResumeData.find(item => item.value === logicFrame.resume)?.name  }</td>
+                                    ${entity}
+                                    ${entity2}
+                                    <td>${logicFrame.meta}</td>
+                                    <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification:"" }</td>
+                                    <td>${logicFrame.assumptions ? logicFrame.assumptions:"" }</td>
+                            </tr>
+                        `
+                    }).join('')
                 }
                 </tbody>
             </table>
@@ -1682,13 +1680,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-        const browser = await puppeteer.launch({
-          headless: "new",
-          args: ["--no-sandbox"],
-          executablePath: "/usr/bin/chromium",
-        });
+         const browser = await puppeteer.launch({
+           headless: "new",
+           args: ["--no-sandbox"],
+           executablePath: "/usr/bin/chromium",
+         });
 
-     //const browser = await puppeteer.launch();
+    // const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
@@ -1790,8 +1788,8 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
         let totalCostDetail = 0;
     
         project.data.activities?.map(activitiesDetail => {
-            totalCostDetail = activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
-                return accumulator + (detailActivities.amount * detailActivities.unitCost);
+             activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
+                return totalCostDetail = accumulator + (detailActivities.amount * detailActivities.unitCost);
             }, 0)
         });
     
@@ -2224,7 +2222,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
     
                                         <div class="prop">
                                             <span class="title">Costo total actividades detalladas </span>
-                                            <span>  ${detailActivities.unitCost ?  totalCostDetail : ""}</span>
+                                            <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
                                         </div>
                                 
                                         `;
@@ -2511,7 +2509,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
     
             <div class="section-object">
                 <div class="section-title">Observaciones</div>
-                <div class="section-content">${project.data.observations}</div>
+                <div >${project.data.observations}</div>
             </div>
         
     
@@ -2522,13 +2520,13 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
           </html>
           `;
         // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-             const browser = await puppeteer.launch({
-               headless: "new",
-               args: ["--no-sandbox"],
-               executablePath: "/usr/bin/chromium",
+              const browser = await puppeteer.launch({
+                headless: "new",
+                args: ["--no-sandbox"],
+                executablePath: "/usr/bin/chromium",
              });
     
-         //const browser = await puppeteer.launch();
+         // const browser = await puppeteer.launch();
           const page = await browser.newPage();
          
           await page.setViewport({ width: 595, height: 842 });
@@ -2543,7 +2541,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             <div style="text-align: center;  margin-bottom: 10px;">
                 <img src="data:image/png;base64,${readFileSync(logoPath).toString("base64")}" alt="Logo" style="width: 40%" />
                 <div style="text-align: center; margin-bottom: 5px; margin-top: 2px;">
-                    <p style="font-size: 15px; font-weight: 700;">INFORMACIÓN DE HISTORICOS</p>
+                    <p style="font-size: 15px; font-weight: 700;">INFORMACIÓN DE HISTÓRICOS</p>
                 </div>
                 
             </div>
@@ -2617,7 +2615,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
          }
 
          if (project.data.observations != projectOld.data.observations){
-            cambios = {...cambios,projectObservation:project.data.projectObservation}
+            cambios = {...cambios,projectObservation:project.data.observations}
          }
 
          if(JSON.stringify(project.data.classifications?.sort().map(value =>{
@@ -2699,7 +2697,8 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                 value: cause.consecutive
             }
         });
-    
+
+
         const productsData=  project.data.activities?.map(data => {
             return {
                 name: `${data.productMGA}. ${data.productDescriptionMGA}`,
@@ -2936,7 +2935,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
               <div class="container">
                     <div class ="container-grid-registro">
                         <div class="section">
-                            <div class="section-title">Fecha de creación:</div>
+                            <div class="section-title">Fecha de registro:</div>
                             <div class="section-content">${DateProject}</div>
                         </div>
     
@@ -2952,10 +2951,14 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
 
                     <br><br>
 
-                    <div class="section">
-                        <div class="section-title">1. REGISTRO</div>
-                    </div>
-
+                    ${cambios.dateFrom || cambios.dateTo ?  
+                        `    <div class="section">
+                                <div class="section-title">1. REGISTRO</div>
+                            </div>
+                        `:
+                        ""
+                    }
+                 
                     ${ cambios.dateFrom ?
                         `  
                         <div class="section-object">
@@ -2976,13 +2979,12 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     }
              
                 
-
+                    ${cambios.classifications ? 
+                        ` 
                             <div class="section">
                                 <div class="section-title">2. IDENTIFICACIÓN</div>
                             </div>
 
-                    ${cambios.classifications ? 
-                        ` 
                             <table>
                             <thead>
                                 <tr>
@@ -3009,21 +3011,21 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                             <td>
                                                 Rango de edad
                                             </td>
-                                            <td>${oldData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                            <td>${oldData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
                                         `;
                                     } else if (Classifications.clasification === 3) {
                                         entity = `
                                             <td>
                                                 Grupo étnico
                                             </td>
-                                            <td>${etniquesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                            <td>${etniquesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
                                         `;
                                     } else if (Classifications.clasification === 4) {
                                         entity = `
                                             <td>
                                                 Población vulnerable
                                             </td>
-                                            <td>${lge.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                            <td>${lge.find(item => item.id === Classifications.detail)?.itemDescription }</td>
                                         `;
                                     } 
                                     return`
@@ -3041,13 +3043,12 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                         `  : ""
                     }
 
-                
-                <div class="section">
-                        <div class="section-title">3. PREPARACIÓN</div>
-                </div>
+            
                 ${cambios.activities ? 
                     ` 
-                            
+                    <div class="section">
+                            <div class="section-title">3. PREPARACIÓN</div>
+                    </div>
 
                         <div class="section-name">
                             <div class="section-title-name">Actividades</div> 
@@ -3159,7 +3160,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
 
                                                 <div class="prop">
                                                     <span class="title">Costo total actividades detalladas </span>
-                                                    <span>  ${detailActivities.unitCost ?  totalCostDetail : ""}</span>
+                                                    <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
                                                 </div>
                                         
                                                 `;
@@ -3169,13 +3170,18 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                 </div>
                             `).join('')
                         }
-                        <br><br><br>
+                        <br><br><br><br>
                     `  : ""
                 }
     
-                    <div class="section">
-                        <div class="section-title">4. PROGRAMACIÓN</div>
-                    </div>
+                ${cambios.profitsIncome || cambios.sourceFunding || cambios.indicatorsIndicative || cambios.indicatorsAction ?
+                      ` <div class="section">
+                            <div class="section-title">4. PROGRAMACIÓN</div>
+                        </div>  
+                      ` 
+                        :""
+                }
+
                     ${cambios.profitsIncome ? 
                         ` 
                                 <div class="section-name">
@@ -3461,22 +3467,24 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         </div>
                                     </div>
                                 </div>
+                                <br><br>
                             `).join('')
                         }
                         `  : ""
                     }
                   
-                    <div class="section">
-                        <div class="section-title">5. FLUJO DEL PROYECTO</div>
-                    </div>
-
                     ${cambios.projectObservation ? 
                          ` 
+                            <br>
+                            <div class="section">
+                                <div class="section-title">5. FLUJO DEL PROYECTO</div>
+                            </div>
+
                             <div class="section-object">
                                 <div class="section-title">Observaciones</div>
-                                <div class="section-content">${project.data.observations}</div>
+                                <div >${project.data.observations}</div>
                             </div>
-                
+
                         `  : ""
                     }
 
@@ -3487,13 +3495,13 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
           </html>
           `;
         // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-             const browser = await puppeteer.launch({
+              const browser = await puppeteer.launch({
                headless: "new",
                args: ["--no-sandbox"],
-               executablePath: "/usr/bin/chromium",
+              executablePath: "/usr/bin/chromium",
              });
     
-         // const browser = await puppeteer.launch();
+          //const browser = await puppeteer.launch();
           const page = await browser.newPage();
          
           await page.setViewport({ width: 595, height: 842 });
@@ -3508,7 +3516,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             <div style="text-align: center;  margin-bottom: 10px;">
                 <img src="data:image/png;base64,${readFileSync(logoPath).toString("base64")}" alt="Logo" style="width: 40%" />
                 <div style="text-align: center; margin-bottom: 5px; margin-top: 2px;">
-                    <p style="font-size: 15px; font-weight: 700;">INFORMACIÓN DE HISTORICOS</p>
+                    <p style="font-size: 15px; font-weight: 700;">INFORMACIÓN DE HISTÓRICOS</p>
                 </div>
                 
             </div>
