@@ -1751,7 +1751,6 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
         const logoPath = Application.makePath(basePath, "logo.png");
         const footerPath = Application.makePath(basePath, "footer.png");
     
-        let DateProjectArchive = "";
     
         try {
          const project = await ProjectProvider.getProjectById(projectId);
@@ -1823,7 +1822,6 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             const DateC = `${dia}/${mes}/${anio}`;
             const DateA = `${dia}${mes}${anio}`;
             DateProject = DateC;
-            DateProjectArchive = DateA;
         }
           const contentHTML = `
           <!DOCTYPE html>
@@ -2675,7 +2673,6 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
         const logoPath = Application.makePath(basePath, "logo.png");
         const footerPath = Application.makePath(basePath, "footer.png");
     
-        let DateProjectArchive = "";
     
         try {
       
@@ -2748,7 +2745,6 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             const DateC = `${dia}/${mes}/${anio}`;
             const DateA = `${dia}${mes}${anio}`;
             DateProject = DateC;
-            DateProjectArchive = DateA;
         }
           const contentHTML = `
           <!DOCTYPE html>
