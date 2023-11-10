@@ -987,7 +987,7 @@ export default class GeneratePdfController {
                                 <tr>
                                         ${entity}
                                     <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
-                                    <td>${Classifications.infoSource}</td>
+                                    <td>${Classifications.infoSource != null ? Classifications.infoSource : "" }</td>
                                 </tr>
                             `
                         }).join('')
@@ -2098,7 +2098,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                 <tr>
                                         ${entity}
                                     <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
-                                    <td>${Classifications.infoSource}</td>
+                                    <td>${Classifications.infoSource != null ? Classifications.infoSource : ""}</td>
                                 </tr>
                             `
                         }).join('')
@@ -3036,7 +3036,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         <tr>
                                                 ${entity}
                                             <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
-                                            <td>${Classifications.infoSource}</td>
+                                            <td>${Classifications.infoSource != null ? Classifications.infoSource : ""}</td>
                                         </tr>
                                     `
                                 }).join('')
