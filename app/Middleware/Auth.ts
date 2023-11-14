@@ -62,7 +62,7 @@ export default class Auth {
     } catch (error) {
       return ctx.response
         .status(401)
-        .send(new ApiResponse(null, EResponseCodes.FAIL, "Token no valido!"));
+        .send(new ApiResponse(null, EResponseCodes.FAIL, error));
     }
 
     await next();
