@@ -260,7 +260,7 @@ export default class ProjectService implements IProjectService {
     if (project.preparation?.risks?.risks) {
       risks = await this.risksRepository.updateRisks(project.preparation.risks.risks, id, trx);
     }
-    if (project.programation?.profitsIncome?.profitsIncome) {
+    if (project.programation?.profitsIncome?.profitsIncome && project.programation?.profitsIncome?.profitsIncome?.length > 0) {
       profitsIncome = await this.profitsRepository.updateProfits(project.programation.profitsIncome.profitsIncome, id, trx);
     }
     if (project.programation?.sourceFunding?.sourceFunding) {
