@@ -35,7 +35,7 @@ export default class Auth {
       if (!id) {
         return ctx.response
           .status(401)
-          .send(new ApiResponse(null, EResponseCodes.FAIL, "Token no valido auth"));
+          .send(new ApiResponse(null, EResponseCodes.FAIL, "Token no valido"));
       }
       Env.set("CURRENT_AUTHORIZATION", authorization || "none");
       Env.set("CURRENT_PERMISSIONS", permissions || "none");
@@ -62,7 +62,7 @@ export default class Auth {
     } catch (error) {
       return ctx.response
         .status(401)
-        .send(new ApiResponse(null, EResponseCodes.FAIL, `Error: {${error}}`));
+        .send(new ApiResponse(null, EResponseCodes.FAIL, `Token no valido!`));
     }
 
     await next();
