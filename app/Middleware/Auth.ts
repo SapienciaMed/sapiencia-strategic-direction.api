@@ -62,7 +62,7 @@ export default class Auth {
     } catch (error) {
       return ctx.response
         .status(401)
-        .send(new ApiResponse(null, EResponseCodes.FAIL, error));
+        .send(new ApiResponse(null, EResponseCodes.FAIL, `Error: {${error}}`));
     }
 
     await next();
