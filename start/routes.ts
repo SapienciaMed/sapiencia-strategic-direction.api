@@ -49,10 +49,8 @@ Route.group(() => {
   Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
   Route.get("/generate-pdf-consolidate/:id/generate-pdf-consolidate", "GeneratePdfController.CreatePdfConsolidate");
   Route.get("/generate-pdf-historic/:id/:oldId/generate-pdf-historic", "GeneratePdfController.CreatePdfHistoric");
-
 })
-.prefix("/api/v1/pdf")
-.middleware("auth");
+.prefix("/api/v1/pdf");
 
 
 Route.group(() => {
