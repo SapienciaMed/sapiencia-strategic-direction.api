@@ -4,7 +4,7 @@ export default class extends BaseSchema {
   protected tableName = 'ARI_AGREGAR_RIESGO'
 
   public async up () {
-    this.schema.table(this.tableName, (table) => {
+    this.schema.createTable(this.tableName, (table) => {
       table.comment("Tabla que contiene los riesgos MGA");
       table.increments("ARI_CODIGO")
       .primary()
