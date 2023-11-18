@@ -239,10 +239,10 @@ export default class ProjectValidator {
                 budget: schema.number()
               }),
             }),
-            validity: schema.number(),
-            year: schema.number(),
             detailActivities: schema.array().members(
               schema.object().members({
+                validity: schema.number(),
+                year: schema.number(),
                 consecutive: schema.string(),
                 detailActivity: schema.string(),
                 component: schema.number(),
