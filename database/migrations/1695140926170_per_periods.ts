@@ -5,18 +5,33 @@ export default class extends BaseSchema {
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.comment("Tabla que contiene las actividades MGA");
+      table.comment("Tabla que contiene los periodos");
       table.increments("PER_CODIGO")
       .primary()
       .comment("Llave primaria");
       table
-      .double("PER_PERIODO")
+      .integer("PER_PERIODO")
       .notNullable()
       .comment("periodo");
       table
-      .double("PER_CANTIDAD")
+      .integer("PER_CANTIDAD")
       .notNullable()
       .comment("cantidad");
+      table
+      .double("PER_VALOR_UNITARIO")
+      .notNullable()
+      .comment("valor unitario");
+      table
+      .double("PER_VALOR_FINANCIERO")
+      .notNullable()
+      .comment("valor financiero");
+      table
+      .integer("PER_CODPER_BENEFICIO")
+      .notNullable()
+      .unsigned()
+      .references("AIB_CODIGO")
+      .inTable("AIB_AGREGAR_INGRESO_BENEFICIO")
+      .comment("llave foranea de la tabla periodo (FK Agregar riesgo)");
     })
   }
 
