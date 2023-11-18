@@ -56,6 +56,12 @@ export default class extends BaseSchema {
       .string("ACD_VALIDADOR_SECCION_CPC",3)
       .nullable()
       .comment("se carga de la tabla maestra  CPC");
+      table
+      .integer("ACD_VIGENCIA_MGA")
+      .comment("vigencia actividad detallada");
+      table
+      .integer("ACD_ANIO_MGA")
+      .comment("año de vigencia actividad detalleda");
     })
   }
 

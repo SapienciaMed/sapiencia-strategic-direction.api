@@ -113,7 +113,6 @@ Route.group(() => {
 })
 .prefix("/api/v1/impact-rating")
 .middleware("auth");
-// .middleware("auth");
 
 Route.group(() => {
   Route.get("/get-all", "ComponentsController.getComponents");

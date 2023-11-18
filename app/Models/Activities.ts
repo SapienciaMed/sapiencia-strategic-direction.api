@@ -28,12 +28,6 @@ export default class Activities extends BaseModel {
   @column({ columnName: "AMG_DESCRIPCION_MGA", serializeAs: "activityDescriptionMGA" })
   public activityDescriptionMGA: string;
 
-  @column({ columnName: "AMG_VIGENCIA_MGA", serializeAs: "validity" })
-  public validity: number;
-
-  @column({ columnName: "AMG_ANIO_MGA", serializeAs: "year" })
-  public year: number;
-
   @column({ columnName: "AMG_CODPRY_PROYECTO", serializeAs: "idProject" })
   public idProject: number;
 
