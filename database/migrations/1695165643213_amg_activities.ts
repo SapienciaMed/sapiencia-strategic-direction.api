@@ -35,12 +35,6 @@ export default class extends BaseSchema {
       .text("AMG_DESCRIPCION_MGA")
       .comment("Descripcion actividad MGA");
       table
-      .integer("AMG_VIGENCIA_MGA")
-      .comment("");
-      table
-      .integer("AMG_ANIO_MGA")
-      .comment("");
-      table
       .integer("AMG_CODPRY_PROYECTO")
       .notNullable()
       .unsigned()
