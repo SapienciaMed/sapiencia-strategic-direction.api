@@ -7,8 +7,28 @@ import { ApiResponse } from "App/Utils/ApiResponses";
 import ActivitiesValidator from "App/Validators/ActivitiesValidator";
 import xlsx, { ISettings } from "json-as-xlsx"
 import { IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
+import { schema } from "@ioc:Adonis/Core/Validator";
 
 export default class ActivityController {
+  public async getTotalCostsByFilters({
+    request,
+    response,
+  }: HttpContextContract) {
+    try {
+      const data = await request.validate({
+        schema: schema.create({
+          validityYear: schema.number(),
+          projectId: schema.number(),
+          pospreId: schema.number(),
+        }),
+      });
+      return response.send(await ActivityProvider.getTotalCostsByFilters(data));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
 
     public async getDetailedActivitiesPaginated({ request, response }: HttpContextContract) {
         try {

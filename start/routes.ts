@@ -131,6 +131,7 @@ Route.group(() => {
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
   Route.post("/mga/get-by-filters", "ActivitiesController.getActivitiesByFilters")
+  Route.post("/get-total-costs-by-filter", "ActivitiesController.getTotalCostsByFilters")
 })
 .prefix("/api/v1/activities")
 .middleware("auth");
