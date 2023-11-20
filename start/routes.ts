@@ -135,8 +135,6 @@ Route.group(() => {
 .prefix("/api/v1/activities")
 .middleware("auth");
 
-
-
 Route.group(() => {
   Route.get("/dpn/get-all", "IndicatorsController.getIndicatorDNP");
   Route.get("/name/get-all", "IndicatorsController.getIndicatorName");
@@ -146,4 +144,11 @@ Route.group(() => {
   Route.get("/strategic-line/get-all", "IndicatorsController.getStrategicLine");
 })
 .prefix("/api/v1/indicators")
+.middleware("auth");
+
+Route.group(() => {
+  Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");
+  Route.post("crud", "SchedulesPAIController.crudSchedulesPAI");
+})
+.prefix("/api/v1/pai/schedules")
 .middleware("auth");

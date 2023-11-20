@@ -10,13 +10,6 @@ export default class extends BaseSchema {
       .primary()
       .comment("Llave primaria");
       table
-      .integer("SHP_CODPAI_PLANEACION")
-      .notNullable()
-      .unsigned()
-      .references("PAI_CODIGO")
-      .inTable("PAI_PLANEACION")
-      .comment("codigo de la planeacion");
-      table
       .integer("SHP_ROL")
       .nullable()
       .comment("rol");
@@ -32,21 +25,25 @@ export default class extends BaseSchema {
       .nullable()
       .comment("bimestre");
       table
-      .timestamp("PRY_FECHA_INICIO")
+      .timestamp("SHP_FECHA_INICIO")
       .notNullable()
       .comment("Fecha de inicio");
       table
-      .timestamp("PRY_FECHA_FINAL")
+      .timestamp("SHP_FECHA_FINAL")
       .notNullable()
       .comment("Fecha de final");
       table
-      .string("PRY_USUARIO",20)
+      .string("SHP_USUARIO",20)
       .nullable()
       .comment("objetivo del proyecto");
       table
-      .timestamp("PRY_FECHA_CREO")
+      .timestamp("SHP_FECHA_CREO")
       .notNullable()
       .comment("Fecha y hora de creación del cronograma");
+      table
+      .timestamp("SHP_FECHA_EDICION")
+      .notNullable()
+      .comment("Fecha y hora de edicion del cronograma");
     })
   }
 

@@ -175,8 +175,6 @@ export default class ProjectRepository implements IProjectRepository {
 
     const query = Projects.query();
 
-    toCreate.version = "1.00";
-
     if (project.register?.bpin) {
       const existingProject = await query.where("bpin", project.register?.bpin)
         .orderBy('PRY_VERSION', 'desc')
@@ -185,8 +183,9 @@ export default class ProjectRepository implements IProjectRepository {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
       const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version);
+
       toCreate.dateModify = DateTime.local().toJSDate();
-      toCreate.version = updatedVersion;
+      toCreate.version = project.status === 2 ? "1.00" : updatedVersion;
       toCreate.bpin = project.register.bpin;
     }
 
