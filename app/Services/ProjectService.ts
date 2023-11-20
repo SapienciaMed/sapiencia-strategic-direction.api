@@ -294,7 +294,8 @@ export default class ProjectService implements IProjectService {
         sourceFunding: sourceFunding,
         activities: activities ? activities.map((item): IActivitiesProject => {
           return {
-            ...item, budgetsMGA: [
+            ...item, 
+            budgetsMGA: [
               {
                 budget: item.budgetsMGA.year0.budget,
                 year: 0,
