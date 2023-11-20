@@ -1,5 +1,4 @@
-import { BaseModel, HasMany, column, hasMany } from "@ioc:Adonis/Lucid/Orm";
-import ShedulesPAI from "./SchedulesPAI";
+import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
 
 export default class PAI extends BaseModel {
     public static table = "PAI_PLANEACION";
