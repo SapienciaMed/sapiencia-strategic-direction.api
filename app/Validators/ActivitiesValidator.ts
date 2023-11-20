@@ -65,8 +65,6 @@ export default class ActivitiesValidator {
                         budget: schema.number()
                     }),
                 }),
-                validity: schema.number(),
-                year: schema.number(),
                 detailActivities: schema.array().members(
                     schema.object().members({
                         consecutive: schema.string(),
@@ -75,6 +73,8 @@ export default class ActivitiesValidator {
                         measurement: schema.number(),
                         amount: schema.number(),
                         unitCost: schema.number(),
+                        validity: schema.number(),
+                        year: schema.number(),
                         pospre: schema.number.optional(),
                         validatorCPC: schema.string.optional(),
                         clasificatorCPC: schema.number.optional(),

@@ -12,44 +12,44 @@ export default class ActivityController {
 
     public async getDetailedActivitiesPaginated({ request, response }: HttpContextContract) {
         try {
-          const data = request.all();
-          return response.send(
-            await ActivityProvider.getDetailedActivitiesPaginated(data as IDetailedActivityPaginated)
-          );
+            const data = request.all();
+            return response.send(
+                await ActivityProvider.getDetailedActivitiesPaginated(data as IDetailedActivityPaginated)
+            );
         } catch (err) {
-          return response.badRequest(
-            new ApiResponse(null, EResponseCodes.FAIL, String(err))
-          );
+            return response.badRequest(
+                new ApiResponse(null, EResponseCodes.FAIL, String(err))
+            );
         }
     }
 
 
     public async getActivitiesByFilters({ request, response }: HttpContextContract) {
         try {
-          const data = request.all();
-          return response.send(
-            await ActivityProvider.getActivitiesByFilters(data)
-          );
+            const data = request.all();
+            return response.send(
+                await ActivityProvider.getActivitiesByFilters(data)
+            );
         } catch (err) {
-          return response.badRequest(
-            new ApiResponse(null, EResponseCodes.FAIL, String(err))
-          );
+            return response.badRequest(
+                new ApiResponse(null, EResponseCodes.FAIL, String(err))
+            );
         }
     }
 
     public async getDetailedActivitiesByFilters({ request, response }: HttpContextContract) {
         try {
-          const data = request.all();
-          return response.send(
-            await ActivityProvider.getDetailedActivitiesByFilters(data)
-          );
+            const data = request.all();
+            return response.send(
+                await ActivityProvider.getDetailedActivitiesByFilters(data)
+            );
         } catch (err) {
-          return response.badRequest(
-            new ApiResponse(null, EResponseCodes.FAIL, String(err))
-          );
+            return response.badRequest(
+                new ApiResponse(null, EResponseCodes.FAIL, String(err))
+            );
         }
     }
-    
+
 
 
     public async generateConsolidated({ request, response }: HttpContextContract) {
@@ -61,7 +61,7 @@ export default class ActivityController {
             activitiesData.forEach((item, index) => {
                 const stage = stages.data.find(stage => stage.id === item.stageActivity)
                 const gruped = index > 0 ? JSON.stringify(activitiesData[index - 1].objetiveActivity) === JSON.stringify(item.objetiveActivity) : false;
-                if(item.detailActivities.length > 0) {
+                if (item.detailActivities.length > 0) {
                     item.detailActivities.forEach((detail, index) => {
                         const component = components.data.find(component => component.id === detail.component)
                         if (index === 0) {
@@ -76,9 +76,9 @@ export default class ActivityController {
                                 activityDescriptionMGA: item.activityDescriptionMGA,
                                 stageActivity: stage ? stage.description : item.stageActivity,
                                 budgetsMGA: item.budgetsMGA,
-                                validity: item.validity,
-                                year: item.year,
                                 detailActivity: {
+                                    validity: detail.validity,
+                                    year: detail.year,
                                     consecutive: detail.consecutive,
                                     detailActivity: detail.detailActivity,
                                     component: component ? component.description : detail.component,
@@ -132,8 +132,6 @@ export default class ActivityController {
                         activityDescriptionMGA: item.activityDescriptionMGA,
                         stageActivity: stage ? stage.description : item.stageActivity,
                         budgetsMGA: item.budgetsMGA,
-                        validity: item.validity,
-                        year: item.year,
                         detailActivity: null
                     });
                 }
@@ -152,9 +150,9 @@ export default class ActivityController {
                         { label: "Año 3", value: (row) => row.budgetsMGA.year3?.budget, format: "$#,##0.00" },
                         { label: "Año 4", value: (row) => row.budgetsMGA.year4?.budget, format: "$#,##0.00" },
                         { label: "Presupuesto", value: (row) => row.productMGA ? row.budgetsMGA.year0?.budget + row.budgetsMGA.year1?.budget + row.budgetsMGA.year2?.budget + row.budgetsMGA.year3?.budget + row.budgetsMGA.year4?.budget : null, format: "$#,##0.00" },
-                        { label: "Vigencia", value: (row) => row.validity },
-                        { label: "Año", value: (row) => row.year },
                         { label: "Actividad detallada", value: (row) => row.detailActivity?.consecutive ? `${row.detailActivity.consecutive}. ${row.detailActivity.detailActivity}` : null },
+                        { label: "Vigencia", value: (row) => row.detailActivity?.validity },
+                        { label: "Año", value: (row) => row.detailActivity?.year },
                         { label: "Componente", value: (row) => row.detailActivity?.component },
                         { label: "Unidad de medida", value: (row) => row.detailActivity?.measurement },
                         { label: "Cantidad", value: (row) => row.detailActivity?.amount },
