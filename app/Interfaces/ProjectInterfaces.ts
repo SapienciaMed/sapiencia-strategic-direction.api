@@ -292,8 +292,8 @@ export interface IActivityMGA {
   productDescriptionMGA: string;
   activityDescriptionMGA: string;
   budgetsMGA: IBudgetMGA;
-  validity: number;
-  year: number;
+  validity?: number;
+  year?: number;
   detailActivities: IDetailActivity[];
 }
 
@@ -434,8 +434,8 @@ export interface IActivitiesProject {
     validity: number;
     budget: number;
   }[];
-  validity: number;
-  year: number;
+  validity?: number;
+  year?: number;
   detailActivities: IDetailActivity[];
 }
 
