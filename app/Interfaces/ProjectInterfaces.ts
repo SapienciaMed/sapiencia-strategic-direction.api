@@ -430,8 +430,8 @@ export interface IActivitiesProject {
   budgetsMGA: {
     id?: number;
     activityId?: number;
-    year: number;
-    validity: number;
+    year?: number;
+    validity?: number;
     budget: number;
   }[];
   validity?: number;
