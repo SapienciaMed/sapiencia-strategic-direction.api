@@ -40,12 +40,6 @@ export default class DetailActivities extends BaseModel {
   @column({ columnName: "ACD_VALIDADOR_SECCION_CPC", serializeAs: "sectionValidatorCPC" })
   public sectionValidatorCPC: string;
 
-  @column({ columnName: "ACD_VIGENCIA_MGA", serializeAs: "validity" })
-  public validity: number;
-
-  @column({ columnName: "ACD_ANIO_MGA", serializeAs: "year" })
-  public year: number;
-
   @belongsTo(() => Activities, {
     localKey: 'id',
     foreignKey: 'activityId',
