@@ -106,6 +106,8 @@ export default class ActivitiesRepository implements IActivitiesRepository {
             toCreate.activityMGA = activities[activity].activityMGA;
             toCreate.productDescriptionMGA = activities[activity].productDescriptionMGA;
             toCreate.activityDescriptionMGA = activities[activity].activityDescriptionMGA;
+            toCreate.validity = activities[activity].validity;
+            toCreate.year = activities[activity].year;
             toCreate.useTransaction(trx);
             await toCreate.save();
             const budgets = activities[activity].budgetsMGA;
@@ -155,9 +157,7 @@ export default class ActivitiesRepository implements IActivitiesRepository {
                         pospre: detailActivities[detailActivity].pospre,
                         validatorCPC: detailActivities[detailActivity].validatorCPC,
                         clasificatorCPC: detailActivities[detailActivity].clasificatorCPC,
-                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC,
-                        validity: detailActivities[detailActivity].validity,
-                        year: detailActivities[detailActivity].year
+                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC
                     });
                 }
             }
@@ -238,9 +238,7 @@ export default class ActivitiesRepository implements IActivitiesRepository {
                         pospre: detailActivities[detailActivity].pospre,
                         validatorCPC: detailActivities[detailActivity].validatorCPC,
                         clasificatorCPC: detailActivities[detailActivity].clasificatorCPC,
-                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC,
-                        validity: detailActivities[detailActivity].validity,
-                        year: detailActivities[detailActivity].year
+                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC
                     });
                 }
             }
