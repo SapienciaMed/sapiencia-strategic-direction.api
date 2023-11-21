@@ -96,9 +96,9 @@ export default class ActivityController {
                                 activityDescriptionMGA: item.activityDescriptionMGA,
                                 stageActivity: stage ? stage.description : item.stageActivity,
                                 budgetsMGA: item.budgetsMGA,
+                                validity: item.validity,
+                                year: item.year,
                                 detailActivity: {
-                                    validity: detail.validity,
-                                    year: detail.year,
                                     consecutive: detail.consecutive,
                                     detailActivity: detail.detailActivity,
                                     component: component ? component.description : detail.component,
