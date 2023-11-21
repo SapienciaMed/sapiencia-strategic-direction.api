@@ -131,11 +131,10 @@ Route.group(() => {
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
   Route.post("/mga/get-by-filters", "ActivitiesController.getActivitiesByFilters")
+  Route.post("/get-total-costs-by-filter", "ActivitiesController.getTotalCostsByFilters")
 })
 .prefix("/api/v1/activities")
 .middleware("auth");
-
-
 
 Route.group(() => {
   Route.get("/dpn/get-all", "IndicatorsController.getIndicatorDNP");
@@ -146,4 +145,11 @@ Route.group(() => {
   Route.get("/strategic-line/get-all", "IndicatorsController.getStrategicLine");
 })
 .prefix("/api/v1/indicators")
+.middleware("auth");
+
+Route.group(() => {
+  Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");
+  Route.post("crud", "SchedulesPAIController.crudSchedulesPAI");
+})
+.prefix("/api/v1/pai/schedules")
 .middleware("auth");

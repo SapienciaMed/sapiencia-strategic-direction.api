@@ -381,6 +381,12 @@ export interface IActivityFilter {
   projectId?: number
 }
 
+export interface ITotalCostsFilter {
+  validityYear: number,
+  projectId: number,
+  pospreId: number
+}
+
 export interface IDetailedActivityPaginated {
   detail?: string
   page: number;

@@ -6,6 +6,7 @@ import {
   IDetailActivity,
   IDetailedActivityFilter,
   IDetailedActivityPaginated,
+  ITotalCostsFilter,
 } from "../Interfaces/ProjectInterfaces";
 import { IActivitiesRepository } from "../Repositories/ActivitiesRepository";
 
@@ -17,10 +18,16 @@ export interface IActivityService {
     filters: IDetailedActivityPaginated
   ): Promise<ApiResponse<IPagingData<IDetailActivity>>>;
   getActivitiesByFilters(filters: IActivityFilter): Promise<ApiResponse<IActivityMGA[]>>
+  getTotalCostsByFilters(filter: ITotalCostsFilter): Promise<ApiResponse<number>>
 }
 
 export default class ActivityService implements IActivityService {
   constructor(private activitiesRepository: IActivitiesRepository) {}
+
+  async getTotalCostsByFilters(filter: ITotalCostsFilter): Promise<ApiResponse<number>> {
+    const res = await this.activitiesRepository.getTotalCostsByFilters(filter)
+    return new ApiResponse(res,EResponseCodes.OK)
+  }
 
   async getActivitiesByFilters(filters: IActivityFilter): Promise<ApiResponse<IActivityMGA[]>> {
     const res = await this.activitiesRepository.getActivitiesByFilters(filters)

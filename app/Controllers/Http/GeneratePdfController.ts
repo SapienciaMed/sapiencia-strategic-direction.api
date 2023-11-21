@@ -1165,15 +1165,25 @@ export default class GeneratePdfController {
                                     formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                             </div>
 
-                            <div class="prop">
-                            <span class="title">Vigencia</span>
-                                <span>${activities.validity}</span>
-                            </div>
+                            ${
+                                activities.budgetsMGA?.map(budget => `
+                                <div class="prop">
+                                <span class="title">Vigencia</span>
+                                    <span>${budget.validity}</span>
+                                </div>
+                            
+                                `).join('')
+                            }
+                          
 
-                            <div class="prop">
-                            <span class="title">Año</span>
-                                <span> ${activities.year}</span>
-                            </div>
+                            ${
+                                activities.budgetsMGA?.map(budget => `
+                                <div class="prop">
+                                <span class="title">Año</span>
+                                    <span> ${budget.year}</span>
+                                </div>
+                                `).join('')
+                            }
 
                             ${
                                 activities.detailActivities?.map(detailActivities => {
@@ -2155,16 +2165,25 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                     <span> ${
                                         formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                                 </div>
-    
-                                <div class="prop">
-                                <span class="title">Vigencia</span>
-                                    <span>${activities.validity}</span>
-                                </div>
-    
-                                <div class="prop">
-                                <span class="title">Año</span>
-                                    <span> ${activities.year}</span>
-                                </div>
+                                ${
+                                    activities.budgetsMGA?.map(budget => `
+                                    <div class="prop">
+                                    <span class="title">Vigencia</span>
+                                        <span>${budget.validity}</span>
+                                    </div>
+                                
+                                    `).join('')
+                                }
+                              
+
+                                ${
+                                    activities.budgetsMGA?.map(budget => `
+                                    <div class="prop">
+                                    <span class="title">Año</span>
+                                        <span> ${budget.year}</span>
+                                    </div>
+                                    `).join('')
+                                }
     
                                 ${
                                     activities.detailActivities?.map(detailActivities => {
@@ -3095,15 +3114,26 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                                 formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                                         </div>
 
-                                        <div class="prop">
-                                        <span class="title">Vigencia</span>
-                                            <span>${activities.validity}</span>
-                                        </div>
 
-                                        <div class="prop">
-                                        <span class="title">Año</span>
-                                            <span> ${activities.year}</span>
-                                        </div>
+                                        ${
+                                            activities.budgetsMGA?.map(budget => `
+                                            <div class="prop">
+                                            <span class="title">Vigencia</span>
+                                                <span>${budget.validity}</span>
+                                            </div>
+                                        
+                                            `).join('')
+                                        }
+                                      
+
+                                        ${
+                                            activities.budgetsMGA?.map(budget => `
+                                            <div class="prop">
+                                            <span class="title">Año</span>
+                                                <span> ${budget.year}</span>
+                                            </div>
+                                            `).join('')
+                                        }
 
                                         ${
                                             activities.detailActivities?.map(detailActivities => {

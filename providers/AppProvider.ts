@@ -21,6 +21,7 @@ export default class AppProvider {
     const ActivityService = await import("App/Services/ActivityService");
     const IndicatorsService = await import("App/Services/IndicatorsService");
     const StorageService = await import("App/Services/StorageService");
+    const SchedulesPAIService = await import("App/Services/SchedulesPAIService");
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -109,6 +110,10 @@ export default class AppProvider {
     const LogicFrameRepository = await import(
       "App/Repositories/LogicFrameRepository"
     );
+
+    const SchedulesPAIRepository = await import(
+      "App/Repositories/SchedulesPAIRepository"
+    );
     
     /**************************************************************************/
     /******************************** CORE  ***********************************/
@@ -194,6 +199,13 @@ export default class AppProvider {
       () => new IndicatorsService.default(
         new IndicatorsRepository.default(),
       ),
+    );
+
+    this.app.container.singleton(
+      "core.SchedulesPAIProvider",
+      () => new SchedulesPAIService.default(
+        new SchedulesPAIRepository.default()
+      )
     );
 
     this.app.container.singleton(

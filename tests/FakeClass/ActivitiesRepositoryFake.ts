@@ -3,7 +3,8 @@ import { IActivityMGA,
          ICause, 
          IDetailActivity, 
          IDetailedActivityFilter, 
-         IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
+         IDetailedActivityPaginated, 
+         ITotalCostsFilter} from "App/Interfaces/ProjectInterfaces";
 import { IPagingData } from "App/Utils/ApiResponses";
 import { IActivitiesRepository } from "App/Repositories/ActivitiesRepository";
 
@@ -29,10 +30,11 @@ export default class ActivitiesRepositoryFake implements IActivitiesRepository {
   getDetailedActivitiesPaginated( _filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>> {
     return Promise.resolve( {} as IPagingData<IDetailActivity>);
   }
-  getActivitiesByFilters(filters: IActivityFilter): Promise<IActivityMGA[]> {
-    const filter = filters
-    console.log(filter);
+  getActivitiesByFilters(_filters: IActivityFilter): Promise<IActivityMGA[]> {
     return Promise.resolve( {} as Promise<IActivityMGA[]>);
+  }
+  getTotalCostsByFilters(_filter: ITotalCostsFilter): Promise<number> {
+    return Promise.resolve(0);
   }
 
 }
