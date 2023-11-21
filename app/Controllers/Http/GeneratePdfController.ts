@@ -40,6 +40,7 @@ export default class GeneratePdfController {
 
     try {
      const project = await ProjectProvider.getProjectById(projectId);
+     const dependencyData = await EntitiesProvider.getEntitiesDependency();
      let DateProject = ""
      if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
         const fechaIso = project.data.dateCreate.toString();
@@ -205,7 +206,7 @@ export default class GeneratePdfController {
               </div>
               <div class="section">
                   <div class="section-title">DEPENDENCIA RESPONSABLE EJECUCIÓN</div>
-                  <div class="section-content">${project.data.dependency}</div>
+                  <div class="section-content">${dependencyData.data.find(dependency => dependency.id == project.data.dependency)?.description}</div>
               </div>
               <div class="section">
                   <div class="section-title">VERSIÓN</div>
