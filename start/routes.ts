@@ -149,6 +149,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");
+  Route.get("get-statuses", "SchedulesPAIController.getScheduleStatuses");
   Route.post("crud", "SchedulesPAIController.crudSchedulesPAI");
 })
 .prefix("/api/v1/pai/schedules")

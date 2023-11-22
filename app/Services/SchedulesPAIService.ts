@@ -1,11 +1,13 @@
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
+import { IComponents } from "App/Interfaces/ComponentInterfaces";
 import { ISchedulesPAI } from "App/Interfaces/SchedulesPAIInterfaces";
 import { ISchedulesPAIRepository } from "App/Repositories/SchedulesPAIRepository";
 import { ApiResponse } from "App/Utils/ApiResponses";
 
 export interface ISchedulesPAIService {
     getSchedulesPAI(): Promise<ApiResponse<ISchedulesPAI[]>>;
+    getScheduleStatuses(): Promise<ApiResponse<IComponents[]>>;
     crudSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<ApiResponse<ISchedulesPAI[]>>;
 }
 
@@ -19,6 +21,11 @@ export default class SchedulesPAIService implements ISchedulesPAIService {
         return new ApiResponse(res, EResponseCodes.OK)
     }
 
+    async getScheduleStatuses(): Promise<ApiResponse<IComponents[]>> {
+        const res = await this.schedulesPAIRepository.getScheduleStatuses();
+        return new ApiResponse(res, EResponseCodes.OK)
+    }
+
     async crudSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<ApiResponse<ISchedulesPAI[]>> {
         const schedulesCreating = schedules.filter(schedule => !schedule.id);
         const schedulesUptading = schedules.filter(schedule => schedule.id);
@@ -28,7 +35,7 @@ export default class SchedulesPAIService implements ISchedulesPAIService {
             schedulesCreated = await this.schedulesPAIRepository.createSchedulesPAI(schedulesCreating, trx);
         }
         if (schedulesUptading.length > 0) {
-            schedulesUpdated = await this.schedulesPAIRepository.createSchedulesPAI(schedulesUptading, trx);
+            schedulesUpdated = await this.schedulesPAIRepository.updateSchedulesPAI(schedulesUptading, trx);
         }
         return new ApiResponse(schedulesCreated.concat(schedulesUpdated), EResponseCodes.OK)
     }
