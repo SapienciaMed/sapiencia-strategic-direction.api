@@ -417,6 +417,7 @@ export interface IProjectFiltersHistorical {
   bpin?: string;
   project?: string;
   validity?: string;
+  idProject?: number;
 }
 
 export interface IActivitiesProject {

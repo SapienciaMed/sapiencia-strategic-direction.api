@@ -5,7 +5,6 @@ import {
   IProjectTemp,
   IProjectFiltersPaginated,
   IFinishProjectForm,
-  IHistoricalFiltersPaginated,
   IProjectFiltersHistorical
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
@@ -182,7 +181,7 @@ export default class ProjectRepository implements IProjectRepository {
       if (existingProject && existingProject.length > 0 && (project?.status !== 2 && project?.status !== 3)) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
-      const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version, existingProject[0]?.status);
+      const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version, existingProject[0]?.status || project.status);
       toCreate.dateModify = DateTime.local().toJSDate();
       toCreate.version = updatedVersion;
       toCreate.bpin = project.register.bpin;
@@ -524,29 +523,6 @@ export default class ProjectRepository implements IProjectRepository {
     return res as unknown as IProject[];
   }
 
-  async getAllHistoricalPaginated(filters: IHistoricalFiltersPaginated): Promise<IPagingData<IProject>> {
-    if (!filters.bpin || isNaN(filters.bpin)) {
-      throw new Error("Se debe proporcionar un código BPIN válido.");
-    }
-    const query = Projects.query()
-      .where("bpin", filters.bpin)
-      .orderBy('PRY_ESTADO_PROYECTO', 'asc')
-      .orderBy('PRY_FECHA_CREO', 'desc');
-    if (filters.project) {
-      query.where("project", filters.project);
-    }
-    if (filters.status) {
-      query.where("status", filters.status);
-    }
-    const res = await query.paginate(filters.page, filters.perPage);
-    const { data, meta } = res.serialize();
-    return {
-      array: data as IProject[],
-      meta,
-    };
-  }
-
-
   async getAllProjects(): Promise<IProject[]> {
     const res = await Projects.query()
       .where(
@@ -608,7 +584,7 @@ export default class ProjectRepository implements IProjectRepository {
     const newMinor = minor + 1;
     const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
     if(status === 2){
-      return version == "1.00" ? newVersion : "1.00";
+      return "1.00";
     }
     return newVersion;
   }
