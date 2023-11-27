@@ -2,7 +2,7 @@ import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
 import PAI from "./PAI";
 
 export default class IndicatorsPAI extends BaseModel {
-    public static table = "IDP_INDICADORES_PAI";
+    public static table = "IDP_INDICADORES";
 
     @column({ isPrimary: true, columnName: "IDP_CODIGO", serializeAs: "id" })
     public id: number;
@@ -44,5 +44,5 @@ export default class IndicatorsPAI extends BaseModel {
         localKey: 'id',
         foreignKey: 'idPAI',
     })
-    public project: BelongsTo<typeof PAI>;
+    public indicator: BelongsTo<typeof PAI>;
 }
