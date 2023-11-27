@@ -56,7 +56,6 @@ export default class ProfitsRepository implements IProfitsIncomeRepository {
             if (periods?.length > 0) {
                 for (let period in periods) {
                     await toCreate.related("period").create({
-                        id: toCreate.id,
                         period: periods[period].period,
                         quantity: periods[period].quantity,
                         unitValue: periods[period].unitValue,
