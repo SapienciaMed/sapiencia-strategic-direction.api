@@ -41,6 +41,7 @@ export default class Auth {
       Env.set("CURRENT_PERMISSIONS", permissions || "none");
       Env.set("CURRENT_USER_DOCUMENT", document || "none");
 
+
       if (guards?.length > 0) {
         const subkey = authorization.split(".")[2];
         const accessEncryptor = Encryption.child({

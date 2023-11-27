@@ -83,4 +83,34 @@ export default class EntitiesController {
     }
   }
 
+  public async getRiskPAI({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getRiskPAI());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getProcessPAI({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getProcessPAI());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getObjectivesPAI({ response }: HttpContextContract) {
+    try {
+      return response.send(await EntitiesProvider.getObjectivesPAI());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
 }

@@ -14,6 +14,8 @@ import ImpactLevelProvider from '@ioc:core.ImpactLevelProvider';
 import ImpactTypeProvider from '@ioc:core.ImpactTypeProvider';
 import StageProvider from '@ioc:core.StageProvider';
 import ComponentsProvider from '@ioc:core.ComponentsProvider';
+import FinancialExternalService  from "App/Services/External/FinancialService"
+
 import { IActivitiesProject, IDemographicCharacteristics, IIndicatorAction, IIndicatorIndicative, ISourceFunding, IprofitsIncome } from 'App/Interfaces/ProjectInterfaces';
 
 
@@ -303,6 +305,16 @@ export default class GeneratePdfController {
      const typeRisk = await EntitiesProvider.getEntitiesTypesRisks();
      const impactRisk = await EntitiesProvider.getEntitiesImpact()
      const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
+     const financialService = new FinancialExternalService();
+
+     financialService.getAllBudgets()
+        .then(response => {
+            console.log('Respuesta:', response);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
 
      const LevelData  = [
         {
@@ -1691,13 +1703,13 @@ export default class GeneratePdfController {
       </html>
       `;
     // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-         const browser = await puppeteer.launch({
-           headless: "new",
-           args: ["--no-sandbox"],
-           executablePath: "/usr/bin/chromium",
-         });
+        //  const browser = await puppeteer.launch({
+        //    headless: "new",
+        //    args: ["--no-sandbox"],
+        //    executablePath: "/usr/bin/chromium",
+        //  });
 
-    // const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch();
       const page = await browser.newPage();
      
       await page.setViewport({ width: 595, height: 842 });
@@ -1705,8 +1717,7 @@ export default class GeneratePdfController {
         waitUntil: "domcontentloaded",
       });
 
-      const headerHTML = `
-      <div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
+      const headerHTML = `<div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
             <span class="pageNumber"></span> de <span class="totalPages"></span>
         </div>
         <div style="text-align: center;  margin-bottom: 10px;">
@@ -1715,16 +1726,11 @@ export default class GeneratePdfController {
                 <p style="font-size: 15px; font-weight: 700;">FICHA TÉCNICA DEL PROYECTO</p>
             </div>
             
-        </div>
+        </div>`;
 
-        `;
-
-    const footerHTML = `
-    <div style="text-align: center; padding: 0 !important; margin: 0;">
+    const footerHTML = `<div style="text-align: center; padding: 0 !important; margin: 0;">
         <img src="data:image/png;base64,${readFileSync(footerPath).toString("base64")}" alt="Footer" style=" width: 30%" />
-    </div>
-    
-    `
+    </div>`
     
     ;
       const pdfBuffer = await page.pdf({

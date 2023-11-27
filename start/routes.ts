@@ -63,6 +63,10 @@ Route.group(() => {
   Route.get("/get-all-impact", "EntitiesController.getEntitiesImpact")
   Route.get("/get-all-entity", "EntitiesController.getEntity")
   Route.get("/get-all-resource", "EntitiesController.getResource")
+  Route.get("/get-all-risk-pai", "EntitiesController.getRiskPAI")
+  Route.get("/get-all-process-pai", "EntitiesController.getProcessPAI")
+  Route.get("/get-all-objective-pai", "EntitiesController.getObjectivesPAI")
+
 })
 .prefix("/api/v1/entities")
 .middleware("auth");
