@@ -88,7 +88,19 @@ export default class extends BaseSeeder {
         description: 'Cierre plan',
         active: true,
         order: 14
-      }
+      },
+      {
+        id: 15,
+        description: 'Todos',
+        active: true,
+        order: 15
+      },
+      {
+        id: 16,
+        description: 'No aplica',
+        active: true,
+        order: 16
+      },
     ]);
   }
 }

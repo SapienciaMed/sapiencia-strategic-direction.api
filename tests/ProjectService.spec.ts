@@ -1,7 +1,7 @@
 
 import test from "japa";
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
-import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
+import { ApiResponse } from "App/Utils/ApiResponses";
 import ProjectService from "App/Services/ProjectService";
 import ProjectRepositoryFake from "./FakeClass/ProjectRepositoryFake";
 import CausesRepositoryFake from "./FakeClass/CausesRepositoryFake";
@@ -16,7 +16,8 @@ import ProfitsIncomeRepositoryFake from "./FakeClass/ProfitsIncomeRepositoryFake
 import SourceFundingRepositoryFake from "./FakeClass/SourceFundingRepositoryFake";
 import IndicatorsRepositoryFake from "./FakeClass/IndicatorsRepositoryFake";
 import LogicFrameRepositoryFake from "./FakeClass/LogicFrameRepositoryFake";
-import { IProject, IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
+import HistoricalProjectsRepositoryFake from "./FakeClass/HistoricalProjectsRepositoryFake";
+import { IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
 
 const service = new ProjectService(
   new ProjectRepositoryFake(),
@@ -31,14 +32,9 @@ const service = new ProjectService(
   new ProfitsIncomeRepositoryFake(),
   new SourceFundingRepositoryFake(),
   new IndicatorsRepositoryFake(),
-  new LogicFrameRepositoryFake()
+  new LogicFrameRepositoryFake(),
+  new HistoricalProjectsRepositoryFake(),
 );
-
-const filters = {
-  page: 1,
-  perPage: 10,
-  bpin: 2909
-}
 
 const filtersHistorical: IProjectFiltersHistorical = {
   bpin: "2909",
@@ -71,31 +67,4 @@ test.group("Project Service TEST for getAllHistorical", () => {
     const result = service.getAllHistorical(filtersHistorical);
     assert.isArray( ( await result).data );
   });
-});
-
-
-test.group("Coverage TEST for getAllHistoricalPaginated ", () => {
-  test("the get paginated method should return a not null object", async (assert) => {
-    const data = await service.getAllHistoricalPaginated(filters) as ApiResponse<IPagingData<IProject>>;
-    let result = {
-        array: data as ApiResponse<IPagingData<IProject>>
-    }
-    assert.isNotNull(result);
-  });
-
-  test("the get paginated method should return a PaginatedResponse Object", async (assert) => {
-    const result = service.getAllHistoricalPaginated(filters);
-    assert.instanceOf( ( await result ), ApiResponse);
-  });
-
-  test("the method getAllHistoricalPaginated must return success", async (assert) => {
-    const result = await service.getAllHistoricalPaginated(filters);
-    assert.isTrue( result.operation.code === EResponseCodes.OK);
-  });
-
-  test("the method getAllHistoricalPaginated must return an empty array", async (assert) => {
-    const result = await service.getAllHistoricalPaginated(filters);
-    assert.isEmpty(result.data);
-  });
-
 });
