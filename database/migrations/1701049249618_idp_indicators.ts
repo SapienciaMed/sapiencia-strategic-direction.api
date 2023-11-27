@@ -23,7 +23,7 @@ export default class extends BaseSchema {
       .inTable("TDI_TIPO_INDICADOR_PAI")
       .comment("llave foranea Tabla  (FK TDI_CODIGO_PAI)");
       table
-      .string("IDP_DESCRIPCION_INDICADOR")
+      .string("IDP_DESCRIPCION_INDICADOR", 400)
       .nullable()
       .comment("Descripción del indicador PAI");
       table
@@ -53,7 +53,7 @@ export default class extends BaseSchema {
       table
       .integer("IDP_META_TOTAL")
       .nullable()
-      .comment("Meta global");
+      .comment("Meta total planeada");
       table
       .integer("IDP_CODPAI_PAI")
       .notNullable()

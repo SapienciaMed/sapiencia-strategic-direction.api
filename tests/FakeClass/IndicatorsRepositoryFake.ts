@@ -23,6 +23,9 @@ export default class IndicatorsRepositoryFake implements IIndicatorsRepository {
   getIndicatorsComponent(): Promise<MasterTable[] | null> {
     return Promise.resolve( {} as Promise<MasterTable[]>);
   }
+  getProjectIndicators(_idProject:number): Promise<MasterTable[] | null> {
+    return Promise.resolve( {} as Promise<MasterTable[]>);
+  }
   createIndicators(
     _indicators: IIndicator[], 
     _idProject: number, 
