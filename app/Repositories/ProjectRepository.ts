@@ -345,7 +345,7 @@ export default class ProjectRepository implements IProjectRepository {
 
     const query = Projects.query();
 
-    if (project.register?.bpin && toUpdate.$attributes.bpin != project.register?.bpin ) {
+    if (project.register?.bpin && toUpdate.$attributes.bpin != project.register?.bpin) {
       const existingProject = await query.where("bpin", project.register?.bpin);
       if (existingProject) throw new Error("Ya existe un proyecto con este BPIN.");
       toUpdate.bpin = project.register.bpin;
@@ -498,8 +498,13 @@ export default class ProjectRepository implements IProjectRepository {
     }
 
     toUpdate.dateModify = DateTime.local().toJSDate();
-    const updatedVersion: string = this.updateProjectVersion(toUpdate.version);
-    toUpdate.version = updatedVersion;
+    if (project.status === 2) {
+      const updatedVersion = Number(toUpdate.version.split(".")[0]);
+      toUpdate.version = `${updatedVersion+1}.0`;
+    } else {
+      const updatedVersion: string = this.updateProjectVersion(toUpdate.version);
+      toUpdate.version = updatedVersion;
+    }
     toUpdate.useTransaction(trx);
 
     await toUpdate.save();
@@ -509,13 +514,13 @@ export default class ProjectRepository implements IProjectRepository {
 
   async getAllHistorical(data: IProjectFiltersHistorical): Promise<IProject[]> {
     const query = Projects.query();
-    if(data.bpin) {
+    if (data.bpin) {
       query.where('bpin', data.bpin);
     }
-    if(data.project) {
+    if (data.project) {
       query.where('project', data.project);
     }
-    if(data.validity) {
+    if (data.validity) {
       query.whereRaw("YEAR(PRY_FECHA_CREO) = ?", [data.validity])
     }
     query.orderBy('PRY_VERSION', 'desc')
@@ -579,13 +584,10 @@ export default class ProjectRepository implements IProjectRepository {
     return res.map((i) => i.serialize() as MasterTable);
   }
 
-  private updateProjectVersion(version: string = "0.0", status?: number ): string {
+  private updateProjectVersion(version: string = "0.0", status?: number): string {
     const [major, minor] = version.split('.').map(Number);
     const newMinor = minor + 1;
     const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
-    if(status === 2){
-      return "1.00";
-    }
     return newVersion;
   }
 
