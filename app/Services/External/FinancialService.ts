@@ -1,4 +1,3 @@
-import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import { IBudgets } from "App/Interfaces/BudgetsInterfaces";
 import { ApiResponse } from "App/Utils/ApiResponses";
 import axios, { AxiosInstance } from "axios";

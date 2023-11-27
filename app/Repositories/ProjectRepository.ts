@@ -181,7 +181,7 @@ export default class ProjectRepository implements IProjectRepository {
       if (existingProject && existingProject.length > 0 && (project?.status !== 2 && project?.status !== 3)) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
-      const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version, existingProject[0]?.status || project.status);
+      const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version);
       toCreate.dateModify = DateTime.local().toJSDate();
       toCreate.version = updatedVersion;
       toCreate.bpin = project.register.bpin;
@@ -584,7 +584,7 @@ export default class ProjectRepository implements IProjectRepository {
     return res.map((i) => i.serialize() as MasterTable);
   }
 
-  private updateProjectVersion(version: string = "0.0", status?: number): string {
+  private updateProjectVersion(version: string = "0.0"): string {
     const [major, minor] = version.split('.').map(Number);
     const newMinor = minor + 1;
     const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
