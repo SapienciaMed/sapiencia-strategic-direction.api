@@ -33,7 +33,6 @@ Route.group(() => {
   Route.put("/update/:id", "ProjectController.updateProject");
   Route.get("/get-all", "ProjectController.getAllProjects");
   Route.post("/get-all-historical", "ProjectController.getAllHistorical");
-  Route.post("/get-all-historical-paginated", "ProjectController.getAllHistoricalPaginated");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
   Route.get("/status/get-all", "ProjectController.getAllStatus");
   Route.post("/upload/:id", "ProjectController.uploadProjectsDigitals");
@@ -150,6 +149,7 @@ Route.group(() => {
 
 Route.group(() => {
   Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");
+  Route.get("get-statuses", "SchedulesPAIController.getScheduleStatuses");
   Route.post("crud", "SchedulesPAIController.crudSchedulesPAI");
 })
 .prefix("/api/v1/pai/schedules")

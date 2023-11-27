@@ -23,10 +23,10 @@ export default class ActivitiesRepository implements IActivitiesRepository {
           )
           .sum("total as total")
           .where("idProject", filter.projectId)
-          .where("ACD_VIGENCIA_MGA", filter.validityYear)
+          .where("AMG_VIGENCIA_MGA", filter.validityYear)
           .where("ACD_OBJETIVO_GASTO_POSPRE", filter.pospreId);
-    
-        return res.length > 0 ? res[0].$extras.total || 0 : 0;
+
+         return res.length > 0 ? res[0].$extras.total || 0 : 0;
       }
       
 

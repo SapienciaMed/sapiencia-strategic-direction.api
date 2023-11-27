@@ -16,6 +16,16 @@ export default class SchedulesPAIController {
         }
     }
 
+    public async getScheduleStatuses({ response }: HttpContextContract) {
+        try {
+            return response.send(await SchedulesPAIProvider.getScheduleStatuses());
+        } catch (err) {
+            return response.badRequest(
+                new ApiResponse(null, EResponseCodes.FAIL, String(err))
+            );
+        }
+    }
+
     public async crudSchedulesPAI({ request, response }: HttpContextContract) {
         await Database.transaction(async (trx) => {
             try {

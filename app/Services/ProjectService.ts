@@ -1,4 +1,4 @@
-import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IProjectFiltersPaginated ,IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome, IFinishProjectForm, IHistoricalFiltersPaginated, IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
+import { IActivitiesProject, IActivityMGA, IAddLogicFrame, IProjectFiltersPaginated ,IAddRisks, ICause, IDemographicCharacteristics, IEffect, IEffectEnviromentForm, IIndicator, INeedObjetive, IParticipatingActors, IProject, IProjectFilters, IProjectPaginated, IProjectTemp, ISourceFunding, IprofitsIncome, IFinishProjectForm, IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Interfaces/repositories/IProjectRepository";
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -16,6 +16,8 @@ import { ISourceFundingRepository } from "App/Repositories/SourceFundingReposito
 import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
 import { ILogicFrameRepository } from "App/Repositories/LogicFrameRepository";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
+import { IHistoricalProjectsRepository } from "App/Repositories/HistoricalProjectsRepository";
+import { IHistoricalProject } from "App/Interfaces/HistoricProjectsInterfaces";
 
 export interface IProjectService {
   getProjectByUser(user: string): Promise<ApiResponse<IProject>>;
@@ -24,10 +26,7 @@ export interface IProjectService {
   getProjectsByFilters(filters: IProjectFilters): Promise<ApiResponse<IProject[]>>;
   getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>>
   getAllProjects(): Promise<ApiResponse<IProject[]>>;
-  getAllHistorical(data: IProjectFiltersHistorical): Promise<ApiResponse<IProject[]>>;
-  getAllHistoricalPaginated( 
-    filters: IHistoricalFiltersPaginated 
-  ): Promise<ApiResponse<IPagingData<IProject>>>;
+  getAllHistorical(data: IProjectFiltersHistorical): Promise<ApiResponse<IHistoricalProject[]>>;
   getProjectPaginated(
     filters: IProjectFiltersPaginated
   ): Promise<ApiResponse<IPagingData<IProject>>>;
@@ -51,6 +50,7 @@ export default class ProjectService implements IProjectService {
     private sourceFundingRepository: ISourceFundingRepository,
     private indicatorsRepository: IIndicatorsRepository,
     private logicRepository: ILogicFrameRepository,
+    private historicalProjectsRepository: IHistoricalProjectsRepository,
   ) { }
   async getProjectsPaginated(filters: IProjectPaginated): Promise<ApiResponse<IPagingData<IProject>>> {
     const res = await this.projectRepository.getProjectsPaginated(filters);
@@ -215,10 +215,16 @@ export default class ProjectService implements IProjectService {
 
   async updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>> {
 
-    if((project.status === 2 || project.status === 3) 
-    && (project?.createHistory && project?.oldStatus != project?.status)
-    ){
-      return await this.createProject( project, trx );
+    if(project.status === 2){
+      const oldProject = await this.projectRepository.getProjectById(id);
+      if(!oldProject) throw Error("No se pudo encontrar el proyecto")
+      const historical: IHistoricalProject = {
+        version: String(oldProject.version),
+        userCreate: project.user,
+        idProject: id,
+        json: JSON.stringify(oldProject),
+      }
+      await this.historicalProjectsRepository.createHistorical(historical, trx);
     }
 
     const res = await this.projectRepository.updateProject(project, id, trx);
@@ -372,13 +378,8 @@ export default class ProjectService implements IProjectService {
     return new ApiResponse(res, EResponseCodes.OK);
   }
 
-  async getAllHistorical(data: IProjectFiltersHistorical): Promise<ApiResponse<IProject[]>> {
-    const res = await this.projectRepository.getAllHistorical(data);
-    return new ApiResponse(res, EResponseCodes.OK);
-  }
-
-  async getAllHistoricalPaginated( filters: IHistoricalFiltersPaginated ): Promise<ApiResponse<IPagingData<IProject>>> {
-    const res = await this.projectRepository.getAllHistoricalPaginated( filters );
+  async getAllHistorical(data: IProjectFiltersHistorical): Promise<ApiResponse<IHistoricalProject[]>> {
+    const res = await this.historicalProjectsRepository.getHistoricals(data);
     return new ApiResponse(res, EResponseCodes.OK);
   }
 

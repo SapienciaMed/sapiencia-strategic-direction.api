@@ -25,11 +25,11 @@ export default class extends BaseSchema {
       .nullable()
       .comment("bimestre");
       table
-      .timestamp("SHP_FECHA_INICIO")
+      .datetime("SHP_FECHA_INICIO")
       .notNullable()
       .comment("Fecha de inicio");
       table
-      .timestamp("SHP_FECHA_FINAL")
+      .datetime("SHP_FECHA_FINAL")
       .notNullable()
       .comment("Fecha de final");
       table
@@ -37,12 +37,12 @@ export default class extends BaseSchema {
       .nullable()
       .comment("objetivo del proyecto");
       table
-      .timestamp("SHP_FECHA_CREO")
+      .datetime("SHP_FECHA_CREO")
       .notNullable()
       .comment("Fecha y hora de creación del cronograma");
       table
-      .timestamp("SHP_FECHA_EDICION")
-      .notNullable()
+      .datetime("SHP_FECHA_EDICION")
+      .nullable()
       .comment("Fecha y hora de edicion del cronograma");
     })
   }

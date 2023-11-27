@@ -6,7 +6,6 @@ import {
   IProjectPaginated,
   IProjectTemp,
   IFinishProjectForm,
-  IHistoricalFiltersPaginated
 } from "App/Interfaces/ProjectInterfaces";
 import { IProjectRepository } from "App/Interfaces/repositories/IProjectRepository";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -31,9 +30,6 @@ export default class ProjectRepositoryFake implements IProjectRepository {
   }
   getAllHistorical(): Promise<IProject[]> {
     return Promise.resolve([] as IProject[]);
-  }
-  getAllHistoricalPaginated( _filters: IHistoricalFiltersPaginated ): Promise<IPagingData<IProject>> {
-    return Promise.resolve( projects.serialize() as Promise<IPagingData<IProject>> );
   }
   getProjectsPaginated( _filters: IProjectPaginated ): Promise<IPagingData<IProject>> {
     return Promise.resolve( projects.serialize() as Promise<IPagingData<IProject>> );

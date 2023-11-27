@@ -111,6 +111,10 @@ export default class AppProvider {
       "App/Repositories/LogicFrameRepository"
     );
 
+    const HistoricalProjects = await import(
+      "App/Repositories/HistoricalProjectsRepository"
+    );
+
     const SchedulesPAIRepository = await import(
       "App/Repositories/SchedulesPAIRepository"
     );
@@ -144,6 +148,7 @@ export default class AppProvider {
         new SourceFundingRepository.default(),
         new IndicatorsRepository.default(),
         new LogicFrameRepository.default(),
+        new HistoricalProjects.default(),
       )
     );
 
