@@ -215,7 +215,7 @@ export default class ProjectService implements IProjectService {
 
   async updateProject(project: IProjectTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>> {
 
-    if(project.status === 2){
+    if(project.oldStatus === 2){
       const oldProject = await this.projectRepository.getProjectById(id);
       if(!oldProject) throw Error("No se pudo encontrar el proyecto")
       const historical: IHistoricalProject = {
