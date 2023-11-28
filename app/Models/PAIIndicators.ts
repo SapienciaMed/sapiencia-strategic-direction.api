@@ -1,6 +1,8 @@
-import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, BelongsTo, belongsTo, HasMany, hasMany, column } from "@ioc:Adonis/Lucid/Orm";
 import PAI from "./PAI";
-
+import ProductsPAI from "./PAIProducts";
+import ResponsiblesPAI from "./PAIResponsibles";
+import CoResponsiblesPAI from "./PAICoResponsibles";
 export default class IndicatorsPAI extends BaseModel {
     public static table = "IDP_INDICADORES";
 
@@ -11,7 +13,7 @@ export default class IndicatorsPAI extends BaseModel {
     public projectIndicator: number;
 
     @column({ columnName: "IDP_CODTDI_TIPO_INDICADOR", serializeAs: "indicatorType" })
-    public indicatorType: string;
+    public indicatorType: number;
 
     @column({ columnName: "IDP_DESCRIPCION_INDICADOR", serializeAs: "indicatorDesc" })
     public indicatorDesc: string;
@@ -39,6 +41,24 @@ export default class IndicatorsPAI extends BaseModel {
 
     @column({ columnName: "IDP_CODPAI_PAI", serializeAs: "idPAI" })
     public idPAI: number;
+
+    @hasMany(() => ProductsPAI, {
+        localKey: 'id',
+        foreignKey: 'idIndicatorPAI',
+    })
+    public ProductsPAI: HasMany<typeof ProductsPAI>;
+
+    @hasMany(() => ResponsiblesPAI, {
+        localKey: 'id',
+        foreignKey: 'idIndicatorPAI',
+    })
+    public ResponsiblesPAI: HasMany<typeof ResponsiblesPAI>;
+
+    @hasMany(() => CoResponsiblesPAI, {
+        localKey: 'id',
+        foreignKey: 'idIndicatorPAI',
+    })
+    public CoResponsiblesPAI: HasMany<typeof CoResponsiblesPAI>;
 
     @belongsTo(() => PAI, {
         localKey: 'id',

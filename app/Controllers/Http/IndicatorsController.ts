@@ -66,7 +66,7 @@ export default class IndicatorsController {
 
   public async getProjectIndicators({ request, response }: HttpContextContract) {
     try {
-      const { idProject } = request.params();
+      const {idProject} = request.params();
       return response.send(await IndicatorsProvider.getProjectIndicators(idProject));
     } catch (err) {
       return response.badRequest(

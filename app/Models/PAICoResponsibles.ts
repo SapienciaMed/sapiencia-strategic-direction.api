@@ -8,7 +8,7 @@ export default class CoResponsiblesPAI extends BaseModel {
     public id: number;
 
     @column({ columnName: "CRP_CORRESPONSABLE", serializeAs: "coresponsible"})
-    public product: string
+    public coresponsible: string
 
     @column({ columnName: "CRP_CODIDP_PAI", serializeAs: "idIndicatorPAI" })
     public idIndicatorPAI: number;
