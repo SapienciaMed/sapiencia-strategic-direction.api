@@ -4,11 +4,20 @@ import { IProjectFiltersHistorical } from "App/Interfaces/ProjectInterfaces";
 import HistoricalProjects from "App/Models/HistoricalProjects";
 
 export interface IHistoricalProjectsRepository {
+    getHistoricalById(id: number): Promise<IHistoricalProject | null>;
     getHistoricals(filters): Promise<IHistoricalProject[]>;
     createHistorical(historic: IHistoricalProject, trx: TransactionClientContract): Promise<IHistoricalProject>;
 }
 
 export default class HistoricalProjectsRepository implements IHistoricalProjectsRepository {
+    async getHistoricalById(id: number): Promise<IHistoricalProject | null> {
+        const res = await HistoricalProjects.find(id);
+        res?.load("project");
+
+        if(!res) return null;
+        return res.serialize() as IHistoricalProject
+    }
+
     async getHistoricals(filters: IProjectFiltersHistorical): Promise<IHistoricalProject[]> {
         const query = HistoricalProjects.query();
         query.whereHas("project", (subquery) => {

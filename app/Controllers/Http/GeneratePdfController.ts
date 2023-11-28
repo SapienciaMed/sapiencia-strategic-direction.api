@@ -14,7 +14,7 @@ import ImpactLevelProvider from '@ioc:core.ImpactLevelProvider';
 import ImpactTypeProvider from '@ioc:core.ImpactTypeProvider';
 import StageProvider from '@ioc:core.StageProvider';
 import ComponentsProvider from '@ioc:core.ComponentsProvider';
-import FinancialExternalService  from "App/Services/External/FinancialService"
+import FinancialExternalService from "App/Services/External/FinancialService"
 
 import { IActivitiesProject, IDemographicCharacteristics, IIndicatorAction, IIndicatorIndicative, ISourceFunding, IprofitsIncome } from 'App/Interfaces/ProjectInterfaces';
 
@@ -25,37 +25,37 @@ const { es } = require('date-fns/locale');
 
 export default class GeneratePdfController {
 
-  public async generatePdf({ params, response }: HttpContextContract) {
-    const projectId = params.id;
-    const basePath = "images/";
+    public async generatePdf({ params, response }: HttpContextContract) {
+        const projectId = params.id;
+        const basePath = "images/";
 
-    const logoPath = Application.makePath(basePath, "logo.png");
-    const footerPath = Application.makePath(basePath, "footer.png");
-
-    
-    const fechaActual = new Date();
-
-    const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
-    let DateProjectArchive = "";
+        const logoPath = Application.makePath(basePath, "logo.png");
+        const footerPath = Application.makePath(basePath, "footer.png");
 
 
+        const fechaActual = new Date();
 
-    try {
-     const project = await ProjectProvider.getProjectById(projectId);
-     const dependencyData = await EntitiesProvider.getEntitiesDependency();
-     let DateProject = ""
-     if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
-        const fechaIso = project.data.dateCreate.toString();
-        const DateCreate = new Date(fechaIso);
-        const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
-        const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
-        const anio = DateCreate.getFullYear();
-        const DateC = `${dia}/${mes}/${anio}`;
-        const DateA = `${dia}${mes}${anio}`;
-        DateProject = DateC;
-        DateProjectArchive = DateA;
-    }
-      const contentHTML = `
+        const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
+        let DateProjectArchive = "";
+
+
+
+        try {
+            const project = await ProjectProvider.getProjectById(projectId);
+            const dependencyData = await EntitiesProvider.getEntitiesDependency();
+            let DateProject = ""
+            if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
+                const fechaIso = project.data.dateCreate.toString();
+                const DateCreate = new Date(fechaIso);
+                const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
+                const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
+                const anio = DateCreate.getFullYear();
+                const DateC = `${dia}/${mes}/${anio}`;
+                const DateA = `${dia}${mes}${anio}`;
+                DateProject = DateC;
+                DateProjectArchive = DateA;
+            }
+            const contentHTML = `
       <!DOCTYPE html>
       <html lang="en">
       
@@ -173,7 +173,7 @@ export default class GeneratePdfController {
           <div class="ReferralDocument__container__logo">
             <div>
                 <img src="data:image/png;base64,${readFileSync(
-                    logoPath).toString("base64")}" alt="" />
+                logoPath).toString("base64")}" alt="" />
             </div>
           </div>
 
@@ -223,8 +223,8 @@ export default class GeneratePdfController {
              <div class="ReferralDocument__container__footer mt-small">
                     <div>
                         <img src="data:image/png;base64,${readFileSync(
-                            footerPath
-                        ).toString("base64")}" alt="" />
+                    footerPath
+                ).toString("base64")}" alt="" />
                     </div>
                 </div>
           </div>
@@ -232,188 +232,188 @@ export default class GeneratePdfController {
       
       </html>
       `;
-    // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-       const browser = await puppeteer.launch({
-          headless: "new",
-          args: ["--no-sandbox"],
-          executablePath: "/usr/bin/chromium",
-       });
+            // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
+            const browser = await puppeteer.launch({
+                headless: "new",
+                args: ["--no-sandbox"],
+                executablePath: "/usr/bin/chromium",
+            });
 
-      //const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-     
-      await page.setViewport({ width: 595, height: 842 });
-      await page.setContent(contentHTML, {
-        waitUntil: "domcontentloaded",
-      });
+            //const browser = await puppeteer.launch();
+            const page = await browser.newPage();
 
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-    });
-    await page.emulateMediaType("screen");
-    
-      await browser.close();
+            await page.setViewport({ width: 595, height: 842 });
+            await page.setContent(contentHTML, {
+                waitUntil: "domcontentloaded",
+            });
 
-      response.header('Content-Type', 'application/pdf');
-      const nombreArchivo = `Registro_proyecto_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
-      response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
-      response.status(200).send(pdfBuffer);
-    } catch (err) {
-        return response.badRequest(
-          new ApiResponse(null, EResponseCodes.FAIL, String(err))
-        );
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+            });
+            await page.emulateMediaType("screen");
+
+            await browser.close();
+
+            response.header('Content-Type', 'application/pdf');
+            const nombreArchivo = `Registro_proyecto_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
+            response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
+            response.status(200).send(pdfBuffer);
+        } catch (err) {
+            return response.badRequest(
+                new ApiResponse(null, EResponseCodes.FAIL, String(err))
+            );
+        }
     }
-  }
 
-  public async CreatePdfConsolidate({ params, response }: HttpContextContract) { 
+    public async CreatePdfConsolidate({ params, response }: HttpContextContract) {
 
-    const projectId = params.id;
-    const basePath = "images/";
+        const projectId = params.id;
+        const basePath = "images/";
 
-    const logoPath = Application.makePath(basePath, "logo.png");
-    const footerPath = Application.makePath(basePath, "footer.png");
+        const logoPath = Application.makePath(basePath, "logo.png");
+        const footerPath = Application.makePath(basePath, "footer.png");
 
-    let DateProjectArchive = "";
+        let DateProjectArchive = "";
 
-    try {
-     const project = await ProjectProvider.getProjectById(projectId);
-     const typeIndicators = await IndicatorsProvider.getIndicatorType();
-     
-     const processData = await EntitiesProvider.getEntities();
-     const dependencyData = await EntitiesProvider.getEntitiesDependency();
-     const positionActorsData = await EntitiesProvider.getEntitiesPosition();
-     const impactRatingData = await ImpactRatingProvider.getImpactRating();
-     const impactLevelData = await ImpactLevelProvider.getImpactLevel();
-     const impactTypeData = await ImpactTypeProvider.getImpactType();
-     const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
-     const regionData = await CoreProvider.getParametersByGrouper("REGION")
-     const departamentData = await CoreProvider.getParametersByGrouper("DEPARTAMENTOS")
-     const MunicipioData = await CoreProvider.getParametersByGrouper("MUNICIPIOS");
-     const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
-     const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
-     const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
-     const  lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
-     const stages = await StageProvider.getStages();
-     const components = await ComponentsProvider.getComponents();
-     const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
-     const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
-     const indicatorsLine = await IndicatorsProvider.getStrategicLine();
-     const indicatorProgramation = await IndicatorsProvider.getProgramation();
-     const indicatorName = await IndicatorsProvider.getIndicatorName();
-     const entity = await EntitiesProvider.getEntity();
-     const  resource = await EntitiesProvider.getResource();
-     const typeRisk = await EntitiesProvider.getEntitiesTypesRisks();
-     const impactRisk = await EntitiesProvider.getEntitiesImpact()
-     const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
-     const financialService = new FinancialExternalService();
+        try {
+            const project = await ProjectProvider.getProjectById(projectId);
+            const typeIndicators = await IndicatorsProvider.getIndicatorType();
 
-     financialService.getAllBudgets()
-        .then(response => {
-            console.log('Respuesta:', response);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+            const processData = await EntitiesProvider.getEntities();
+            const dependencyData = await EntitiesProvider.getEntitiesDependency();
+            const positionActorsData = await EntitiesProvider.getEntitiesPosition();
+            const impactRatingData = await ImpactRatingProvider.getImpactRating();
+            const impactLevelData = await ImpactLevelProvider.getImpactLevel();
+            const impactTypeData = await ImpactTypeProvider.getImpactType();
+            const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
+            const regionData = await CoreProvider.getParametersByGrouper("REGION")
+            const departamentData = await CoreProvider.getParametersByGrouper("DEPARTAMENTOS")
+            const MunicipioData = await CoreProvider.getParametersByGrouper("MUNICIPIOS");
+            const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
+            const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
+            const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
+            const lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
+            const stages = await StageProvider.getStages();
+            const components = await ComponentsProvider.getComponents();
+            const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
+            const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
+            const indicatorsLine = await IndicatorsProvider.getStrategicLine();
+            const indicatorProgramation = await IndicatorsProvider.getProgramation();
+            const indicatorName = await IndicatorsProvider.getIndicatorName();
+            const entity = await EntitiesProvider.getEntity();
+            const resource = await EntitiesProvider.getResource();
+            const typeRisk = await EntitiesProvider.getEntitiesTypesRisks();
+            const impactRisk = await EntitiesProvider.getEntitiesImpact()
+            const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
+            const financialService = new FinancialExternalService();
 
-
-     const LevelData  = [
-        {
-            name: "Objetivo general",
-            value: 1,
-        },
-        {
-            name: "Producto",
-            value: 2,
-        },
-        {
-            name: "Actividad",
-            value: 3,
-        }
-    ];
-
-    const ResumeData = [
-        {
-            name: "Objetivo general",
-            value: 1,
-        },
-        {
-            name: "objetivo específico",
-            value: 2,
-        },
-        {
-            name: "Actividades",
-            value: 3,
-        }
-    ];
-
-     const objectivesData =  project.data.causes?.map(cause => {
-        return {
-            name: `${cause.consecutive}. ${cause.description}`,
-            value: cause.consecutive
-        }
-    });
-
-    const productsData=  project.data.activities?.map(data => {
-        return {
-            name: `${data.productMGA}. ${data.productDescriptionMGA}`,
-            value: data.productMGA
-        }
-    }) ;
-
-    const activities = project.data.activities?.map((cause) => {
-        return {
-            name: `${cause.activityMGA}. ${cause.activityDescriptionMGA}`,
-            value: cause.activityMGA
-        }
-    });
-
-    let totalCostDetail = 0;
-
-    project.data.activities?.map(activitiesDetail => {
-        activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
-            return  totalCostDetail = accumulator + (detailActivities.amount * detailActivities.unitCost);
-        }, 0)
-    });
+            financialService.getAllBudgets()
+                .then(response => {
+                    console.log('Respuesta:', response);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
 
+            const LevelData = [
+                {
+                    name: "Objetivo general",
+                    value: 1,
+                },
+                {
+                    name: "Producto",
+                    value: 2,
+                },
+                {
+                    name: "Actividad",
+                    value: 3,
+                }
+            ];
 
-   const  dataAcumulativo= [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
+            const ResumeData = [
+                {
+                    name: "Objetivo general",
+                    value: 1,
+                },
+                {
+                    name: "objetivo específico",
+                    value: 2,
+                },
+                {
+                    name: "Actividades",
+                    value: 3,
+                }
+            ];
+
+            const objectivesData = project.data.causes?.map(cause => {
+                return {
+                    name: `${cause.consecutive}. ${cause.description}`,
+                    value: cause.consecutive
+                }
+            });
+
+            const productsData = project.data.activities?.map(data => {
+                return {
+                    name: `${data.productMGA}. ${data.productDescriptionMGA}`,
+                    value: data.productMGA
+                }
+            });
+
+            const activities = project.data.activities?.map((cause) => {
+                return {
+                    name: `${cause.activityMGA}. ${cause.activityDescriptionMGA}`,
+                    value: cause.activityMGA
+                }
+            });
+
+            let totalCostDetail = 0;
+
+            project.data.activities?.map(activitiesDetail => {
+                activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
+                    return totalCostDetail = accumulator + (detailActivities.amount * detailActivities.unitCost);
+                }, 0)
+            });
 
 
 
-
-     const measurement = project.data.measurement;
-
-     const unidadEncontrada = measurementData.find(item => parseInt(item.itemCode) === measurement)?.itemDescription;
+            const dataAcumulativo = [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
 
 
 
-   
 
-      function formaterNumberToCurrency(number) {
-        const formatter = new Intl.NumberFormat("es-CO", {
-          style: "currency",
-          currency: "COP",
-          minimumFractionDigits: 2,
-        });
-      
-        return formatter.format(number);
-      }
-     
+            const measurement = project.data.measurement;
 
-     let DateProject = ""
-     if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
-        const fechaIso = project.data.dateCreate.toString();
-        const DateCreate = new Date(fechaIso);
-        const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
-        const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
-        const anio = DateCreate.getFullYear();
-        const DateC = `${dia}/${mes}/${anio}`;
-        const DateA = `${dia}${mes}${anio}`;
-        DateProject = DateC;
-        DateProjectArchive = DateA;
-    }
-      const contentHTML = `
+            const unidadEncontrada = measurementData.find(item => parseInt(item.itemCode) === measurement)?.itemDescription;
+
+
+
+
+
+            function formaterNumberToCurrency(number) {
+                const formatter = new Intl.NumberFormat("es-CO", {
+                    style: "currency",
+                    currency: "COP",
+                    minimumFractionDigits: 2,
+                });
+
+                return formatter.format(number);
+            }
+
+
+            let DateProject = ""
+            if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
+                const fechaIso = project.data.dateCreate.toString();
+                const DateCreate = new Date(fechaIso);
+                const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
+                const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
+                const anio = DateCreate.getFullYear();
+                const DateC = `${dia}/${mes}/${anio}`;
+                const DateA = `${dia}${mes}${anio}`;
+                DateProject = DateC;
+                DateProjectArchive = DateA;
+            }
+            const contentHTML = `
       <!DOCTYPE html>
       <html lang="en">
       
@@ -746,10 +746,8 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.causes?.map(directa => 
-                        {
-                        return  `
+                    ${project.data.causes?.map(directa => {
+                return `
                             <tr>
                                 <td>Directo</td>
                                 <td>${directa.consecutive} ${directa.description}</td>
@@ -760,8 +758,8 @@ export default class GeneratePdfController {
                                     <td>${indirecta.consecutive} ${indirecta.description}</td>
                                 </tr>
                             `).join('')}`
-                        }).join('')
-                    }
+            }).join('')
+                }
                     </tbody>
                 </table>
 
@@ -779,8 +777,7 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.effects?.map(directa => `
+                    ${project.data.effects?.map(directa => `
                             <tr>
                                 <td>Directo</td>
                                 <td> ${directa.consecutive} ${directa.description}</td>
@@ -791,7 +788,7 @@ export default class GeneratePdfController {
                                     <td> ${indirecta.consecutive} ${indirecta.description}</td>
                                 </tr>
                             `).join('')}`).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
@@ -818,8 +815,7 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.causes?.map(directa => `
+                    ${project.data.causes?.map(directa => `
                         <tr>
                             <td>Directo</td>
                             <td>${directa.consecutive} ${directa.description}</td>
@@ -830,7 +826,7 @@ export default class GeneratePdfController {
                                 <td>${indirecta.consecutive} ${indirecta.description}</td>
                             </tr>
                         `).join('')}`).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
@@ -846,8 +842,7 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.effects?.map(directa => `
+                    ${project.data.effects?.map(directa => `
                             <tr>
                                 <td>Directo</td>
                                 <td> ${directa.consecutive} ${directa.description}</td>
@@ -858,7 +853,7 @@ export default class GeneratePdfController {
                                     <td> ${indirecta.consecutive} ${indirecta.description}</td>
                                 </tr>
                             `).join('')}`).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
@@ -871,9 +866,8 @@ export default class GeneratePdfController {
 
                 <div class="section-object-2">
                     <div class="section-title">Unidad de medida</div>
-                    ${
-                        unidadEncontrada
-                    }
+                    ${unidadEncontrada
+                }
                   
                 </div>
 
@@ -899,8 +893,7 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.actors?.map(actors => `
+                    ${project.data.actors?.map(actors => `
                             <tr>
                                 <td>${actors.actor}</td>
                                 <td>${actors.expectation}</td>
@@ -908,7 +901,7 @@ export default class GeneratePdfController {
                                 <td>${actors.contribution}</td>
                             </tr>
                         `).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
@@ -941,16 +934,16 @@ export default class GeneratePdfController {
                 </div>
                 <div class="section-object-2">
                     <div class="section-title">Departamento</div>
-                    <div>${departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription != undefined ? departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription : "" }</div>
+                    <div>${departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription != undefined ? departamentData.find(item => parseInt(item.itemCode) === project.data.departament)?.itemDescription : ""}</div>
                 </div>
 
                 <div class="section-object-2">
                     <div class="section-title">Distrito/Municipio</div>
-                    <div>${MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription != undefined ? MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription : "" }</div>
+                    <div>${MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription != undefined ? MunicipioData.find(item => parseInt(item.itemCode) === project.data.district)?.itemDescription : ""}</div>
                 </div>
                 <div class="section-object-2">
                     <div class="section-title">Resguardo</div>
-                    <div>${project.data.shelter  != null ? project.data.shelter : ""}</div>
+                    <div>${project.data.shelter != null ? project.data.shelter : ""}</div>
                 </div>
 
                 <table>
@@ -963,48 +956,46 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.classifications?.map(Classifications => 
-                        {
-                            let entity = "";
-                            if (Classifications.clasification === 1) {
-                                entity = `
+                    ${project.data.classifications?.map(Classifications => {
+                    let entity = "";
+                    if (Classifications.clasification === 1) {
+                        entity = `
                                     <td>
                                         Género
                                     </td>
-                                    <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                    <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                 `;
-                            } else if (Classifications.clasification === 2) {
-                                entity = `
+                    } else if (Classifications.clasification === 2) {
+                        entity = `
                                     <td>
                                         Rango de edad
                                     </td>
-                                    <td>${oldData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                    <td>${oldData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                 `;
-                            } else if (Classifications.clasification === 3) {
-                                entity = `
+                    } else if (Classifications.clasification === 3) {
+                        entity = `
                                     <td>
                                         Grupo étnico
                                     </td>
-                                    <td>${etniquesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                    <td>${etniquesData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                 `;
-                            } else if (Classifications.clasification === 4) {
-                                entity = `
+                    } else if (Classifications.clasification === 4) {
+                        entity = `
                                     <td>
                                         Población vulnerable
                                     </td>
-                                    <td>${lge.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                    <td>${lge.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                 `;
-                            } 
-                            return`
+                    }
+                    return `
                                 <tr>
                                         ${entity}
                                     <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
-                                    <td>${Classifications.infoSource != null ? Classifications.infoSource : "" }</td>
+                                    <td>${Classifications.infoSource != null ? Classifications.infoSource : ""}</td>
                                 </tr>
                             `
-                        }).join('')
-                    }
+                }).join('')
+                }
                     </tbody>
                 </table>
 
@@ -1056,8 +1047,7 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.specificObjectives?.map(specificObjectives => `
+                    ${project.data.specificObjectives?.map(specificObjectives => `
                             <tr>
                                 <td>${specificObjectives.objetive.consecutive} ${specificObjectives.objetive.description}</td>
                                 <td>${specificObjectives.interventionActions}</td>
@@ -1071,7 +1061,7 @@ export default class GeneratePdfController {
                                 <td>${specificObjectives.quantification}</td>
                             </tr>
                         `).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
@@ -1092,7 +1082,7 @@ export default class GeneratePdfController {
 
                 <div class="section-object">
                     <div class="section-title">Unidad de medida</div>
-                    <div>${ unidadEncontrada}</div>
+                    <div>${unidadEncontrada}</div>
                 </div>
                 <div class="section-object">
                     <div class="section-title">Capacidad generada</div>
@@ -1121,17 +1111,16 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.environmentalEffects?.map(environmentalEffects => `
+                    ${project.data.environmentalEffects?.map(environmentalEffects => `
                             <tr>
-                                <td>${impactTypeData.data.find(type => type.id == environmentalEffects.type)?.description }</td>
+                                <td>${impactTypeData.data.find(type => type.id == environmentalEffects.type)?.description}</td>
                                 <td>${environmentalEffects.impact != null ? environmentalEffects.impact : ""}</td>
-                                <td>${impactLevelData.data.find(type => type.id == environmentalEffects.level)?.description }</td>
-                                <td>${impactRatingData.data.find(type => type.id ==  environmentalEffects.classification)?.description}</td>
-                                <td>${environmentalEffects.measures != null  ? environmentalEffects.measures :"" }</td>
+                                <td>${impactLevelData.data.find(type => type.id == environmentalEffects.level)?.description}</td>
+                                <td>${impactRatingData.data.find(type => type.id == environmentalEffects.classification)?.description}</td>
+                                <td>${environmentalEffects.measures != null ? environmentalEffects.measures : ""}</td>
                             </tr>
                         `).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
@@ -1139,9 +1128,8 @@ export default class GeneratePdfController {
                 <div class="section-title-name">Actividades</div> 
             </div>
 
-            ${
-                project.data.activities?.map(activities =>
-                `
+            ${project.data.activities?.map(activities =>
+                    `
                 <div class="section-object-2">
                     <div class="section-title">Objetivo específico</div>
                     <div>${activities.objetiveActivity.description}</div>
@@ -1156,52 +1144,47 @@ export default class GeneratePdfController {
                             </div>
                             <div class="prop">
                                 <span class="title">Etapa</span>
-                                <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description }</span>
+                                <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description}</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Actividad MGA</span>
                                 <span>${activities.activityMGA} ${activities.activityDescriptionMGA}</span>
                             </div>
-                            ${
-                                activities.budgetsMGA?.map(budget => `
+                            ${activities.budgetsMGA?.map(budget => `
                                 <div class="prop">
                                     <span class="title">Año ${budget.year}</span>
                                     <span> ${formaterNumberToCurrency(budget.budget)}</span>
                                 </div>
                               
                                 `).join('')
-                            }
+                    }
 
                             <div class="prop">
                             <span class="title">Presupuesto</span>
-                                <span> ${
-                                    formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
+                                <span> ${formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget + activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                             </div>
 
-                            ${
-                                activities.budgetsMGA?.map(budget => `
+                            ${activities.budgetsMGA?.map(budget => `
                                 <div class="prop">
                                 <span class="title">Vigencia</span>
                                     <span>${budget.validity}</span>
                                 </div>
                             
                                 `).join('')
-                            }
+                    }
                           
 
-                            ${
-                                activities.budgetsMGA?.map(budget => `
+                            ${activities.budgetsMGA?.map(budget => `
                                 <div class="prop">
                                 <span class="title">Año</span>
                                     <span> ${budget.year}</span>
                                 </div>
                                 `).join('')
-                            }
+                    }
 
-                            ${
-                                activities.detailActivities?.map(detailActivities => {
-                                    const currentCost = detailActivities.amount * detailActivities.unitCost;
-                                    return `
+                            ${activities.detailActivities?.map(detailActivities => {
+                        const currentCost = detailActivities.amount * detailActivities.unitCost;
+                        return `
                                     <div class="prop">
                                         <span class="title">No. y descripción actividad detallada</span>
                                         <span> ${detailActivities.consecutive} ${detailActivities.detailActivity}</span>
@@ -1214,7 +1197,7 @@ export default class GeneratePdfController {
 
                                     <div class="prop">
                                         <span class="title">Componente </span>
-                                        <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description }</span>
+                                        <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description}</span>
                                     </div>
 
                                     <div class="prop">
@@ -1255,16 +1238,16 @@ export default class GeneratePdfController {
 
                                     <div class="prop">
                                         <span class="title">Costo total actividades detalladas </span>
-                                        <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
+                                        <span>  ${detailActivities.unitCost ? formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
                                     </div>
                             
                                     `;
-                                }).join('')
-                            }
+                    }).join('')
+                    }
                         </div>
                     </div>
                 `).join('')
-            }
+                }
 
                 <div class="section-name">
                     <div class="section-title-name">Riesgos</div> 
@@ -1285,49 +1268,47 @@ export default class GeneratePdfController {
                             </tr>
                         </thead>
                         <tbody>
-                        ${
-                            project.data.risks?.map(risks => 
-                            {
-                                let entity = "";
-                                
-                                if (risks.level === 1) {
-                                    entity = `
+                        ${project.data.risks?.map(risks => {
+                    let entity = "";
+
+                    if (risks.level === 1) {
+                        entity = `
                                         <td>
                                             ${project.data.centerProblem}
                                          </td>
                                     `;
-                                } else if (risks.level === 2) {
-                                    const levelRisk = productsData?.find(item => item.value == risks.risk)?.name
-        
-                                    entity = `
+                    } else if (risks.level === 2) {
+                        const levelRisk = productsData?.find(item => item.value == risks.risk)?.name
+
+                        entity = `
                                     <td>
                                         ${levelRisk}
                                     </td>                          
                                     `;
-                                } else if (risks.level === 3) {
-                                    
-                                    const levelActivities = activities?.find(item => item.value == risks.risk)?.name
-        
-                                    entity = `
+                    } else if (risks.level === 3) {
+
+                        const levelActivities = activities?.find(item => item.value == risks.risk)?.name
+
+                        entity = `
                                         <td>
                                             ${levelActivities}
                                         </td>                          
                                     `;
-                                }
-                                return`
+                    }
+                    return `
                                     <tr>
-                                    <td>${LevelData.find(item => item.value === risks.level)?.name }</td>
+                                    <td>${LevelData.find(item => item.value === risks.level)?.name}</td>
                                         ${entity}
-                                    <td>${typeRisk.data.find(position => position.id == risks.typeRisk)?.description }</td>
+                                    <td>${typeRisk.data.find(position => position.id == risks.typeRisk)?.description}</td>
                                     <td>${risks.descriptionRisk}</td>
                                     <td>${probabilityRisk.data.find(position => position.id == risks.probability)?.description}</td>
-                                    <td>${impactRisk.data.find(position => position.id ==  risks.impact)?.description}</td>
-                                    <td>${risks.effects != null ? risks.effects : "" }</td>
+                                    <td>${impactRisk.data.find(position => position.id == risks.impact)?.description}</td>
+                                    <td>${risks.effects != null ? risks.effects : ""}</td>
                                     <td>${risks.mitigation != null ? risks.mitigation : ""}</td>
                                     </tr>
                                 `
-                            }).join('')
-                        }
+                }).join('')
+                }
                         </tbody>
                     </table>
                 </div>
@@ -1352,23 +1333,21 @@ export default class GeneratePdfController {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.profitsIncome?.map(profitsIncome => `
+                    ${project.data.profitsIncome?.map(profitsIncome => `
                             <tr>
                                 <td>${profitsIncome.type}</td>
                                 <td>${profitsIncome.description}</td>
                                 <td>${measurementData.find(item => parseInt(item.itemCode) === profitsIncome.unit)?.itemDescription}</td>
                             </tr>
                         `).join('')
-                    }
+                }
                     </tbody>
                 </table>
 
                 <div class="section-name">
                     <div class="section-title-name">Clasificación</div> 
                 </div>
-                ${
-                    project.data.profitsIncome?.map(profitsIncome => `
+                ${project.data.profitsIncome?.map(profitsIncome => `
                         <table>
                             <thead>
                                 <tr>
@@ -1379,8 +1358,7 @@ export default class GeneratePdfController {
                                 </tr>
                             </thead>
                             <tbody>
-                                ${
-                                    profitsIncome.period?.map(periodData => `
+                                ${profitsIncome.period?.map(periodData => `
                                         <tr>
                                             <td>${periodData.period}</td>
                                             <td>${periodData.quantity}</td>
@@ -1388,7 +1366,7 @@ export default class GeneratePdfController {
                                             <td>${formaterNumberToCurrency(periodData.financialValue)}</td>
                                         </tr>
                                     `).join('')
-                                }
+                    }
                             </tbody>
                         </table>
                     `).join('')
@@ -1399,18 +1377,17 @@ export default class GeneratePdfController {
                 <div class="section-title-name">Fuentes de financiación</div> 
             </div>
 
-            ${
-                project.data.sourceFunding?.map(sourceFunding => `
+            ${project.data.sourceFunding?.map(sourceFunding => `
         
                     <div class="tabla" style = "margin-bottom: 70px;">
                         <div class="item">
                             <div class="prop">
                                 <span class="title">Etapa</span>
-                                <span>${ stages.data.find(stage => stage.id === sourceFunding.stage)?.description  }</span>
+                                <span>${stages.data.find(stage => stage.id === sourceFunding.stage)?.description}</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Tipo entidad</span>
-                                <span>${ entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description  }</span>
+                                <span>${entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description}</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Entidad</span>
@@ -1419,7 +1396,7 @@ export default class GeneratePdfController {
 
                             <div class="prop">
                             <span class="title">Tipo de recurso</span>
-                                <span> ${ resource.data.find(stage => stage.id === sourceFunding.resource)?.description  }</span>
+                                <span> ${resource.data.find(stage => stage.id === sourceFunding.resource)?.description}</span>
                             </div>
 
                             <div class="prop">
@@ -1446,15 +1423,14 @@ export default class GeneratePdfController {
                         </div>
                     </div>
                 `).join('')
-            }
+                }
 
             
         <div class="section-name">
             <div class="section-title-name">Indicadores</div> 
         </div>
 
-        ${
-            project.data.indicatorsIndicative?.map(indicatorsIndicative => `
+        ${project.data.indicatorsIndicative?.map(indicatorsIndicative => `
           
             <div class="section-object-2">
                 <div class="section-title">Tipo de indicador:</div>
@@ -1465,30 +1441,30 @@ export default class GeneratePdfController {
                     <div class="item">
                         <div class="prop">
                             <span class="title">Línea estratégica</span>
-                            <span>${ indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description  }</span>
+                            <span>${indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description}</span>
                         </div>
                         <div class="prop">
                             <span class="title">Componente</span>
-                            <span>${ indicatorsComponent.data.find(process => process.id ==  indicatorsIndicative?.component)?.description   }</span>
+                            <span>${indicatorsComponent.data.find(process => process.id == indicatorsIndicative?.component)?.description}</span>
                         </div>
                         <div class="prop">
                             <span class="title">Programa</span>
-                            <span>${ indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description } </span>
+                            <span>${indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description} </span>
                         </div>
 
                         <div class="prop">
                             <span class="title">Nombre indicador</span>
-                            <span>${ indicatorName.data.find(process => process.id ==  indicatorsIndicative?.indicator )?.description   } </span>
+                            <span>${indicatorName.data.find(process => process.id == indicatorsIndicative?.indicator)?.description} </span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Unidad de medida</span>
-                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription }</span>
+                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Plan de desarrollo </span>
-                            <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan :""}</span>
+                            <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan : ""}</span>
                         </div>
 
                         <div class="prop">
@@ -1519,15 +1495,14 @@ export default class GeneratePdfController {
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
-                            <span> ${ formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
+                            <span> ${formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                         </div>
                     </div>
                 </div>
             `).join('')
-        }
+                }
 
-        ${
-            project.data.indicatorsAction?.map(indicatorsAction => `
+        ${project.data.indicatorsAction?.map(indicatorsAction => `
           
             <div class="section-object-2">
                 <div class="section-title">Tipo de indicador:</div>
@@ -1546,28 +1521,28 @@ export default class GeneratePdfController {
                         </div>
                         <div class="prop">
                             <span class="title">Indicador DNP</span>
-                            <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description } </span>
+                            <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description} </span>
                         </div>
 
                         <div class="prop">
                             <span class="title">Código DNP indicador</span>
-                            <span>${indicatorsAction.dpn ? indicatorsAction?.dpn :""} </span>
+                            <span>${indicatorsAction.dpn ? indicatorsAction?.dpn : ""} </span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Unidad de medida</span>
-                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription }</span>
+                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Código valor estadístico
                         </span>
-                            <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode :""}</span>
+                            <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode : ""}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Nombre valor estadístico</span>
-                            <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue :""}</span>
+                            <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue : ""}</span>
                         </div>
 
                         <div class="prop">
@@ -1593,16 +1568,16 @@ export default class GeneratePdfController {
                         </div>
                         <div class="prop">
                         <span class="title">Acumulativo cuatrienio </span>
-                            <span> ${ indicatorsAction?.accumulative != undefined ?  dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative )?.name : "Si"}</span>
+                            <span> ${indicatorsAction?.accumulative != undefined ? dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative)?.name : "Si"}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
-                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) :""}</span>
+                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) : ""}</span>
                         </div>
                     </div>
                 </div>
             `).join('')
-        }
+                }
 
             <div class="section-name">
                 <div class="section-title-name">Matriz de marco lógico</div> 
@@ -1622,76 +1597,74 @@ export default class GeneratePdfController {
                 </thead>
                 <tbody>
 
-                ${
-                    project.data.logicFrame?.map(logicFrame =>
-                    {
-                        let entity = "";
-                        let entity2 = "";
-                        if (logicFrame.resume === 1) {
-                            entity = `
+                ${project.data.logicFrame?.map(logicFrame => {
+                    let entity = "";
+                    let entity2 = "";
+                    if (logicFrame.resume === 1) {
+                        entity = `
                                 <td>
                                     ${project.data.centerProblem}
                                  </td>
                             `;
-                        } else if (logicFrame.resume=== 2) {
-                            const objetiveSpecific = objectivesData?.find(item => item.value == logicFrame.description)?.name
+                    } else if (logicFrame.resume === 2) {
+                        const objetiveSpecific = objectivesData?.find(item => item.value == logicFrame.description)?.name
 
-                            entity = `
+                        entity = `
                             <td>
                                 ${objetiveSpecific}
                             </td>                          
                             `;
-                        } else if (logicFrame.resume === 3) {
-                            
-                            const activitiesLogicFrame = activities?.find(item => item.value == logicFrame.description)?.name
+                    } else if (logicFrame.resume === 3) {
 
-                            entity = `
+                        const activitiesLogicFrame = activities?.find(item => item.value == logicFrame.description)?.name
+
+                        entity = `
                                 <td>
                                 ${activitiesLogicFrame}
                                 </td>                          
                             `;
-                        }
-                        if (logicFrame.type === 1) {
-                            const logicFrameIndicatorI = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
-                                indicatorsIndicative.id == logicFrame?.indicator ) 
-                            
-                            const logicFrameIndicator = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI?.indicator )?.description 
-        
-                            entity2 = `
+                    }
+                    if (logicFrame.type === 1) {
+                        const logicFrameIndicatorI = project.data.indicatorsIndicative?.find(indicatorsIndicative =>
+                            indicatorsIndicative.id == logicFrame?.indicator)
+
+                        const logicFrameIndicator = indicatorName.data.find(process => process.id == logicFrameIndicatorI?.indicator)?.description
+
+                        entity2 = `
                                 <td>
                                     ${logicFrameIndicator}
                                  </td>
                             `;
-                        } else if (logicFrame.type === 2) {
-                            const logicFrameIndicatorI2 = project.data.indicatorsIndicative?.find(indicatorsIndicative => 
-                                indicatorsIndicative.id == logicFrame?.indicator ) 
-                            
-                            const logicFrameIndicator2 = indicatorName.data.find(process => process.id ==  logicFrameIndicatorI2?.indicator )?.description 
-            
-                            entity2 = `
+                    } else if (logicFrame.type === 2) {
+                        const logicFrameIndicatorI2 = project.data.indicatorsIndicative?.find(indicatorsIndicative =>
+                            indicatorsIndicative.id == logicFrame?.indicator)
+
+                        const logicFrameIndicator2 = indicatorName.data.find(process => process.id == logicFrameIndicatorI2?.indicator)?.description
+
+                        entity2 = `
                             <td>
                                 ${logicFrameIndicator2}
                             </td>                          
                             `;
-                        } else if (logicFrame.type === 3) {
-                            
-                            entity2 = `
+                    } else if (logicFrame.type === 3) {
+
+                        entity2 = `
                                 <td>
                                     ${logicFrame.indicator}
                                 </td>                          
                             `;
-                        }
-                        return`
+                    }
+                    return `
                             <tr>
-                                <td>${ResumeData.find(item => item.value === logicFrame.resume)?.name  }</td>
+                                <td>${ResumeData.find(item => item.value === logicFrame.resume)?.name}</td>
                                     ${entity}
                                     ${entity2}
                                     <td>${logicFrame.meta}</td>
-                                    <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification:"" }</td>
-                                    <td>${logicFrame.assumptions ? logicFrame.assumptions:"" }</td>
+                                    <td>${logicFrame.sourceVerification ? logicFrame.sourceVerification : ""}</td>
+                                    <td>${logicFrame.assumptions ? logicFrame.assumptions : ""}</td>
                             </tr>
                         `
-                    }).join('')
+                }).join('')
                 }
                 </tbody>
             </table>
@@ -1702,22 +1675,22 @@ export default class GeneratePdfController {
       
       </html>
       `;
-    // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-        //  const browser = await puppeteer.launch({
-        //    headless: "new",
-        //    args: ["--no-sandbox"],
-        //    executablePath: "/usr/bin/chromium",
-        //  });
+            // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
+            const browser = await puppeteer.launch({
+                headless: "new",
+                args: ["--no-sandbox"],
+                executablePath: "/usr/bin/chromium",
+            });
 
-      const browser = await puppeteer.launch();
-      const page = await browser.newPage();
-     
-      await page.setViewport({ width: 595, height: 842 });
-      await page.setContent(contentHTML, {
-        waitUntil: "domcontentloaded",
-      });
+            //const browser = await puppeteer.launch();
+            const page = await browser.newPage();
 
-      const headerHTML = `<div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
+            await page.setViewport({ width: 595, height: 842 });
+            await page.setContent(contentHTML, {
+                waitUntil: "domcontentloaded",
+            });
+
+            const headerHTML = `<div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
             <span class="pageNumber"></span> de <span class="totalPages"></span>
         </div>
         <div style="text-align: center;  margin-bottom: 10px;">
@@ -1728,118 +1701,119 @@ export default class GeneratePdfController {
             
         </div>`;
 
-    const footerHTML = `<div style="text-align: center; padding: 0 !important; margin: 0;">
+            const footerHTML = `<div style="text-align: center; padding: 0 !important; margin: 0;">
         <img src="data:image/png;base64,${readFileSync(footerPath).toString("base64")}" alt="Footer" style=" width: 30%" />
     </div>`
-    
-    ;
-      const pdfBuffer = await page.pdf({
-        format: 'A4',
-        displayHeaderFooter: true,
-        headerTemplate: headerHTML,
-        footerTemplate: footerHTML,
-        margin: { top: 220, bottom: 90 }
-    });
-    await page.emulateMediaType("screen");
-    
-      await browser.close();
 
-      response.header('Content-Type', 'application/pdf');
-      const nombreArchivo = `Ficha_técnica_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
-      response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
-      response.status(200).send(pdfBuffer);
-    } catch (err) {
-        return response.badRequest(
-          new ApiResponse(null, EResponseCodes.FAIL, String(err))
-        );
+                ;
+            const pdfBuffer = await page.pdf({
+                format: 'A4',
+                displayHeaderFooter: true,
+                headerTemplate: headerHTML,
+                footerTemplate: footerHTML,
+                margin: { top: 220, bottom: 90 }
+            });
+            await page.emulateMediaType("screen");
+
+            await browser.close();
+
+            response.header('Content-Type', 'application/pdf');
+            const nombreArchivo = `Ficha_técnica_${project.data.bpin}_ ${DateProjectArchive}.pdf`;
+            response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
+            response.status(200).send(pdfBuffer);
+        } catch (err) {
+            return response.badRequest(
+                new ApiResponse(null, EResponseCodes.FAIL, String(err))
+            );
+        }
+
     }
 
-}
+
+    public async CreatePdfHistoric({ params, response }: HttpContextContract) {
+
+        const projectId = params.id;
+        let oldId = params.oldId;
+
+        if (oldId == 0) {
+            const basePath = "images/";
+
+            const logoPath = Application.makePath(basePath, "logo.png");
+            const footerPath = Application.makePath(basePath, "footer.png");
 
 
-public async CreatePdfHistoric({ params, response }: HttpContextContract) { 
+            try {
+                const historical = await ProjectProvider.getHistoricalById(Number(projectId));
+                const project = { data: historical.data.json };
+                const typeIndicators = await IndicatorsProvider.getIndicatorType();
+                const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
+                const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
+                const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
+                const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
+                const lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
+                const stages = await StageProvider.getStages();
+                const components = await ComponentsProvider.getComponents();
+                const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
+                const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
+                const indicatorsLine = await IndicatorsProvider.getStrategicLine();
+                const indicatorProgramation = await IndicatorsProvider.getProgramation();
+                const indicatorName = await IndicatorsProvider.getIndicatorName();
+                const entity = await EntitiesProvider.getEntity();
+                const resource = await EntitiesProvider.getResource();
 
-    const projectId = params.id;
-    let oldId = params.oldId;
-    
-    if(oldId == 0 ){
-        const basePath = "images/";
+                const objectivesData = project.data.causes?.map(cause => {
+                    return {
+                        name: `${cause.consecutive}. ${cause.description}`,
+                        value: cause.consecutive
+                    }
+                });
 
-        const logoPath = Application.makePath(basePath, "logo.png");
-        const footerPath = Application.makePath(basePath, "footer.png");
-    
-    
-        try {
-         const project = await ProjectProvider.getProjectById(projectId);
-         const typeIndicators = await IndicatorsProvider.getIndicatorType();
-         const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
-         const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
-         const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
-         const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
-         const  lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
-         const stages = await StageProvider.getStages();
-         const components = await ComponentsProvider.getComponents();
-         const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
-         const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
-         const indicatorsLine = await IndicatorsProvider.getStrategicLine();
-         const indicatorProgramation = await IndicatorsProvider.getProgramation();
-         const indicatorName = await IndicatorsProvider.getIndicatorName();
-         const entity = await EntitiesProvider.getEntity();
-         const  resource = await EntitiesProvider.getResource();
-    
-         const objectivesData =  project.data.causes?.map(cause => {
-            return {
-                name: `${cause.consecutive}. ${cause.description}`,
-                value: cause.consecutive
-            }
-        });
-    
-        const productsData=  project.data.activities?.map(data => {
-            return {
-                name: `${data.productMGA}. ${data.productDescriptionMGA}`,
-                value: data.productMGA
-            }
-        }) ;
-    
-        let totalCostDetail = 0;
-    
-        project.data.activities?.map(activitiesDetail => {
-             activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
-                return totalCostDetail = accumulator + (detailActivities.amount * detailActivities.unitCost);
-            }, 0)
-        });
-    
-    
-       const  dataAcumulativo= [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
-    
-    
-         const fechaActual = new Date();
-    
-         const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
-       
-    
-          function formaterNumberToCurrency(number) {
-            const formatter = new Intl.NumberFormat("es-CO", {
-              style: "currency",
-              currency: "COP",
-              minimumFractionDigits: 2,
-            });
-          
-            return formatter.format(number);
-          }
-         
-    
-         let DateProject = ""
-         if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
-            const fechaIso = project.data.dateCreate.toString();
-            const DateCreate = new Date(fechaIso);
-            const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
-            const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
-            const anio = DateCreate.getFullYear();
-            const DateC = `${dia}/${mes}/${anio}`;
-            DateProject = DateC;
-        }
-          const contentHTML = `
+                const productsData = project.data.activities?.map(data => {
+                    return {
+                        name: `${data.productMGA}. ${data.productDescriptionMGA}`,
+                        value: data.productMGA
+                    }
+                });
+
+                let totalCostDetail = 0;
+
+                project.data.activities?.map(activitiesDetail => {
+                    activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
+                        return totalCostDetail = accumulator + (detailActivities.amount * detailActivities.unitCost);
+                    }, 0)
+                });
+
+
+                const dataAcumulativo = [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
+
+
+                const fechaActual = new Date();
+
+                const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
+
+
+                function formaterNumberToCurrency(number) {
+                    const formatter = new Intl.NumberFormat("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                        minimumFractionDigits: 2,
+                    });
+
+                    return formatter.format(number);
+                }
+
+
+                let DateProject = ""
+                if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
+                    const fechaIso = project.data.dateCreate.toString();
+                    const DateCreate = new Date(fechaIso);
+                    const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
+                    const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
+                    const anio = DateCreate.getFullYear();
+                    const DateC = `${dia}/${mes}/${anio}`;
+                    DateProject = DateC;
+                }
+                const contentHTML = `
           <!DOCTYPE html>
           <html lang="en">
           
@@ -2077,47 +2051,45 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                         </tr>
                     </thead>
                     <tbody>
-                    ${
-                        project.data.classifications?.map(Classifications => 
-                        {
-                            let entity = "";
-                            if (Classifications.clasification === 1) {
-                                entity = `
+                    ${project.data.classifications?.map(Classifications => {
+                    let entity = "";
+                    if (Classifications.clasification === 1) {
+                        entity = `
                                     <td>
                                         Género
                                     </td>
-                                    <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                    <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                 `;
-                            } else if (Classifications.clasification === 2) {
-                                entity = `
+                    } else if (Classifications.clasification === 2) {
+                        entity = `
                                     <td>
                                         Rango de edad
                                     </td>
-                                    <td>${oldData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                    <td>${oldData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription}</td>
                                 `;
-                            } else if (Classifications.clasification === 3) {
-                                entity = `
+                    } else if (Classifications.clasification === 3) {
+                        entity = `
                                     <td>
                                         Grupo étnico
                                     </td>
-                                    <td>${etniquesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                    <td>${etniquesData.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription}</td>
                                 `;
-                            } else if (Classifications.clasification === 4) {
-                                entity = `
+                    } else if (Classifications.clasification === 4) {
+                        entity = `
                                     <td>
                                         Población vulnerable
                                     </td>
-                                    <td>${lge.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription }</td>
+                                    <td>${lge.find(item => parseInt(item.itemCode) === Classifications.clasification)?.itemDescription}</td>
                                 `;
-                            } 
-                            return`
+                    }
+                    return `
                                 <tr>
                                         ${entity}
                                     <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
                                     <td>${Classifications.infoSource != null ? Classifications.infoSource : ""}</td>
                                 </tr>
                             `
-                        }).join('')
+                }).join('')
                     }
                     </tbody>
                 </table>
@@ -2134,9 +2106,8 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     <div class="section-title-name">Actividades</div> 
                 </div>
     
-                ${
-                    project.data.activities?.map(activities =>
-                    `
+                ${project.data.activities?.map(activities =>
+                        `
                     <div class="section-object-2">
                         <div class="section-title">Objetivo específico</div>
                         <div>${activities.objetiveActivity.description}</div>
@@ -2151,51 +2122,46 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                 </div>
                                 <div class="prop">
                                     <span class="title">Etapa</span>
-                                    <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description }</span>
+                                    <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description}</span>
                                 </div>
                                 <div class="prop">
                                     <span class="title">Actividad MGA</span>
                                     <span>${activities.activityMGA} ${activities.activityDescriptionMGA}</span>
                                 </div>
-                                ${
-                                    activities.budgetsMGA?.map(budget => `
+                                ${activities.budgetsMGA?.map(budget => `
                                     <div class="prop">
                                         <span class="title">Año ${budget.year}</span>
                                         <span> ${formaterNumberToCurrency(budget.budget)}</span>
                                     </div>
                                   
                                     `).join('')
-                                }
+                        }
     
                                 <div class="prop">
                                 <span class="title">Presupuesto</span>
-                                    <span> ${
-                                        formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
+                                    <span> ${formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget + activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                                 </div>
-                                ${
-                                    activities.budgetsMGA?.map(budget => `
+                                ${activities.budgetsMGA?.map(budget => `
                                     <div class="prop">
                                     <span class="title">Vigencia</span>
                                         <span>${budget.validity}</span>
                                     </div>
                                 
                                     `).join('')
-                                }
+                        }
                               
 
-                                ${
-                                    activities.budgetsMGA?.map(budget => `
+                                ${activities.budgetsMGA?.map(budget => `
                                     <div class="prop">
                                     <span class="title">Año</span>
                                         <span> ${budget.year}</span>
                                     </div>
                                     `).join('')
-                                }
+                        }
     
-                                ${
-                                    activities.detailActivities?.map(detailActivities => {
-                                        const currentCost = detailActivities.amount * detailActivities.unitCost;
-                                        return `
+                                ${activities.detailActivities?.map(detailActivities => {
+                            const currentCost = detailActivities.amount * detailActivities.unitCost;
+                            return `
                                         <div class="prop">
                                             <span class="title">No. y descripción actividad detallada</span>
                                             <span> ${detailActivities.consecutive} ${detailActivities.detailActivity}</span>
@@ -2208,7 +2174,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
     
                                         <div class="prop">
                                             <span class="title">Componente </span>
-                                            <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description }</span>
+                                            <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description}</span>
                                         </div>
     
                                         <div class="prop">
@@ -2249,16 +2215,16 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
     
                                         <div class="prop">
                                             <span class="title">Costo total actividades detalladas </span>
-                                            <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
+                                            <span>  ${detailActivities.unitCost ? formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
                                         </div>
                                 
                                         `;
-                                    }).join('')
-                                }
+                        }).join('')
+                        }
                             </div>
                         </div>
                     `).join('')
-                }
+                    }
                 
                     <div class="section">
                         <div class="section-title">4. PROGRAMACIÓN</div>
@@ -2278,23 +2244,21 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             </tr>
                         </thead>
                         <tbody>
-                        ${
-                            project.data.profitsIncome?.map(profitsIncome => `
+                        ${project.data.profitsIncome?.map(profitsIncome => `
                                 <tr>
                                     <td>${profitsIncome.type}</td>
                                     <td>${profitsIncome.description}</td>
                                     <td>${measurementData.find(item => parseInt(item.itemCode) === profitsIncome.unit)?.itemDescription}</td>
                                 </tr>
                             `).join('')
-                        }
+                    }
                         </tbody>
                     </table>
     
                     <div class="section-name">
                         <div class="section-title-name">Clasificación</div> 
                     </div>
-                    ${
-                        project.data.profitsIncome?.map(profitsIncome => `
+                    ${project.data.profitsIncome?.map(profitsIncome => `
                             <table>
                                 <thead>
                                     <tr>
@@ -2305,8 +2269,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${
-                                        profitsIncome.period?.map(periodData => `
+                                    ${profitsIncome.period?.map(periodData => `
                                             <tr>
                                                 <td>${periodData.period}</td>
                                                 <td>${periodData.quantity}</td>
@@ -2314,7 +2277,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                                 <td>${formaterNumberToCurrency(periodData.financialValue)}</td>
                                             </tr>
                                         `).join('')
-                                    }
+                        }
                                 </tbody>
                             </table>
                         `).join('')
@@ -2325,18 +2288,17 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     <div class="section-title-name">Fuentes de financiación</div> 
                 </div>
     
-                ${
-                    project.data.sourceFunding?.map(sourceFunding => `
+                ${project.data.sourceFunding?.map(sourceFunding => `
             
                         <div class="tabla" style = "margin-bottom: 70px;">
                             <div class="item">
                                 <div class="prop">
                                     <span class="title">Etapa</span>
-                                    <span>${ stages.data.find(stage => stage.id === sourceFunding.stage)?.description  }</span>
+                                    <span>${stages.data.find(stage => stage.id === sourceFunding.stage)?.description}</span>
                                 </div>
                                 <div class="prop">
                                     <span class="title">Tipo entidad</span>
-                                    <span>${ entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description  }</span>
+                                    <span>${entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description}</span>
                                 </div>
                                 <div class="prop">
                                     <span class="title">Entidad</span>
@@ -2345,7 +2307,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
     
                                 <div class="prop">
                                 <span class="title">Tipo de recurso</span>
-                                    <span> ${ resource.data.find(stage => stage.id === sourceFunding.resource)?.description  }</span>
+                                    <span> ${resource.data.find(stage => stage.id === sourceFunding.resource)?.description}</span>
                                 </div>
     
                                 <div class="prop">
@@ -2372,15 +2334,14 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             </div>
                         </div>
                     `).join('')
-                }
+                    }
     
                 
             <div class="section-name">
                 <div class="section-title-name">Indicadores</div> 
             </div>
     
-            ${
-                project.data.indicatorsIndicative?.map(indicatorsIndicative => `
+            ${project.data.indicatorsIndicative?.map(indicatorsIndicative => `
               
                 <div class="section-object-2">
                     <div class="section-title">Tipo de indicador:</div>
@@ -2391,30 +2352,30 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                         <div class="item">
                             <div class="prop">
                                 <span class="title">Línea estratégica</span>
-                                <span>${ indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description  }</span>
+                                <span>${indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description}</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Componente</span>
-                                <span>${ indicatorsComponent.data.find(process => process.id ==  indicatorsIndicative?.component)?.description   }</span>
+                                <span>${indicatorsComponent.data.find(process => process.id == indicatorsIndicative?.component)?.description}</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Programa</span>
-                                <span>${ indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description } </span>
+                                <span>${indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description} </span>
                             </div>
     
                             <div class="prop">
                                 <span class="title">Nombre indicador</span>
-                                <span>${ indicatorName.data.find(process => process.id ==  indicatorsIndicative?.indicator )?.description   } </span>
+                                <span>${indicatorName.data.find(process => process.id == indicatorsIndicative?.indicator)?.description} </span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Unidad de medida</span>
-                                <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription }</span>
+                                <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription}</span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Plan de desarrollo </span>
-                                <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan :""}</span>
+                                <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan : ""}</span>
                             </div>
     
                             <div class="prop">
@@ -2445,15 +2406,14 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             </div>
                             <div class="prop">
                             <span class="title">Meta global </span>
-                                <span> ${ formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
+                                <span> ${formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                             </div>
                         </div>
                     </div>
                 `).join('')
-            }
+                    }
     
-            ${
-                project.data.indicatorsAction?.map(indicatorsAction => `
+            ${project.data.indicatorsAction?.map(indicatorsAction => `
               
                 <div class="section-object-2">
                     <div class="section-title">Tipo de indicador:</div>
@@ -2472,28 +2432,28 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             </div>
                             <div class="prop">
                                 <span class="title">Indicador DNP</span>
-                                <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description } </span>
+                                <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description} </span>
                             </div>
     
                             <div class="prop">
                                 <span class="title">Código DNP indicador</span>
-                                <span>${indicatorsAction.dpn ? indicatorsAction?.dpn :""} </span>
+                                <span>${indicatorsAction.dpn ? indicatorsAction?.dpn : ""} </span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Unidad de medida</span>
-                                <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription }</span>
+                                <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription}</span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Código valor estadístico
                             </span>
-                                <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode :""}</span>
+                                <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode : ""}</span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Nombre valor estadístico</span>
-                                <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue :""}</span>
+                                <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue : ""}</span>
                             </div>
     
                             <div class="prop">
@@ -2519,16 +2479,16 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             </div>
                             <div class="prop">
                             <span class="title">Acumulativo cuatrienio </span>
-                                <span> ${ indicatorsAction?.accumulative != undefined ?  dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative )?.name : "Si"}</span>
+                                <span> ${indicatorsAction?.accumulative != undefined ? dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative)?.name : "Si"}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta global </span>
-                                <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) :""}</span>
+                                <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) : ""}</span>
                             </div>
                         </div>
                     </div>
                 `).join('')
-            }
+                    }
     
             <div class="section">
                 <div class="section-title">5. FLUJO DEL PROYECTO</div>
@@ -2546,22 +2506,22 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
           
           </html>
           `;
-        // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-              const browser = await puppeteer.launch({
-                headless: "new",
-                args: ["--no-sandbox"],
-                executablePath: "/usr/bin/chromium",
-             });
-    
-         // const browser = await puppeteer.launch();
-          const page = await browser.newPage();
-         
-          await page.setViewport({ width: 595, height: 842 });
-          await page.setContent(contentHTML, {
-            waitUntil: "domcontentloaded",
-          });
-    
-          const headerHTML = `
+                // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
+                const browser = await puppeteer.launch({
+                    headless: "new",
+                    args: ["--no-sandbox"],
+                    executablePath: "/usr/bin/chromium",
+                });
+
+                // const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+
+                await page.setViewport({ width: 595, height: 842 });
+                await page.setContent(contentHTML, {
+                    waitUntil: "domcontentloaded",
+                });
+
+                const headerHTML = `
           <div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
                 <span class="pageNumber"></span> de <span class="totalPages"></span>
             </div>
@@ -2574,203 +2534,230 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             </div>
     
             `;
-    
-        const footerHTML = `
+
+                const footerHTML = `
         <div style="text-align: center; padding: 0 !important; margin: 0;">
             <img src="data:image/png;base64,${readFileSync(footerPath).toString("base64")}" alt="Footer" style=" width: 30%" />
         </div>
         
         `
-        
-        ;
-          const pdfBuffer = await page.pdf({
-            format: 'A4',
-            displayHeaderFooter: true,
-            headerTemplate: headerHTML,
-            footerTemplate: footerHTML,
-            margin: { top: 220, bottom: 90 }
-        });
-        await page.emulateMediaType("screen");
-        
-          await browser.close();
-    
-          response.header('Content-Type', 'application/pdf');
-          const nombreArchivo = `Proyecto_${project.data.bpin}_ ${project.data.version}.pdf`;
-          response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
-          response.status(200).send(pdfBuffer);
-        } catch (err) {
-            return response.badRequest(
-              new ApiResponse(null, EResponseCodes.FAIL, String(err))
-            );
-        }
 
-    }else {
+                    ;
+                const pdfBuffer = await page.pdf({
+                    format: 'A4',
+                    displayHeaderFooter: true,
+                    headerTemplate: headerHTML,
+                    footerTemplate: footerHTML,
+                    margin: { top: 220, bottom: 90 }
+                });
+                await page.emulateMediaType("screen");
 
+                await browser.close();
 
-        const projectOld = await ProjectProvider.getProjectById(oldId);
-        const project = await ProjectProvider.getProjectById(projectId);
-
-        interface Icambios{
-            activities?:IActivitiesProject[] | null;
-            dateFrom?: string | null ;
-            dateTo?: string | null;
-            profitsIncome?: IprofitsIncome[] | null ; 
-            sourceFunding?: ISourceFunding[] | null ;
-            indicatorsAction?: IIndicatorAction[] | null;
-            indicatorsIndicative?: IIndicatorIndicative[] | null;
-            classifications?: IDemographicCharacteristics[] | null;
-            projectObservation?: string | null;
-        }
-
-        let cambios:Icambios = {};
-
-        if(JSON.stringify(project.data.activities?.sort().map(value =>{
-            return {...value,id:0,idProject:0}})
-        ) != JSON.stringify(projectOld.data.activities?.sort().map(value =>{
-            return {...value,id:0,idProject:0}
-        })))
-         {
-            cambios = {...cambios,activities:project.data.activities}
-         }
-
-         if (project.data.dateFrom != projectOld.data.dateFrom){
-            cambios = {...cambios,dateFrom:project.data.dateFrom}
-         }
-
-         if (project.data.dateTo != projectOld.data.dateTo){
-            cambios = {...cambios,dateTo:project.data.dateTo}
-         }
-
-         if (project.data.observations != projectOld.data.observations){
-            cambios = {...cambios,projectObservation:project.data.observations}
-         }
-
-         if(JSON.stringify(project.data.classifications?.sort().map(value =>{
-            return {...value,id:0,idProject:0}})
-        ) != JSON.stringify(projectOld.data.classifications?.sort().map(value =>{
-            return {...value,id:0,idProject:0}
-        })))
-         {
-            cambios = {...cambios,classifications:project.data.classifications}
-         }
-         
-
-         if(JSON.stringify(project.data.profitsIncome?.sort((a, b) => (a.id || 0) - (b.id || 0)).map(value =>{
-            return {...value,id:0,idProject:0,period:value.period.map(value2=>{return { ...value2,idProfit:0,id:0}})}})
-        ) != JSON.stringify(projectOld.data.profitsIncome?.sort((a, b) => (a.id || 0) - (b.id || 0)).map(value =>{
-            return {...value,id:0,idProject:0,period:value.period.map(value2=>{return { ...value2,idProfit:0,id:0}})}
-        })))
-         {
-            cambios = {...cambios,profitsIncome:project.data.profitsIncome}
-         }
-         
-         if(JSON.stringify(project.data.sourceFunding?.sort().map(value =>{
-            return {...value,id:0,idProject:0}})
-        ) != JSON.stringify(projectOld.data.sourceFunding?.sort().map(value =>{
-            return {...value,id:0,idProject:0}
-        })))
-         {
-            cambios = {...cambios,sourceFunding:project.data.sourceFunding}
-         }
-
-         if(JSON.stringify(project.data.indicatorsIndicative?.sort().map(value =>{
-            return {...value,id:0,idProject:0}})
-        ) != JSON.stringify(projectOld.data.indicatorsIndicative?.sort().map(value =>{
-            return {...value,id:0,idProject:0}
-        })))
-         {
-            cambios = {...cambios,indicatorsIndicative:project.data.indicatorsIndicative}
-         }
-
-         if(JSON.stringify(project.data.indicatorsAction?.sort().map(value =>{
-            return {...value,id:0,idProject:0}})
-        ) != JSON.stringify(projectOld.data.indicatorsAction?.sort().map(value =>{
-            return {...value,id:0,idProject:0}
-        })))
-         {
-            cambios = {...cambios,indicatorsAction:project.data.indicatorsAction}
-         }
-
-
-         
-        const basePath = "images/";
-
-        const logoPath = Application.makePath(basePath, "logo.png");
-        const footerPath = Application.makePath(basePath, "footer.png");
-    
-    
-        try {
-      
-         const typeIndicators = await IndicatorsProvider.getIndicatorType();
-         const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
-         const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
-         const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
-         const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
-         const  lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
-         const stages = await StageProvider.getStages();
-         const components = await ComponentsProvider.getComponents();
-         const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
-         const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
-         const indicatorsLine = await IndicatorsProvider.getStrategicLine();
-         const indicatorProgramation = await IndicatorsProvider.getProgramation();
-         const indicatorName = await IndicatorsProvider.getIndicatorName();
-         const entity = await EntitiesProvider.getEntity();
-         const  resource = await EntitiesProvider.getResource();
-    
-         const objectivesData =  project.data.causes?.map(cause => {
-            return {
-                name: `${cause.consecutive}. ${cause.description}`,
-                value: cause.consecutive
+                response.header('Content-Type', 'application/pdf');
+                const nombreArchivo = `Proyecto_${project.data.bpin}_ ${project.data.version}.pdf`;
+                response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
+                response.status(200).send(pdfBuffer);
+            } catch (err) {
+                return response.badRequest(
+                    new ApiResponse(null, EResponseCodes.FAIL, String(err))
+                );
             }
-        });
 
+        } else {
 
-        const productsData=  project.data.activities?.map(data => {
-            return {
-                name: `${data.productMGA}. ${data.productDescriptionMGA}`,
-                value: data.productMGA
+            const historical = await ProjectProvider.getHistoricalById(Number(projectId));
+            const historicalOld = await ProjectProvider.getHistoricalById(Number(oldId));
+
+            const project = { data: historical.data.json };
+            const projectOld = { data: historicalOld.data.json };
+
+            interface Icambios {
+                activities?: IActivitiesProject[] | null;
+                dateFrom?: string | null;
+                dateTo?: string | null;
+                profitsIncome?: IprofitsIncome[] | null;
+                sourceFunding?: ISourceFunding[] | null;
+                indicatorsAction?: IIndicatorAction[] | null;
+                indicatorsIndicative?: IIndicatorIndicative[] | null;
+                classifications?: IDemographicCharacteristics[] | null;
+                projectObservation?: string | null;
             }
-        }) ;
-    
-        let totalCostDetail = 0;
-    
-        project.data.activities?.map(activitiesDetail => {
-            totalCostDetail = activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
-                return accumulator + (detailActivities.amount * detailActivities.unitCost);
-            }, 0)
-        });
-    
-    
-       const  dataAcumulativo= [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
-    
-            
-         const fechaActual = new Date();
-    
-         const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
-       
-    
-          function formaterNumberToCurrency(number) {
-            const formatter = new Intl.NumberFormat("es-CO", {
-              style: "currency",
-              currency: "COP",
-              minimumFractionDigits: 2,
-            });
-          
-            return formatter.format(number);
-          }
-         
-    
-         let DateProject = ""
-         if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
-            const fechaIso = project.data.dateCreate.toString();
-            const DateCreate = new Date(fechaIso);
-            const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
-            const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
-            const anio = DateCreate.getFullYear();
-            const DateC = `${dia}/${mes}/${anio}`;
-            DateProject = DateC;
-        }
-          const contentHTML = `
+
+            let cambios: Icambios = {};
+
+            if (JSON.stringify(project.data.activities?.sort().map(value => {
+                return {
+                    ...value, id: 0, idProject: 0, objetiveActivity: {
+                        id: 0, childrens: value.objetiveActivity.childrens?.map(chil => {
+                            return { ...chil, id: 0, causeId: 0 }
+                        })
+                    }, detailActivities: value.detailActivities.map(detail => {
+                        return { ...detail, id: 0, activityId: 0 }
+                    }), budgetsMGA: value.budgetsMGA.map(budget => {
+                        return { ...budget, id: 0, activityId: 0 }
+                    })
+                }
+            })) != JSON.stringify(projectOld.data.activities?.sort().map(value => {
+                return {
+                    ...value, id: 0, idProject: 0, objetiveActivity: {
+                        id: 0, childrens: value.objetiveActivity.childrens?.map(chil => {
+                            return { ...chil, id: 0, causeId: 0 }
+                        })
+                    }, detailActivities: value.detailActivities.map(detail => {
+                        return { ...detail, id: 0, activityId: 0 }
+                    }), budgetsMGA: value.budgetsMGA.map(budget => {
+                        return { ...budget, id: 0, activityId: 0 }
+                    })
+                }
+            }))) {
+                cambios = { ...cambios, activities: project.data.activities }
+            }
+
+            if (project.data.dateFrom != projectOld.data.dateFrom) {
+                cambios = { ...cambios, dateFrom: project.data.dateFrom }
+            }
+
+            if (project.data.dateTo != projectOld.data.dateTo) {
+                cambios = { ...cambios, dateTo: project.data.dateTo }
+            }
+
+            if (project.data.observations != projectOld.data.observations) {
+                cambios = { ...cambios, projectObservation: project.data.observations }
+            }
+            console.log(JSON.stringify(project.data.classifications?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            })
+            ))
+            console.log(JSON.stringify(projectOld.data.classifications?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            })))
+            if (JSON.stringify(project.data.classifications?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            })
+            ) != JSON.stringify(projectOld.data.classifications?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            }))) {
+                cambios = { ...cambios, classifications: project.data.classifications }
+            }
+
+
+            if (JSON.stringify(project.data.profitsIncome?.sort((a, b) => (a.id || 0) - (b.id || 0)).map(value => {
+                return { ...value, id: 0, idProject: 0, period: value.period.map(value2 => { return { ...value2, idProfit: 0, id: 0 } }) }
+            })
+            ) != JSON.stringify(projectOld.data.profitsIncome?.sort((a, b) => (a.id || 0) - (b.id || 0)).map(value => {
+                return { ...value, id: 0, idProject: 0, period: value.period.map(value2 => { return { ...value2, idProfit: 0, id: 0 } }) }
+            }))) {
+                cambios = { ...cambios, profitsIncome: project.data.profitsIncome }
+            }
+
+            if (JSON.stringify(project.data.sourceFunding?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            })
+            ) != JSON.stringify(projectOld.data.sourceFunding?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            }))) {
+                cambios = { ...cambios, sourceFunding: project.data.sourceFunding }
+            }
+
+            if (JSON.stringify(project.data.indicatorsIndicative?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            })
+            ) != JSON.stringify(projectOld.data.indicatorsIndicative?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            }))) {
+                cambios = { ...cambios, indicatorsIndicative: project.data.indicatorsIndicative }
+            }
+
+            if (JSON.stringify(project.data.indicatorsAction?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            })
+            ) != JSON.stringify(projectOld.data.indicatorsAction?.sort().map(value => {
+                return { ...value, id: 0, idProject: 0 }
+            }))) {
+                cambios = { ...cambios, indicatorsAction: project.data.indicatorsAction }
+            }
+
+
+
+            const basePath = "images/";
+
+            const logoPath = Application.makePath(basePath, "logo.png");
+            const footerPath = Application.makePath(basePath, "footer.png");
+
+
+            try {
+
+                const typeIndicators = await IndicatorsProvider.getIndicatorType();
+                const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
+                const generesData = await CoreProvider.getParametersByGrouper("GENEROS")
+                const oldData = await CoreProvider.getParametersByGrouper("RANGOS_DE_EDAD")
+                const etniquesData = await CoreProvider.getParametersByGrouper("GRUPOS_ETNICOS")
+                const lge = await CoreProvider.getParametersByGrouper("LGE_LISTADOS_GENERICOS")
+                const stages = await StageProvider.getStages();
+                const components = await ComponentsProvider.getComponents();
+                const indicatorDNP = await IndicatorsProvider.getIndicatorDNP();
+                const indicatorsComponent = await IndicatorsProvider.getIndicatorsComponent();
+                const indicatorsLine = await IndicatorsProvider.getStrategicLine();
+                const indicatorProgramation = await IndicatorsProvider.getProgramation();
+                const indicatorName = await IndicatorsProvider.getIndicatorName();
+                const entity = await EntitiesProvider.getEntity();
+                const resource = await EntitiesProvider.getResource();
+
+                const objectivesData = project.data.causes?.map(cause => {
+                    return {
+                        name: `${cause.consecutive}. ${cause.description}`,
+                        value: cause.consecutive
+                    }
+                });
+
+
+                const productsData = project.data.activities?.map(data => {
+                    return {
+                        name: `${data.productMGA}. ${data.productDescriptionMGA}`,
+                        value: data.productMGA
+                    }
+                });
+
+                let totalCostDetail = 0;
+
+                project.data.activities?.map(activitiesDetail => {
+                    totalCostDetail = activitiesDetail.detailActivities?.reduce((accumulator, detailActivities) => {
+                        return accumulator + (detailActivities.amount * detailActivities.unitCost);
+                    }, 0)
+                });
+
+
+                const dataAcumulativo = [{ name: "Si", value: 1 }, { name: "No", value: 0 }]
+
+
+                const fechaActual = new Date();
+
+                const fechaFormateada = format(fechaActual, 'dd \'de\' MMMM \'de\' yyyy', { locale: es });
+
+
+                function formaterNumberToCurrency(number) {
+                    const formatter = new Intl.NumberFormat("es-CO", {
+                        style: "currency",
+                        currency: "COP",
+                        minimumFractionDigits: 2,
+                    });
+
+                    return formatter.format(number);
+                }
+
+
+                let DateProject = ""
+                if (project.data.dateCreate !== null && project.data.dateCreate !== undefined) {
+                    const fechaIso = project.data.dateCreate.toString();
+                    const DateCreate = new Date(fechaIso);
+                    const dia = DateCreate.getDate().toString().padStart(2, '0'); // Obtiene el día y agrega ceros a la izquierda si es necesario
+                    const mes = (DateCreate.getMonth() + 1).toString().padStart(2, '0'); // El mes es de 0 a 11, por eso se suma 1
+                    const anio = DateCreate.getFullYear();
+                    const DateC = `${dia}/${mes}/${anio}`;
+                    DateProject = DateC;
+                }
+                const contentHTML = `
           <!DOCTYPE html>
           <html lang="en">
           
@@ -2975,7 +2962,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
 
                     <br><br>
 
-                    ${cambios.dateFrom || cambios.dateTo ?  
+                    ${cambios.dateFrom || cambios.dateTo ?
                         `    <div class="section">
                                 <div class="section-title">1. REGISTRO</div>
                             </div>
@@ -2983,7 +2970,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                         ""
                     }
                  
-                    ${ cambios.dateFrom ?
+                    ${cambios.dateFrom ?
                         `  
                         <div class="section-object">
                             <div class="section-title">Período inicial</div>
@@ -2992,7 +2979,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                         ` : ""
                     }
 
-                    ${cambios.dateTo ? 
+                    ${cambios.dateTo ?
                         ` 
                         <div class="section-object">
                             <div class="section-title">Período final</div>
@@ -3003,7 +2990,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     }
              
                 
-                    ${cambios.classifications ? 
+                    ${cambios.classifications ?
                         ` 
                             <div class="section">
                                 <div class="section-title">2. IDENTIFICACIÓN</div>
@@ -3023,48 +3010,46 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                 </tr>
                             </thead>
                             <tbody>
-                            ${
-                                project.data.classifications?.map(Classifications => 
-                                {
-                                    let entity = "";
-                                    if (Classifications.clasification === 1) {
-                                        entity = `
+                            ${project.data.classifications?.map(Classifications => {
+                            let entity = "";
+                            if (Classifications.clasification === 1) {
+                                entity = `
                                             <td>
                                                 Género
                                             </td>
-                                            <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                            <td>${generesData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                         `;
-                                    } else if (Classifications.clasification === 2) {
-                                        entity = `
+                            } else if (Classifications.clasification === 2) {
+                                entity = `
                                             <td>
                                                 Rango de edad
                                             </td>
-                                            <td>${oldData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                            <td>${oldData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                         `;
-                                    } else if (Classifications.clasification === 3) {
-                                        entity = `
+                            } else if (Classifications.clasification === 3) {
+                                entity = `
                                             <td>
                                                 Grupo étnico
                                             </td>
-                                            <td>${etniquesData.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                            <td>${etniquesData.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                         `;
-                                    } else if (Classifications.clasification === 4) {
-                                        entity = `
+                            } else if (Classifications.clasification === 4) {
+                                entity = `
                                             <td>
                                                 Población vulnerable
                                             </td>
-                                            <td>${lge.find(item => item.id === Classifications.detail)?.itemDescription }</td>
+                                            <td>${lge.find(item => item.id === Classifications.detail)?.itemDescription}</td>
                                         `;
-                                    } 
-                                    return`
+                            }
+                            return `
                                         <tr>
                                                 ${entity}
                                             <td>${Classifications.numPerson != null ? Classifications.numPerson : ""}</td>
                                             <td>${Classifications.infoSource != null ? Classifications.infoSource : ""}</td>
                                         </tr>
                                     `
-                                }).join('')
-                            }
+                        }).join('')
+                        }
                             </tbody>
                         </table>
                         <br><br><br><br>
@@ -3072,8 +3057,8 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     }
 
             
-                ${cambios.activities ? 
-                    ` 
+                ${cambios.activities ?
+                        ` 
                     <div class="section">
                             <div class="section-title">3. PREPARACIÓN</div>
                     </div>
@@ -3082,8 +3067,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                             <div class="section-title-name">Actividades</div> 
                         </div>
 
-                        ${
-                            project.data.activities?.map(activities =>
+                        ${project.data.activities?.map(activities =>
                             `
                             <div class="section-object-2">
                                 <div class="section-title">Objetivo específico</div>
@@ -3099,53 +3083,48 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         </div>
                                         <div class="prop">
                                             <span class="title">Etapa</span>
-                                            <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description }</span>
+                                            <span>${stages.data.find(stage => stage.id === activities.stageActivity)?.description}</span>
                                         </div>
                                         <div class="prop">
                                             <span class="title">Actividad MGA</span>
                                             <span>${activities.activityMGA} ${activities.activityDescriptionMGA}</span>
                                         </div>
-                                        ${
-                                            activities.budgetsMGA?.map(budget => `
+                                        ${activities.budgetsMGA?.map(budget => `
                                             <div class="prop">
                                                 <span class="title">Año ${budget.year}</span>
                                                 <span> ${formaterNumberToCurrency(budget.budget)}</span>
                                             </div>
                                         
                                             `).join('')
-                                        }
+                            }
 
                                         <div class="prop">
                                         <span class="title">Presupuesto</span>
-                                            <span> ${
-                                                formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget +  activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
+                                            <span> ${formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget + activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                                         </div>
 
 
-                                        ${
-                                            activities.budgetsMGA?.map(budget => `
+                                        ${activities.budgetsMGA?.map(budget => `
                                             <div class="prop">
                                             <span class="title">Vigencia</span>
                                                 <span>${budget.validity}</span>
                                             </div>
                                         
                                             `).join('')
-                                        }
+                            }
                                       
 
-                                        ${
-                                            activities.budgetsMGA?.map(budget => `
+                                        ${activities.budgetsMGA?.map(budget => `
                                             <div class="prop">
                                             <span class="title">Año</span>
                                                 <span> ${budget.year}</span>
                                             </div>
                                             `).join('')
-                                        }
+                            }
 
-                                        ${
-                                            activities.detailActivities?.map(detailActivities => {
-                                                const currentCost = detailActivities.amount * detailActivities.unitCost;
-                                                return `
+                                        ${activities.detailActivities?.map(detailActivities => {
+                                const currentCost = detailActivities.amount * detailActivities.unitCost;
+                                return `
                                                 <div class="prop">
                                                     <span class="title">No. y descripción actividad detallada</span>
                                                     <span> ${detailActivities.consecutive} ${detailActivities.detailActivity}</span>
@@ -3158,7 +3137,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
 
                                                 <div class="prop">
                                                     <span class="title">Componente </span>
-                                                    <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description }</span>
+                                                    <span> ${components.data.find(stage => stage.id === detailActivities.component)?.description}</span>
                                                 </div>
 
                                                 <div class="prop">
@@ -3199,29 +3178,29 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
 
                                                 <div class="prop">
                                                     <span class="title">Costo total actividades detalladas </span>
-                                                    <span>  ${detailActivities.unitCost ?  formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
+                                                    <span>  ${detailActivities.unitCost ? formaterNumberToCurrency(Number(totalCostDetail)) : ""}</span>
                                                 </div>
                                         
                                                 `;
-                                            }).join('')
-                                        }
+                            }).join('')
+                            }
                                     </div>
                                 </div>
                             `).join('')
                         }
                         <br><br><br><br>
                     `  : ""
-                }
+                    }
     
                 ${cambios.profitsIncome || cambios.sourceFunding || cambios.indicatorsIndicative || cambios.indicatorsAction ?
-                      ` <div class="section">
+                        ` <div class="section">
                             <div class="section-title">4. PROGRAMACIÓN</div>
                         </div>  
-                      ` 
-                        :""
-                }
+                      `
+                        : ""
+                    }
 
-                    ${cambios.profitsIncome ? 
+                    ${cambios.profitsIncome ?
                         ` 
                                 <div class="section-name">
                                     <div class="section-title-name">Ingresos y beneficios </div> 
@@ -3237,23 +3216,21 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    ${
-                                        project.data.profitsIncome?.map(profitsIncome => `
+                                    ${project.data.profitsIncome?.map(profitsIncome => `
                                             <tr>
                                                 <td>${profitsIncome.type}</td>
                                                 <td>${profitsIncome.description}</td>
                                                 <td>${measurementData.find(item => parseInt(item.itemCode) === profitsIncome.unit)?.itemDescription}</td>
                                             </tr>
                                         `).join('')
-                                    }
+                        }
                                     </tbody>
                                 </table>
                 
                                 <div class="section-name">
                                     <div class="section-title-name">Clasificación</div> 
                                 </div>
-                                ${
-                                    project.data.profitsIncome?.map(profitsIncome => `
+                                ${project.data.profitsIncome?.map(profitsIncome => `
                                         <table>
                                             <thead>
                                                 <tr>
@@ -3264,8 +3241,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                ${
-                                                    profitsIncome.period?.map(periodData => `
+                                                ${profitsIncome.period?.map(periodData => `
                                                         <tr>
                                                             <td>${periodData.period}</td>
                                                             <td>${periodData.quantity}</td>
@@ -3273,34 +3249,33 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                                             <td>${formaterNumberToCurrency(periodData.financialValue)}</td>
                                                         </tr>
                                                     `).join('')
-                                                }
+                            }
                                             </tbody>
                                         </table>
                                     `).join('')
-                                }
+                        }
                                 <br><br><br>
                                 `  : ""
                     }
                     
                     
-                    ${cambios.sourceFunding ? 
+                    ${cambios.sourceFunding ?
                         ` 
                         <div class="section-name">
                             <div class="section-title-name">Fuentes de financiación</div> 
                         </div>
             
-                        ${
-                            project.data.sourceFunding?.map(sourceFunding => `
+                        ${project.data.sourceFunding?.map(sourceFunding => `
                     
                                 <div class="tabla" style = "margin-bottom: 70px;">
                                     <div class="item">
                                         <div class="prop">
                                             <span class="title">Etapa</span>
-                                            <span>${ stages.data.find(stage => stage.id === sourceFunding.stage)?.description  }</span>
+                                            <span>${stages.data.find(stage => stage.id === sourceFunding.stage)?.description}</span>
                                         </div>
                                         <div class="prop">
                                             <span class="title">Tipo entidad</span>
-                                            <span>${ entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description  }</span>
+                                            <span>${entity.data.find(stage => stage.id === sourceFunding.typeEntity)?.description}</span>
                                         </div>
                                         <div class="prop">
                                             <span class="title">Entidad</span>
@@ -3309,7 +3284,7 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             
                                         <div class="prop">
                                         <span class="title">Tipo de recurso</span>
-                                            <span> ${ resource.data.find(stage => stage.id === sourceFunding.resource)?.description  }</span>
+                                            <span> ${resource.data.find(stage => stage.id === sourceFunding.resource)?.description}</span>
                                         </div>
             
                                         <div class="prop">
@@ -3341,14 +3316,13 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                     }
               
     
-                    ${cambios.indicatorsIndicative ? 
+                    ${cambios.indicatorsIndicative ?
                         ` 
                             <div class="section-name">
                                 <div class="section-title-name">Indicadores</div> 
                             </div>
                     
-                            ${
-                                project.data.indicatorsIndicative?.map(indicatorsIndicative => `
+                            ${project.data.indicatorsIndicative?.map(indicatorsIndicative => `
                             
                                 <div class="section-object-2">
                                     <div class="section-title">Tipo de indicador:</div>
@@ -3359,30 +3333,30 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         <div class="item">
                                             <div class="prop">
                                                 <span class="title">Línea estratégica</span>
-                                                <span>${ indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description  }</span>
+                                                <span>${indicatorsLine.data.find(process => process.id == indicatorsIndicative?.line)?.description}</span>
                                             </div>
                                             <div class="prop">
                                                 <span class="title">Componente</span>
-                                                <span>${ indicatorsComponent.data.find(process => process.id ==  indicatorsIndicative?.component)?.description   }</span>
+                                                <span>${indicatorsComponent.data.find(process => process.id == indicatorsIndicative?.component)?.description}</span>
                                             </div>
                                             <div class="prop">
                                                 <span class="title">Programa</span>
-                                                <span>${ indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description } </span>
+                                                <span>${indicatorProgramation.data.find(process => process.id == indicatorsIndicative?.program)?.description} </span>
                                             </div>
                     
                                             <div class="prop">
                                                 <span class="title">Nombre indicador</span>
-                                                <span>${ indicatorName.data.find(process => process.id ==  indicatorsIndicative?.indicator )?.description   } </span>
+                                                <span>${indicatorName.data.find(process => process.id == indicatorsIndicative?.indicator)?.description} </span>
                                             </div>
                     
                                             <div class="prop">
                                             <span class="title">Unidad de medida</span>
-                                                <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription }</span>
+                                                <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsIndicative.measurement)?.itemDescription}</span>
                                             </div>
                     
                                             <div class="prop">
                                             <span class="title">Plan de desarrollo </span>
-                                                <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan :""}</span>
+                                                <span>${indicatorsIndicative.developmentPlan ? indicatorsIndicative?.developmentPlan : ""}</span>
                                             </div>
                     
                                             <div class="prop">
@@ -3413,26 +3387,24 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                             </div>
                                             <div class="prop">
                                             <span class="title">Meta global </span>
-                                                <span> ${ formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
+                                                <span> ${formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                                             </div>
                                         </div>
                                     </div>
                                 `).join('')
-                            }
+                        }
                         `  : ""
                     }
 
 
 
-                    ${cambios.indicatorsAction ? 
+                    ${cambios.indicatorsAction ?
                         ` 
                         <div class="section-name">
                              <div class="section-title-name">Indicadores</div> 
                         </div>
                 
-                        ${
-                            
-                            project.data.indicatorsAction?.map(indicatorsAction => `
+                        ${project.data.indicatorsAction?.map(indicatorsAction => `
                             
                             <div class="section-object-2">
                                 <div class="section-title">Tipo de indicador:</div>
@@ -3451,28 +3423,28 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         </div>
                                         <div class="prop">
                                             <span class="title">Indicador DNP</span>
-                                            <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description } </span>
+                                            <span>${indicatorDNP.data.find(process => process.id == indicatorsAction?.dpnIndicator)?.description} </span>
                                         </div>
                 
                                         <div class="prop">
                                             <span class="title">Código DNP indicador</span>
-                                            <span>${indicatorsAction.dpn ? indicatorsAction?.dpn :""} </span>
+                                            <span>${indicatorsAction.dpn ? indicatorsAction?.dpn : ""} </span>
                                         </div>
                 
                                         <div class="prop">
                                         <span class="title">Unidad de medida</span>
-                                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription }</span>
+                                            <span> ${measurementData.find(item => parseInt(item.itemCode) === indicatorsAction.measurement)?.itemDescription}</span>
                                         </div>
                 
                                         <div class="prop">
                                         <span class="title">Código valor estadístico
                                         </span>
-                                            <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode :""}</span>
+                                            <span>${indicatorsAction.staticValueCode ? indicatorsAction?.staticValueCode : ""}</span>
                                         </div>
                 
                                         <div class="prop">
                                         <span class="title">Nombre valor estadístico</span>
-                                            <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue :""}</span>
+                                            <span>${indicatorsAction.staticValue ? indicatorsAction?.staticValue : ""}</span>
                                         </div>
                 
                                         <div class="prop">
@@ -3498,11 +3470,11 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                                         </div>
                                         <div class="prop">
                                         <span class="title">Acumulativo cuatrienio </span>
-                                            <span> ${ indicatorsAction?.accumulative != undefined ?  dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative )?.name : "Si"}</span>
+                                            <span> ${indicatorsAction?.accumulative != undefined ? dataAcumulativo.find(item => item.value === indicatorsAction?.accumulative)?.name : "Si"}</span>
                                         </div>
                                         <div class="prop">
                                         <span class="title">Meta global </span>
-                                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) :""}</span>
+                                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) : ""}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -3512,8 +3484,8 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
                         `  : ""
                     }
                   
-                    ${cambios.projectObservation ? 
-                         ` 
+                    ${cambios.projectObservation ?
+                        ` 
                             <br>
                             <div class="section">
                                 <div class="section-title">5. FLUJO DEL PROYECTO</div>
@@ -3533,22 +3505,22 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
           
           </html>
           `;
-        // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-              const browser = await puppeteer.launch({
-               headless: "new",
-               args: ["--no-sandbox"],
-              executablePath: "/usr/bin/chromium",
-             });
-    
-          //const browser = await puppeteer.launch();
-          const page = await browser.newPage();
-         
-          await page.setViewport({ width: 595, height: 842 });
-          await page.setContent(contentHTML, {
-            waitUntil: "domcontentloaded",
-          });
-    
-          const headerHTML = `
+                // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
+                const browser = await puppeteer.launch({
+                    headless: "new",
+                    args: ["--no-sandbox"],
+                    executablePath: "/usr/bin/chromium",
+                });
+
+                //const browser = await puppeteer.launch();
+                const page = await browser.newPage();
+
+                await page.setViewport({ width: 595, height: 842 });
+                await page.setContent(contentHTML, {
+                    waitUntil: "domcontentloaded",
+                });
+
+                const headerHTML = `
           <div style=\"text-align: right ;width: 80px; font-size: 8px; padding: 0 !important; margin: 0;\" >
                 <span class="pageNumber"></span> de <span class="totalPages"></span>
             </div>
@@ -3561,40 +3533,40 @@ public async CreatePdfHistoric({ params, response }: HttpContextContract) {
             </div>
     
             `;
-    
-        const footerHTML = `
+
+                const footerHTML = `
         <div style="text-align: center; padding: 0 !important; margin: 0;">
             <img src="data:image/png;base64,${readFileSync(footerPath).toString("base64")}" alt="Footer" style=" width: 30%" />
         </div>
         
         `
-        
-        ;
-          const pdfBuffer = await page.pdf({
-            format: 'A4',
-            displayHeaderFooter: true,
-            headerTemplate: headerHTML,
-            footerTemplate: footerHTML,
-            margin: { top: 220, bottom: 90 }
-        });
-        await page.emulateMediaType("screen");
-        
-          await browser.close();
-    
-          response.header('Content-Type', 'application/pdf');
-          const nombreArchivo = `Proyecto_${project.data.bpin}_ ${project.data.version}.pdf`;
-          response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
-          response.status(200).send(pdfBuffer);
-        } catch (err) {
-            return response.badRequest(
-              new ApiResponse(null, EResponseCodes.FAIL, String(err))
-            );
+
+                    ;
+                const pdfBuffer = await page.pdf({
+                    format: 'A4',
+                    displayHeaderFooter: true,
+                    headerTemplate: headerHTML,
+                    footerTemplate: footerHTML,
+                    margin: { top: 220, bottom: 90 }
+                });
+                await page.emulateMediaType("screen");
+
+                await browser.close();
+
+                response.header('Content-Type', 'application/pdf');
+                const nombreArchivo = `Proyecto_${project.data.bpin}_ ${project.data.version}.pdf`;
+                response.header('Content-Disposition', `inline; filename=${nombreArchivo}`);
+                response.status(200).send(pdfBuffer);
+            } catch (err) {
+                return response.badRequest(
+                    new ApiResponse(null, EResponseCodes.FAIL, String(err))
+                );
+            }
+
+
         }
 
 
     }
-
-
-}
 
 }
