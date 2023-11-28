@@ -1,7 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'tdi_tipo_indicador_pais'
+  protected tableName = 'TDI_TIPO_INDICADOR_PAI'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
@@ -20,7 +20,7 @@ export default class extends BaseSchema {
       table
       .integer("TDI_ORDEN_PAI")
       .notNullable()
-      .comment("Valor que indica el orden");
+      .comment("Valor que indica el orden")
     })
   }
 
