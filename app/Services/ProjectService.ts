@@ -33,6 +33,7 @@ export interface IProjectService {
   getAllStatus(): Promise<ApiResponse<MasterTable[]>>
   getProjectById(id: number): Promise<ApiResponse<IProject>>;
   finishProject(data: IFinishProjectForm, id: number, trx: TransactionClientContract): Promise<ApiResponse<IProject>>;
+  getHistoricalById(id: number): Promise<ApiResponse<IHistoricalProject>>;
 }
 
 export default class ProjectService implements IProjectService {
@@ -418,6 +419,20 @@ export default class ProjectService implements IProjectService {
         "El registro indicado no existe"
       );
     }
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
+  async getHistoricalById(id: number): Promise<ApiResponse<IHistoricalProject>> {
+    const res = await this.historicalProjectsRepository.getHistoricalById(id);
+
+    if (!res) {
+      return new ApiResponse(
+        {} as IHistoricalProject,
+        EResponseCodes.WARN,
+        "Registro no encontrado"
+      );
+    }
+
     return new ApiResponse(res, EResponseCodes.OK);
   }
 }
