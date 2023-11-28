@@ -7,6 +7,8 @@ import { ICoResponsible,
          IIndicatorsPAI, 
          IProducts, 
          IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
+import PAIIndicatorType from "App/Models/PAIIndicatorType";
 
 export interface IIndicatorsPAIRepository {
     createIndicator(
@@ -29,9 +31,15 @@ export interface IIndicatorsPAIRepository {
       idIndicator: number,
       trx?: TransactionClientContract
     ): Promise<ICoResponsible[]>;
+    getPaiIndicatorsType(): Promise<MasterTable[] | null>;
 }
 
 export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository {
+
+    async getPaiIndicatorsType(): Promise<MasterTable[] | null> {
+      const res = await PAIIndicatorType.query().orderBy('id', 'asc');
+      return res || null;
+    }
     async createIndicator(
       indicators: IIndicatorsPAI[],
       idPAI: number, 
