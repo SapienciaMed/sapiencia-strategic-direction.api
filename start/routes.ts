@@ -146,10 +146,11 @@ Route.group(() => {
   Route.get("/component/get-all", "IndicatorsController.getIndicatorsComponent");
   Route.get("/programation/get-all", "IndicatorsController.getProgramation");
   Route.get("/strategic-line/get-all", "IndicatorsController.getStrategicLine");
-  Route.get("/project/:id", "IndicatorsController.getStrategicLine");
+  Route.get("/project/:idProject", "IndicatorsController.getProjectIndicators");
 })
 .prefix("/api/v1/indicators")
 .middleware("auth");
+
 
 Route.group(() => {
   Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");

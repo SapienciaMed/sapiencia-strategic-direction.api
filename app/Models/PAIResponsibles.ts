@@ -8,7 +8,7 @@ export default class ResponsiblesPAI extends BaseModel {
     public id: number;
 
     @column({ columnName: "RPP_RESPONSABLE", serializeAs: "responsible"})
-    public product: string
+    public responsible: string
 
     @column({ columnName: "RPP_CODIDP_PAI", serializeAs: "idIndicatorPAI" })
     public idIndicatorPAI: number;
