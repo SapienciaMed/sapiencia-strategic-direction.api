@@ -1,6 +1,5 @@
 import type { ApplicationContract } from "@ioc:Adonis/Core/Application";
 
-
 export default class AppProvider {
   constructor(protected app: ApplicationContract) { }
 
@@ -22,6 +21,8 @@ export default class AppProvider {
     const IndicatorsService = await import("App/Services/IndicatorsService");
     const StorageService = await import("App/Services/StorageService");
     const SchedulesPAIService = await import("App/Services/SchedulesPAIService");
+    const IndicatorsPAIService = await import("App/Services/IndicatorsPAIService");
+
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -118,6 +119,10 @@ export default class AppProvider {
     const SchedulesPAIRepository = await import(
       "App/Repositories/SchedulesPAIRepository"
     );
+
+    const IndicatorsPAIRepository = await import(
+      "App/Repositories/IndicatorsPAIRepository"
+    );
     
     /**************************************************************************/
     /******************************** CORE  ***********************************/
@@ -203,6 +208,13 @@ export default class AppProvider {
       "core.IndicatorsProvider",
       () => new IndicatorsService.default(
         new IndicatorsRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.IndicatorsPAIProvider",
+      () => new IndicatorsPAIService.default(
+        new IndicatorsPAIRepository.default(),
       ),
     );
 

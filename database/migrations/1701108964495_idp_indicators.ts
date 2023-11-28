@@ -12,8 +12,6 @@ export default class extends BaseSchema {
         .integer("IDP_CODIDC_INDICADOR_PROYECTO")
         .nullable()
         .unsigned()
-        .references("IDC_CODIGO")
-        .inTable("IDC_INDICADORES")
         .comment("llave foranea Tabla  (FK IDC_INDICADORES)");
         table
         .integer("IDP_CODTDI_TIPO_INDICADOR")
