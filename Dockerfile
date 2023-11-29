@@ -2,7 +2,7 @@ FROM node:18-alpine
 WORKDIR /app
 COPY package*.json /app/
 COPY . .
-# COPY .env.qa /app/.env
+COPY .env.qa /app/.env
 RUN apk add chromium
 RUN npm install --production 
 RUN npm install -g @adonisjs/cli
