@@ -7,6 +7,9 @@ import EntitiesImpact from "App/Models/Impact";
 import EntitiesProbabiity from "App/Models/Probability"
 import Resources from "App/Models/Resources"
 import Entity from "App/Models/Financing"
+import RisksPAI from "App/Models/RisksPAI"
+import ProcessPAI from 'App/Models/ProcessPAI';
+import ObjectivePAI from "App/Models/ObjectivesPAI";
 
 export interface IEntitiesRepository {
   getEntities(): Promise<IEntities[]>;
@@ -17,6 +20,9 @@ export interface IEntitiesRepository {
   getEntitiesProbability(): Promise<IEntities[]>;
   getEntity(): Promise<IEntities[]>;
   getResource(): Promise<IEntities[]>;
+  getRiskPAI(): Promise<IEntities[]>;
+  getProcessPAI(): Promise<IEntities[]>;
+  getObjectivesPAI(): Promise<IEntities[]>;
 }
 
 export default class EntitiesRepository implements IEntitiesRepository {
@@ -75,6 +81,27 @@ export default class EntitiesRepository implements IEntitiesRepository {
   async getResource(): Promise<IEntities[]> {
   
     const res = await Resources.query().orderBy('RCS_ORDEN', 'asc');
+
+    return res.map((i) => i.serialize() as IEntities);
+  }
+
+  async getRiskPAI(): Promise<IEntities[]> {
+  
+    const res = await RisksPAI.query().orderBy('LDR_ORDEN', 'asc');
+
+    return res.map((i) => i.serialize() as IEntities);
+  }
+
+  async getProcessPAI(): Promise<IEntities[]> {
+  
+    const res = await ProcessPAI.query().orderBy('LDP_ORDEN', 'asc');
+
+    return res.map((i) => i.serialize() as IEntities);
+  }
+
+  async getObjectivesPAI(): Promise<IEntities[]> {
+  
+    const res = await ObjectivePAI.query().orderBy('LDO_ORDEN', 'asc');
 
     return res.map((i) => i.serialize() as IEntities);
   }

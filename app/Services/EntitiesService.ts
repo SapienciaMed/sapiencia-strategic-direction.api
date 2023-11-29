@@ -12,6 +12,9 @@ export interface IEntitiesService {
   getEntitiesProbability(): Promise<ApiResponse<IEntities[]>>;
   getEntity(): Promise<ApiResponse<IEntities[]>>;
   getResource(): Promise<ApiResponse<IEntities[]>>;
+  getRiskPAI(): Promise<ApiResponse<IEntities[]>>;
+  getProcessPAI(): Promise<ApiResponse<IEntities[]>>;
+  getObjectivesPAI(): Promise<ApiResponse<IEntities[]>>;
 }
 
 export default class EntitiesService implements IEntitiesService {
@@ -130,6 +133,51 @@ export default class EntitiesService implements IEntitiesService {
 
     return new ApiResponse(res, EResponseCodes.OK);
   }
+
+  
+
+  async getRiskPAI(): Promise<ApiResponse<IEntities[]>> {
+    const res = await this.entitiesRepository.getRiskPAI();
+
+    if (!res) {
+      return new ApiResponse(
+        [] as IEntities[],
+        EResponseCodes.WARN,
+        "Registro no encontrado"
+      );
+    }
+
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
+  async getProcessPAI(): Promise<ApiResponse<IEntities[]>> {
+    const res = await this.entitiesRepository.getProcessPAI();
+
+    if (!res) {
+      return new ApiResponse(
+        [] as IEntities[],
+        EResponseCodes.WARN,
+        "Registro no encontrado"
+      );
+    }
+
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
+  async getObjectivesPAI(): Promise<ApiResponse<IEntities[]>> {
+    const res = await this.entitiesRepository.getObjectivesPAI();
+
+    if (!res) {
+      return new ApiResponse(
+        [] as IEntities[],
+        EResponseCodes.WARN,
+        "Registro no encontrado"
+      );
+    }
+
+    return new ApiResponse(res, EResponseCodes.OK);
+  }
+
 
 }
 

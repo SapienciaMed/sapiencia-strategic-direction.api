@@ -5,7 +5,6 @@ import {
   IProjectTemp,
   IProjectFiltersPaginated,
   IFinishProjectForm,
-  IHistoricalFiltersPaginated,
   IProjectFiltersHistorical
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
@@ -174,8 +173,6 @@ export default class ProjectRepository implements IProjectRepository {
     toCreate.user = project.user;
 
     const query = Projects.query();
-
-    toCreate.version = "1.00";
 
     if (project.register?.bpin) {
       const existingProject = await query.where("bpin", project.register?.bpin)
@@ -348,7 +345,7 @@ export default class ProjectRepository implements IProjectRepository {
 
     const query = Projects.query();
 
-    if (project.register?.bpin && toUpdate.$attributes.bpin != project.register?.bpin ) {
+    if (project.register?.bpin && toUpdate.$attributes.bpin != project.register?.bpin) {
       const existingProject = await query.where("bpin", project.register?.bpin);
       if (existingProject) throw new Error("Ya existe un proyecto con este BPIN.");
       toUpdate.bpin = project.register.bpin;
@@ -501,8 +498,13 @@ export default class ProjectRepository implements IProjectRepository {
     }
 
     toUpdate.dateModify = DateTime.local().toJSDate();
-    const updatedVersion: string = this.updateProjectVersion(toUpdate.version);
-    toUpdate.version = updatedVersion;
+    if (project.status === 2) {
+      const updatedVersion = Number(toUpdate.version.split(".")[0]);
+      toUpdate.version = `${updatedVersion+1}.0`;
+    } else {
+      const updatedVersion: string = this.updateProjectVersion(toUpdate.version);
+      toUpdate.version = updatedVersion;
+    }
     toUpdate.useTransaction(trx);
 
     await toUpdate.save();
@@ -512,42 +514,19 @@ export default class ProjectRepository implements IProjectRepository {
 
   async getAllHistorical(data: IProjectFiltersHistorical): Promise<IProject[]> {
     const query = Projects.query();
-    if(data.bpin) {
+    if (data.bpin) {
       query.where('bpin', data.bpin);
     }
-    if(data.project) {
+    if (data.project) {
       query.where('project', data.project);
     }
-    if(data.validity) {
+    if (data.validity) {
       query.whereRaw("YEAR(PRY_FECHA_CREO) = ?", [data.validity])
     }
     query.orderBy('PRY_VERSION', 'desc')
     const res = await query;
     return res as unknown as IProject[];
   }
-
-  async getAllHistoricalPaginated(filters: IHistoricalFiltersPaginated): Promise<IPagingData<IProject>> {
-    if (!filters.bpin || isNaN(filters.bpin)) {
-      throw new Error("Se debe proporcionar un código BPIN válido.");
-    }
-    const query = Projects.query()
-      .where("bpin", filters.bpin)
-      .orderBy('PRY_ESTADO_PROYECTO', 'asc')
-      .orderBy('PRY_FECHA_CREO', 'desc');
-    if (filters.project) {
-      query.where("project", filters.project);
-    }
-    if (filters.status) {
-      query.where("status", filters.status);
-    }
-    const res = await query.paginate(filters.page, filters.perPage);
-    const { data, meta } = res.serialize();
-    return {
-      array: data as IProject[],
-      meta,
-    };
-  }
-
 
   async getAllProjects(): Promise<IProject[]> {
     const res = await Projects.query()
@@ -608,7 +587,8 @@ export default class ProjectRepository implements IProjectRepository {
   private updateProjectVersion(version: string = "0.0"): string {
     const [major, minor] = version.split('.').map(Number);
     const newMinor = minor + 1;
-    return newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
+    const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
+    return newVersion;
   }
 
   async finishProject(

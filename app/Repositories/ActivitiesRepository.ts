@@ -1,5 +1,5 @@
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
-import { IActivityFilter, IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter, IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
+import { IActivityFilter, IActivityMGA, ICause, IDetailActivity, IDetailedActivityFilter, IDetailedActivityPaginated, ITotalCostsFilter } from "App/Interfaces/ProjectInterfaces";
 import Activities from "App/Models/Activities";
 import Budgets from "App/Models/Budgets";
 import DetailActivities from "App/Models/DetailsActivities";
@@ -11,10 +11,27 @@ export interface IActivitiesRepository {
     getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]>
     getDetailedActivitiesPaginated(filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>>;
     getActivitiesByFilters(filters: IActivityFilter): Promise<IActivityMGA[]>
-
+    getTotalCostsByFilters(filter: ITotalCostsFilter): Promise<number>
 }
 
 export default class ActivitiesRepository implements IActivitiesRepository {
+    async getTotalCostsByFilters(filter: ITotalCostsFilter): Promise<number> {
+        const res = await Activities.query()
+          .joinRaw(
+            `join (select ACD_ACTIVIDAD_DETALLADA.*, (ACD_COSTO_UNITARIO * ACD_CANTIDAD) as total  
+                            from ACD_ACTIVIDAD_DETALLADA) as x on x.ACD_AMG_ACTIVIDAD_MGA  = AMG_CODIGO`
+          )
+          .sum("total as total")
+          .where("idProject", filter.projectId)
+          .where("AMG_VIGENCIA_MGA", filter.validityYear)
+          .where("ACD_OBJETIVO_GASTO_POSPRE", filter.pospreId);
+
+         return res.length > 0 ? res[0].$extras.total || 0 : 0;
+      }
+      
+
+
+
     async getActivitiesByFilters(filters: IActivityFilter): Promise<IActivityMGA[]> {
         const query = Activities.query().preload("detailActivities")
 
@@ -89,8 +106,8 @@ export default class ActivitiesRepository implements IActivitiesRepository {
             toCreate.activityMGA = activities[activity].activityMGA;
             toCreate.productDescriptionMGA = activities[activity].productDescriptionMGA;
             toCreate.activityDescriptionMGA = activities[activity].activityDescriptionMGA;
-            toCreate.validity = activities[activity].validity;
-            toCreate.year = activities[activity].year;
+            toCreate.validity = activities[activity].validity ? activities[activity]?.validity! : 0;
+            toCreate.year = activities[activity].year ? activities[activity]?.year! : 0;
             toCreate.useTransaction(trx);
             await toCreate.save();
             const budgets = activities[activity].budgetsMGA;
@@ -140,7 +157,7 @@ export default class ActivitiesRepository implements IActivitiesRepository {
                         pospre: detailActivities[detailActivity].pospre,
                         validatorCPC: detailActivities[detailActivity].validatorCPC,
                         clasificatorCPC: detailActivities[detailActivity].clasificatorCPC,
-                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC,
+                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC
                     });
                 }
             }
@@ -172,8 +189,6 @@ export default class ActivitiesRepository implements IActivitiesRepository {
             toCreate.activityMGA = activities[activity].activityMGA;
             toCreate.productDescriptionMGA = activities[activity].productDescriptionMGA;
             toCreate.activityDescriptionMGA = activities[activity].activityDescriptionMGA;
-            toCreate.validity = activities[activity].validity;
-            toCreate.year = activities[activity].year;
             toCreate.useTransaction(trx);
             await toCreate.save();
             const budgets = activities[activity].budgetsMGA;
@@ -223,7 +238,7 @@ export default class ActivitiesRepository implements IActivitiesRepository {
                         pospre: detailActivities[detailActivity].pospre,
                         validatorCPC: detailActivities[detailActivity].validatorCPC,
                         clasificatorCPC: detailActivities[detailActivity].clasificatorCPC,
-                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC,
+                        sectionValidatorCPC: detailActivities[detailActivity].sectionValidatorCPC
                     });
                 }
             }

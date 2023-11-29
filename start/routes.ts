@@ -33,7 +33,6 @@ Route.group(() => {
   Route.put("/update/:id", "ProjectController.updateProject");
   Route.get("/get-all", "ProjectController.getAllProjects");
   Route.post("/get-all-historical", "ProjectController.getAllHistorical");
-  Route.post("/get-all-historical-paginated", "ProjectController.getAllHistoricalPaginated");
   Route.post("/get-project-paginated", "ProjectController.getProjectPaginated");
   Route.get("/status/get-all", "ProjectController.getAllStatus");
   Route.post("/upload/:id", "ProjectController.uploadProjectsDigitals");
@@ -62,6 +61,10 @@ Route.group(() => {
   Route.get("/get-all-impact", "EntitiesController.getEntitiesImpact")
   Route.get("/get-all-entity", "EntitiesController.getEntity")
   Route.get("/get-all-resource", "EntitiesController.getResource")
+  Route.get("/get-all-risk-pai", "EntitiesController.getRiskPAI")
+  Route.get("/get-all-process-pai", "EntitiesController.getProcessPAI")
+  Route.get("/get-all-objective-pai", "EntitiesController.getObjectivesPAI")
+
 })
 .prefix("/api/v1/entities")
 .middleware("auth");
@@ -111,7 +114,6 @@ Route.group(() => {
 })
 .prefix("/api/v1/impact-rating")
 .middleware("auth");
-// .middleware("auth");
 
 Route.group(() => {
   Route.get("/get-all", "ComponentsController.getComponents");
@@ -130,11 +132,10 @@ Route.group(() => {
   Route.post("/get-by-filters", "ActivitiesController.getDetailedActivitiesByFilters")
   Route.post("/get-paginated", "ActivitiesController.getDetailedActivitiesPaginated")
   Route.post("/mga/get-by-filters", "ActivitiesController.getActivitiesByFilters")
+  Route.post("/get-total-costs-by-filter", "ActivitiesController.getTotalCostsByFilters")
 })
 .prefix("/api/v1/activities")
 .middleware("auth");
-
-
 
 Route.group(() => {
   Route.get("/dpn/get-all", "IndicatorsController.getIndicatorDNP");
@@ -143,6 +144,16 @@ Route.group(() => {
   Route.get("/component/get-all", "IndicatorsController.getIndicatorsComponent");
   Route.get("/programation/get-all", "IndicatorsController.getProgramation");
   Route.get("/strategic-line/get-all", "IndicatorsController.getStrategicLine");
+  Route.get("/project/:idProject", "IndicatorsController.getProjectIndicators");
+  Route.get("/pai/get-all", "IndicatorsPAIController.getPaiIndicatorsType");
 })
 .prefix("/api/v1/indicators")
+.middleware("auth");
+
+Route.group(() => {
+  Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");
+  Route.get("get-statuses", "SchedulesPAIController.getScheduleStatuses");
+  Route.post("crud", "SchedulesPAIController.crudSchedulesPAI");
+})
+.prefix("/api/v1/pai/schedules")
 .middleware("auth");

@@ -1,6 +1,5 @@
 import type { ApplicationContract } from "@ioc:Adonis/Core/Application";
 
-
 export default class AppProvider {
   constructor(protected app: ApplicationContract) { }
 
@@ -21,6 +20,9 @@ export default class AppProvider {
     const ActivityService = await import("App/Services/ActivityService");
     const IndicatorsService = await import("App/Services/IndicatorsService");
     const StorageService = await import("App/Services/StorageService");
+    const SchedulesPAIService = await import("App/Services/SchedulesPAIService");
+    const IndicatorsPAIService = await import("App/Services/IndicatorsPAIService");
+
 
     /**************************************************************************/
     /************************ EXTERNAL SERVICES ********************************/
@@ -109,6 +111,18 @@ export default class AppProvider {
     const LogicFrameRepository = await import(
       "App/Repositories/LogicFrameRepository"
     );
+
+    const HistoricalProjects = await import(
+      "App/Repositories/HistoricalProjectsRepository"
+    );
+
+    const SchedulesPAIRepository = await import(
+      "App/Repositories/SchedulesPAIRepository"
+    );
+
+    const IndicatorsPAIRepository = await import(
+      "App/Repositories/IndicatorsPAIRepository"
+    );
     
     /**************************************************************************/
     /******************************** CORE  ***********************************/
@@ -139,6 +153,7 @@ export default class AppProvider {
         new SourceFundingRepository.default(),
         new IndicatorsRepository.default(),
         new LogicFrameRepository.default(),
+        new HistoricalProjects.default(),
       )
     );
 
@@ -194,6 +209,20 @@ export default class AppProvider {
       () => new IndicatorsService.default(
         new IndicatorsRepository.default(),
       ),
+    );
+
+    this.app.container.singleton(
+      "core.IndicatorsPAIProvider",
+      () => new IndicatorsPAIService.default(
+        new IndicatorsPAIRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.SchedulesPAIProvider",
+      () => new SchedulesPAIService.default(
+        new SchedulesPAIRepository.default()
+      )
     );
 
     this.app.container.singleton(

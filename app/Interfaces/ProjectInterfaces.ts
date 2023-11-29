@@ -292,8 +292,8 @@ export interface IActivityMGA {
   productDescriptionMGA: string;
   activityDescriptionMGA: string;
   budgetsMGA: IBudgetMGA;
-  validity: number;
-  year: number;
+  validity?: number;
+  year?: number;
   detailActivities: IDetailActivity[];
 }
 
@@ -381,6 +381,12 @@ export interface IActivityFilter {
   projectId?: number
 }
 
+export interface ITotalCostsFilter {
+  validityYear: number,
+  projectId: number,
+  pospreId: number
+}
+
 export interface IDetailedActivityPaginated {
   detail?: string
   page: number;
@@ -411,6 +417,7 @@ export interface IProjectFiltersHistorical {
   bpin?: string;
   project?: string;
   validity?: string;
+  idProject?: number;
 }
 
 export interface IActivitiesProject {
@@ -424,12 +431,12 @@ export interface IActivitiesProject {
   budgetsMGA: {
     id?: number;
     activityId?: number;
-    year: number;
-    validity: number;
+    year?: number;
+    validity?: number;
     budget: number;
   }[];
-  validity: number;
-  year: number;
+  validity?: number;
+  year?: number;
   detailActivities: IDetailActivity[];
 }
 
