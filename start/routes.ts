@@ -44,6 +44,14 @@ Route.group(() => {
 .prefix("/api/v1/project")
 .middleware("auth");
 
+
+Route.group(() => {
+  Route.post("/create", "ActionPlanController.createPAI");
+  Route.put("/update/:id", "ActionPlanController.updatePAI");
+})
+.prefix("/api/v1/pai")
+.middleware("auth");
+
 Route.group(() => {
   Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
   Route.get("/generate-pdf-consolidate/:id/generate-pdf-consolidate", "GeneratePdfController.CreatePdfConsolidate");
