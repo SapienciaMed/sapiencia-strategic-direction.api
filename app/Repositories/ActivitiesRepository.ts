@@ -189,6 +189,8 @@ export default class ActivitiesRepository implements IActivitiesRepository {
             toCreate.activityMGA = activities[activity].activityMGA;
             toCreate.productDescriptionMGA = activities[activity].productDescriptionMGA;
             toCreate.activityDescriptionMGA = activities[activity].activityDescriptionMGA;
+            toCreate.validity = activities[activity].validity ? activities[activity]?.validity! : 0;
+            toCreate.year = activities[activity].year ? activities[activity]?.year! : 0;
             toCreate.useTransaction(trx);
             await toCreate.save();
             const budgets = activities[activity].budgetsMGA;
