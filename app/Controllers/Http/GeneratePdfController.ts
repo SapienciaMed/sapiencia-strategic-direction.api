@@ -17,6 +17,7 @@ import ComponentsProvider from '@ioc:core.ComponentsProvider';
 import FinancialExternalService from "App/Services/External/FinancialService"
 
 import { IActivitiesProject, IDemographicCharacteristics, IIndicatorAction, IIndicatorIndicative, ISourceFunding, IprofitsIncome } from 'App/Interfaces/ProjectInterfaces';
+import { IBudgets } from 'App/Interfaces/BudgetsInterfaces';
 
 
 const { es } = require('date-fns/locale');
@@ -233,11 +234,11 @@ export default class GeneratePdfController {
       </html>
       `;
             // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-            const browser = await puppeteer.launch({
-                headless: "new",
-                args: ["--no-sandbox"],
-                executablePath: "/usr/bin/chromium",
-            });
+             const browser = await puppeteer.launch({
+                 headless: "new",
+                 args: ["--no-sandbox"],
+                 executablePath: "/usr/bin/chromium",
+             });
 
             //const browser = await puppeteer.launch();
             const page = await browser.newPage();
@@ -306,15 +307,11 @@ export default class GeneratePdfController {
             const impactRisk = await EntitiesProvider.getEntitiesImpact()
             const probabilityRisk = await EntitiesProvider.getEntitiesProbability();
             const financialService = new FinancialExternalService();
+            const External: ApiResponse<IBudgets[]> = await financialService.getAllBudgets();
 
-            financialService.getAllBudgets()
-                .then(response => {
-                    console.log('Respuesta:', response);
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
 
+
+        
 
             const LevelData = [
                 {
@@ -1218,7 +1215,8 @@ export default class GeneratePdfController {
                                     <div class="prop">
                                         <span class="title">POSPRE </span>
                                         
-                                        <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
+                                        <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.number 
+                                            + ' - ' + External.data.find(stage => stage.id === detailActivities.pospre)?.description}</span>
                                     </div>
 
                                     <div class="prop">
@@ -1228,7 +1226,8 @@ export default class GeneratePdfController {
 
                                     <div class="prop">
                                         <span class="title">Clasificador CPC </span>
-                                        <span> ${detailActivities.clasificatorCPC ? detailActivities.clasificatorCPC : ""}</span>
+                                        <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +
+                                        ' - ' +  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description} </span>
                                     </div>
 
                                     <div class="prop">
@@ -1676,11 +1675,11 @@ export default class GeneratePdfController {
       </html>
       `;
             // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-            const browser = await puppeteer.launch({
-                headless: "new",
-                args: ["--no-sandbox"],
-                executablePath: "/usr/bin/chromium",
-            });
+             const browser = await puppeteer.launch({
+                 headless: "new",
+                 args: ["--no-sandbox"],
+                 executablePath: "/usr/bin/chromium",
+             });
 
             //const browser = await puppeteer.launch();
             const page = await browser.newPage();
@@ -1760,6 +1759,8 @@ export default class GeneratePdfController {
                 const indicatorName = await IndicatorsProvider.getIndicatorName();
                 const entity = await EntitiesProvider.getEntity();
                 const resource = await EntitiesProvider.getResource();
+                const financialService = new FinancialExternalService();
+                const External: ApiResponse<IBudgets[]> = await financialService.getAllBudgets();
 
                 const objectivesData = project.data.causes?.map(cause => {
                     return {
@@ -2193,19 +2194,21 @@ export default class GeneratePdfController {
                                         </div>
     
                                         <div class="prop">
-                                            <span class="title">POSPRE </span>
-                                            
-                                            <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
+                                        <span class="title">POSPRE </span>
+                                        
+                                        <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.number 
+                                            + ' - ' + External.data.find(stage => stage.id === detailActivities.pospre)?.description}</span>
                                         </div>
-    
+
                                         <div class="prop">
                                             <span class="title">Validador CPC </span>
                                             <span>  ${detailActivities.validatorCPC ? detailActivities.validatorCPC : ""}</span>
                                         </div>
-    
+
                                         <div class="prop">
                                             <span class="title">Clasificador CPC </span>
-                                            <span> ${detailActivities.clasificatorCPC ? detailActivities.clasificatorCPC : ""}</span>
+                                            <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +
+                                            ' - ' +  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description} </span>
                                         </div>
     
                                         <div class="prop">
@@ -2703,6 +2706,8 @@ export default class GeneratePdfController {
                 const indicatorName = await IndicatorsProvider.getIndicatorName();
                 const entity = await EntitiesProvider.getEntity();
                 const resource = await EntitiesProvider.getResource();
+                const financialService = new FinancialExternalService();
+                const External: ApiResponse<IBudgets[]> = await financialService.getAllBudgets();
 
                 const objectivesData = project.data.causes?.map(cause => {
                     return {
@@ -3156,19 +3161,21 @@ export default class GeneratePdfController {
                                                 </div>
 
                                                 <div class="prop">
-                                                    <span class="title">POSPRE </span>
-                                                    
-                                                    <span> ${detailActivities.pospre ? detailActivities.pospre : ""}</span>
+                                                <span class="title">POSPRE </span>
+                                                
+                                                <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.number 
+                                                    + ' - ' + External.data.find(stage => stage.id === detailActivities.pospre)?.description}</span>
                                                 </div>
-
+            
                                                 <div class="prop">
                                                     <span class="title">Validador CPC </span>
                                                     <span>  ${detailActivities.validatorCPC ? detailActivities.validatorCPC : ""}</span>
                                                 </div>
-
+            
                                                 <div class="prop">
                                                     <span class="title">Clasificador CPC </span>
-                                                    <span> ${detailActivities.clasificatorCPC ? detailActivities.clasificatorCPC : ""}</span>
+                                                    <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +
+                                                    ' - ' +  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description} </span>
                                                 </div>
 
                                                 <div class="prop">

@@ -22,6 +22,7 @@ export default class AppProvider {
     const StorageService = await import("App/Services/StorageService");
     const SchedulesPAIService = await import("App/Services/SchedulesPAIService");
     const IndicatorsPAIService = await import("App/Services/IndicatorsPAIService");
+    const ActionPlanService = await import("App/Services/ActionPlanService");
 
 
     /**************************************************************************/
@@ -35,6 +36,11 @@ export default class AppProvider {
     const ProjectRepository = await import(
       "App/Repositories/ProjectRepository"
     );
+
+    const ActionPlanRepository = await import(
+      "App/Repositories/ActionPlanRepository"
+    );
+
 
     const CausesRepository = await import(
       "App/Repositories/CausesRepository"
@@ -154,6 +160,13 @@ export default class AppProvider {
         new IndicatorsRepository.default(),
         new LogicFrameRepository.default(),
         new HistoricalProjects.default(),
+      )
+    );
+
+    this.app.container.singleton(
+      "core.ActionPlanProvider",
+      () => new ActionPlanService.default(
+        new ActionPlanRepository.default(),
       )
     );
 

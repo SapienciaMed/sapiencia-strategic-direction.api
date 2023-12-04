@@ -181,7 +181,7 @@ export default class ProjectRepository implements IProjectRepository {
       if (existingProject && existingProject.length > 0 && (project?.status !== 2 && project?.status !== 3)) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
-      const updatedVersion: string = this.updateProjectVersion(existingProject[0]?.version);
+      const updatedVersion: string = project.status === 2 ? "1.0" : this.updateProjectVersion(existingProject[0]?.version);
       toCreate.dateModify = DateTime.local().toJSDate();
       toCreate.version = updatedVersion;
       toCreate.bpin = project.register.bpin;
