@@ -2,9 +2,8 @@
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 import { IIndicator } from "App/Interfaces/ProjectInterfaces";
-import IndicatorsIndicative from "App/Models/IndicatorsIndicative";
 import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
-
+import { IProjectIndicators } from "App/Repositories/IndicatorsRepository";
 export default class IndicatorsRepositoryFake implements IIndicatorsRepository {
   getIndicatorDNP(): Promise<MasterTable[] | null> {
     return Promise.resolve( {} as Promise<MasterTable[]>);
@@ -24,8 +23,8 @@ export default class IndicatorsRepositoryFake implements IIndicatorsRepository {
   getIndicatorsComponent(): Promise<MasterTable[] | null> {
     return Promise.resolve( {} as Promise<MasterTable[]>);
   }
-  getProjectIndicators(_idProject:number): Promise<IndicatorsIndicative[] | null> {
-    return Promise.resolve( {} as Promise<IndicatorsIndicative[]>);
+  getProjectIndicators(_idProject:number): Promise<IProjectIndicators | null> {
+    return Promise.resolve( {} as Promise<IProjectIndicators>);
   }
   createIndicators(
     _indicators: IIndicator[], 

@@ -2,7 +2,7 @@ import { ApiResponse } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
 import { IIndicatorsRepository } from "App/Repositories/IndicatorsRepository";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
-import IndicatorsIndicative from "App/Models/IndicatorsIndicative";
+import { IProjectIndicators } from "App/Repositories/IndicatorsRepository";
 
 export interface IIndicatorsService {
     getIndicatorDNP(): Promise<ApiResponse<MasterTable[]>>;
@@ -11,7 +11,7 @@ export interface IIndicatorsService {
     getStrategicLine(): Promise<ApiResponse<MasterTable[]>>;
     getProgramation(): Promise<ApiResponse<MasterTable[]>>;
     getIndicatorsComponent(): Promise<ApiResponse<MasterTable[]>>;
-    getProjectIndicators( projectId: number ): Promise<ApiResponse<IndicatorsIndicative[]>>;
+    getProjectIndicators( projectId: number ): Promise<ApiResponse<IProjectIndicators>>;
 }
 
 export default class IndicatorsService implements IIndicatorsService {
@@ -103,11 +103,11 @@ export default class IndicatorsService implements IIndicatorsService {
     return new ApiResponse(res, EResponseCodes.OK);
   }
 
-  async getProjectIndicators(idProject: number): Promise<ApiResponse<IndicatorsIndicative[]>> {
+  async getProjectIndicators(idProject: number): Promise<ApiResponse<IProjectIndicators>> {
     const res = await this.indicatorsRepository.getProjectIndicators(idProject);
     if(!res){
       return new ApiResponse(
-        {} as IndicatorsIndicative[],
+        {} as IProjectIndicators,
         EResponseCodes.FAIL,
         "Registro no encontrado"
       )
