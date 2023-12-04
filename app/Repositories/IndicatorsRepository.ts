@@ -17,7 +17,7 @@ export interface IIndicatorsRepository {
   getIndicatorType(): Promise<MasterTable[] | null>;
   getProgramation(): Promise<MasterTable[] | null>;
   getIndicatorsComponent(): Promise<MasterTable[] | null>;
-  getProjectIndicators(idProject: number): Promise<IndicatorsAction[] | null>;
+  getProjectIndicators(idProject: number): Promise<IndicatorsIndicative[] | null>;
   createIndicators(indicators: IIndicator[], idProject: number, trx: TransactionClientContract): Promise<IIndicator[]>;
   updateIndicators(indicators: IIndicator[], idProject: number, trx: TransactionClientContract): Promise<IIndicator[]>;
 }
@@ -53,8 +53,8 @@ export default class IndicatorsRepository implements IIndicatorsRepository {
     return res || null;
   }
 
-  async getProjectIndicators(idProject: number): Promise<IndicatorsAction[] | null> {
-    const res = await IndicatorsAction.query().where("idProject", idProject);
+  async getProjectIndicators(idProject: number): Promise<IndicatorsIndicative[] | null> {
+    const res = await IndicatorsIndicative.query().where("idProject", idProject);
     return res || null;
   }
 
