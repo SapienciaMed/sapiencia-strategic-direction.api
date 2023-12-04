@@ -33,6 +33,7 @@ export default class ActionPlanValidator {
     namePAI: schema.number(),
     objectivePAI: schema.string(),
     articulationPAI: schema.string(),
+    status: schema.number(),
   linePAI: schema.array().members(
     schema.object().members({
       id: schema.number.optional(),
