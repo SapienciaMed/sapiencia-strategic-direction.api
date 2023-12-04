@@ -31,7 +31,7 @@ export default class FinancialExternalService implements IFinancialExternalServi
         } catch (error) {
           console.error("Error al llamar a getAllBudgets:", error);
           // Puedes lanzar un error personalizado o manejarlo según tus necesidades
-          throw new Error("Error al obtener presupuestos desde la API financiera");
+          throw new Error(String(error));
         }
       }
   
