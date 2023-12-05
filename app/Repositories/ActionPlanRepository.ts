@@ -23,12 +23,15 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
         if (existingPai && existingPai.length > 0 && (pai?.status !== 2 && pai?.status !== 3)) {
           throw new Error("Ya existe un plan de acción institucional con este id.");
         }
-        const updatedVersion: string = pai.status === 2 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
-        toCreate.version = updatedVersion;
-        toCreate.dateModify = DateTime.local().toJSDate();
-        toCreate.id = pai.id;
+        // const updatedVersion: string = pai.status === 2 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
+        // toCreate.version = updatedVersion;
+        // toCreate.dateModify = DateTime.local().toJSDate();
+        // toCreate.id = pai.id;
        }
-
+       const updatedVersion: string = pai.status === 2 ? "1.0" : "";
+       toCreate.version = updatedVersion;
+       
+    
        if (pai?.yearPAI) {
           toCreate.yearPAI = pai.yearPAI;
        }
