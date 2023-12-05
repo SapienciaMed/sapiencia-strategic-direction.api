@@ -23,7 +23,7 @@ export interface ICreatePlanAction {
 
 export interface IAddAction {
     id?: number;
-    action: number;
+    action?: number;
     description: string;
   }
 

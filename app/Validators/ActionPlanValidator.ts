@@ -46,6 +46,13 @@ export default class ActionPlanValidator {
       risk: schema.string(),
     })
   ),
+  actionsPAi: schema.array().members(
+    schema.object().members({
+      id: schema.number.optional(),
+      action: schema.number.optional(),
+      description: schema.string(),
+    })
+  ),
   });
 
   /**
