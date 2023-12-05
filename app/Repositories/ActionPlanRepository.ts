@@ -73,6 +73,16 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
                     })
                 }
             }
+      const childrensActions = pai.actionsPAi;
+       if(childrensActions) {
+                for(let children in childrensActions) {
+                    await toCreate.related("actionPAI").create({
+                        description: childrensActions[children].description,
+                        action:childrensActions[children].action,
+                        idPai: toCreate.id
+                    })
+                }
+            }
             
   
       toCreate.useTransaction(trx);

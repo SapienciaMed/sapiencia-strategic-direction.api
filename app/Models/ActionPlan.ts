@@ -3,6 +3,7 @@ import RiskAsociate from "./RiskAsociatePAI";
 import { DateTime } from "luxon";
 import ArticulationEstrategicPAi from "./ArticulationEstrategicPAI";
 import ActionPlanStates from "./ActionPlanStates";
+import ActionPAI from "./ActionPAI"
 
 export default class ActionPlan extends BaseModel {
   public static table = "PAI_PLAN_ACCION_INSTITUCIONAL";
@@ -61,6 +62,12 @@ export default class ActionPlan extends BaseModel {
     foreignKey: 'idPai',
   })
   public riskAsociate: HasMany<typeof RiskAsociate>;
+
+  @hasMany(() => ActionPAI, {
+    localKey: 'id',
+    foreignKey: 'idPai',
+  })
+  public actionPAI: HasMany<typeof ActionPAI>;
 
   @hasMany(() => ActionPlanStates, {
     localKey: 'id',
