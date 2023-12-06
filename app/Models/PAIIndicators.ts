@@ -1,8 +1,8 @@
 import { BaseModel, BelongsTo, belongsTo, HasMany, hasMany, column } from "@ioc:Adonis/Lucid/Orm";
-import PAI from "./PAI";
 import ProductsPAI from "./PAIProducts";
 import ResponsiblesPAI from "./PAIResponsibles";
 import CoResponsiblesPAI from "./PAICoResponsibles";
+import ActionPlan from "./ActionPlan";
 export default class IndicatorsPAI extends BaseModel {
     public static table = "IDP_INDICADORES";
 
@@ -60,9 +60,9 @@ export default class IndicatorsPAI extends BaseModel {
     })
     public CoResponsiblesPAI: HasMany<typeof CoResponsiblesPAI>;
 
-    @belongsTo(() => PAI, {
+    @belongsTo(() => ActionPlan, {
         localKey: 'id',
         foreignKey: 'idPAI',
     })
-    public indicator: BelongsTo<typeof PAI>;
+    public indicator: BelongsTo<typeof ActionPlan>;
 }

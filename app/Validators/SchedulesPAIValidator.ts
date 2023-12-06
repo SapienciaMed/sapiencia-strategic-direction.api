@@ -25,17 +25,17 @@ export default class SchedulesPAIValidator {
    */
   public schema = schema.create({
     data: schema.array().members(
-        schema.object().members({
-            id: schema.number.optional(),
-            idRol: schema.number(),
-            idStatus: schema.number(),
-            bimester: schema.number(),
-            startDate: schema.date({ format: "yyyy/MM/dd" }),
-            endDate: schema.date({ format: "yyyy/MM/dd" }),
-            userCreate: schema.string.optional(),
-            dateCreate: schema.date.optional(),
-            dateModified: schema.date.optional()
-        })
+      schema.object().members({
+        id: schema.number.optional(),
+        idRol: schema.number(),
+        idStatus: schema.number(),
+        bimester: schema.number(),
+        startDate: schema.date({ format: "yyyy/MM/dd" }),
+        endDate: schema.date({ format: "yyyy/MM/dd" }),
+        userCreate: schema.string.optional(),
+        dateCreate: schema.date.optional(),
+        dateModified: schema.date.optional()
+      })
     )
   });
 

@@ -57,8 +57,8 @@ export default class extends BaseSchema {
         .notNullable()
         .unsigned()
         .references("PAI_CODIGO")
-        .inTable("PAI_PLANEACION")
-        .comment("llave foranea Tabla  (FK PAI_PLANEACION)");
+        .inTable("PAI_PLAN_ACCION_INSTITUCIONAL")
+        .comment("llave foranea Tabla PAI_PLAN_ACCION_INSTITUCIONAL(FK PAI_PLANEACION)");
       })
   }
 
