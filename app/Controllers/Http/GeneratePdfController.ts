@@ -863,9 +863,7 @@ export default class GeneratePdfController {
 
                 <div class="section-object-2">
                     <div class="section-title">Unidad de medida</div>
-                    ${unidadEncontrada
-                }
-                  
+                    ${unidadEncontrada}
                 </div>
 
                 <div class="section-object-2">
@@ -1086,18 +1084,25 @@ export default class GeneratePdfController {
                     <div>${project.data.capacityGenerated}</div>
                 </div>
 
-                <div class="section-name">
-                    <div class="section-title-name">Ánalisis ambiental</div> 
-                 </div>
+                ${(project.data.environmentDiagnosis != null) ?  ` 
+                    <div class="section-name">
+                        <div class="section-title-name">Ánalisis ambiental</div> 
+                    </div>
 
-                <div class="section-object">
-                    <div class="section-title">Diagnóstico ambiental</div>
-                    <div>${project.data.environmentDiagnosis}</div>
-                </div>
+                    <div class="section-object">
+                        <div class="section-title">Diagnóstico ambiental</div>
+                        <div>${project.data.environmentDiagnosis ? project.data.environmentDiagnosis : ""}</div>
+                    </div>
 
-                </br> </br>
-                
-                <table>
+                    </br> </br>
+
+                `: ""}
+
+              
+
+                ${(project.data.environmentalEffects != undefined && project.data.environmentalEffects?.length > 0 ) ?
+                    ` 
+                    <table>
                     <thead>
                         <tr>
                             <th>Tipo de impacto</th>
@@ -1117,9 +1122,14 @@ export default class GeneratePdfController {
                                 <td>${environmentalEffects.measures != null ? environmentalEffects.measures : ""}</td>
                             </tr>
                         `).join('')
-                }
+                    }
                     </tbody>
                 </table>
+
+                    `  : ""
+                }
+                
+                </br> </br>  </br> 
 
             <div class="section-name">
                 <div class="section-title-name">Actividades</div> 
@@ -1226,8 +1236,8 @@ export default class GeneratePdfController {
 
                                     <div class="prop">
                                         <span class="title">Clasificador CPC </span>
-                                        <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +
-                                        ' - ' +  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description} </span>
+                                        <span> ${detailActivities.clasificatorCPC != undefined ? External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number : " " +
+                                        ' - ' + detailActivities.clasificatorCPC != undefined ? External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description : " "} </span>
                                     </div>
 
                                     <div class="prop">
@@ -1473,28 +1483,28 @@ export default class GeneratePdfController {
 
                         <div class="prop">
                         <span class="title">Meta Año 0 </span>
-                            <span> ${formaterNumberToCurrency(indicatorsIndicative.year0)}</span>
+                            <span> ${(indicatorsIndicative.year0)}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Meta Año 1 </span>
-                            <span>${formaterNumberToCurrency(indicatorsIndicative.year1)}</span>
+                            <span>${(indicatorsIndicative.year1)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 2 </span>
-                            <span>${formaterNumberToCurrency(indicatorsIndicative.year2)}</span>
+                            <span>${(indicatorsIndicative.year2)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 3 </span>
-                            <span>${formaterNumberToCurrency(indicatorsIndicative.year3)}</span>
+                            <span>${(indicatorsIndicative.year3)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 4 </span>
-                            <span>${formaterNumberToCurrency(indicatorsIndicative.year4)}</span>
+                            <span>${(indicatorsIndicative.year4)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
-                            <span> ${formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
+                            <span> ${(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                         </div>
                     </div>
                 </div>
@@ -1546,24 +1556,24 @@ export default class GeneratePdfController {
 
                         <div class="prop">
                         <span class="title">Meta Año 0 </span>
-                            <span>${formaterNumberToCurrency(indicatorsAction.year0)}</span>
+                            <span>${(indicatorsAction.year0)}</span>
                         </div>
 
                         <div class="prop">
                         <span class="title">Meta Año 1 </span>
-                            <span>${formaterNumberToCurrency(indicatorsAction.year1)}</span>
+                            <span>${(indicatorsAction.year1)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 2 </span>
-                            <span>${formaterNumberToCurrency(indicatorsAction.year2)}</span>
+                            <span>${(indicatorsAction.year2)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 3 </span>
-                            <span>${formaterNumberToCurrency(indicatorsAction.year3)}</span>
+                            <span>${(indicatorsAction.year3)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Meta Año 4 </span>
-                            <span>${formaterNumberToCurrency(indicatorsAction.year4)}</span>
+                            <span>${(indicatorsAction.year4)}</span>
                         </div>
                         <div class="prop">
                         <span class="title">Acumulativo cuatrienio </span>
@@ -1571,7 +1581,7 @@ export default class GeneratePdfController {
                         </div>
                         <div class="prop">
                         <span class="title">Meta global </span>
-                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) : ""}</span>
+                            <span> ${indicatorsAction.total ? (indicatorsAction?.total) : ""}</span>
                         </div>
                     </div>
                 </div>
@@ -1675,11 +1685,11 @@ export default class GeneratePdfController {
       </html>
       `;
             // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-             const browser = await puppeteer.launch({
-                 headless: "new",
-                 args: ["--no-sandbox"],
-                 executablePath: "/usr/bin/chromium",
-             });
+              const browser = await puppeteer.launch({
+                  headless: "new",
+                  args: ["--no-sandbox"],
+                  executablePath: "/usr/bin/chromium",
+              });
 
             //const browser = await puppeteer.launch();
             const page = await browser.newPage();
@@ -2388,28 +2398,28 @@ export default class GeneratePdfController {
     
                             <div class="prop">
                             <span class="title">Meta Año 0 </span>
-                                <span> ${formaterNumberToCurrency(indicatorsIndicative.year0)}</span>
+                                <span> ${(indicatorsIndicative.year0)}</span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Meta Año 1 </span>
-                                <span>${formaterNumberToCurrency(indicatorsIndicative.year1)}</span>
+                                <span>${(indicatorsIndicative.year1)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta Año 2 </span>
-                                <span>${formaterNumberToCurrency(indicatorsIndicative.year2)}</span>
+                                <span>${(indicatorsIndicative.year2)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta Año 3 </span>
-                                <span>${formaterNumberToCurrency(indicatorsIndicative.year3)}</span>
+                                <span>${(indicatorsIndicative.year3)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta Año 4 </span>
-                                <span>${formaterNumberToCurrency(indicatorsIndicative.year4)}</span>
+                                <span>${(indicatorsIndicative.year4)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta global </span>
-                                <span> ${formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
+                                <span> ${(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                             </div>
                         </div>
                     </div>
@@ -2461,24 +2471,24 @@ export default class GeneratePdfController {
     
                             <div class="prop">
                             <span class="title">Meta Año 0 </span>
-                                <span>${formaterNumberToCurrency(indicatorsAction.year0)}</span>
+                                <span>${(indicatorsAction.year0)}</span>
                             </div>
     
                             <div class="prop">
                             <span class="title">Meta Año 1 </span>
-                                <span>${formaterNumberToCurrency(indicatorsAction.year1)}</span>
+                                <span>${(indicatorsAction.year1)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta Año 2 </span>
-                                <span>${formaterNumberToCurrency(indicatorsAction.year2)}</span>
+                                <span>${(indicatorsAction.year2)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta Año 3 </span>
-                                <span>${formaterNumberToCurrency(indicatorsAction.year3)}</span>
+                                <span>${(indicatorsAction.year3)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Meta Año 4 </span>
-                                <span>${formaterNumberToCurrency(indicatorsAction.year4)}</span>
+                                <span>${(indicatorsAction.year4)}</span>
                             </div>
                             <div class="prop">
                             <span class="title">Acumulativo cuatrienio </span>
@@ -2486,7 +2496,7 @@ export default class GeneratePdfController {
                             </div>
                             <div class="prop">
                             <span class="title">Meta global </span>
-                                <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) : ""}</span>
+                                <span> ${indicatorsAction.total ? (indicatorsAction?.total) : ""}</span>
                             </div>
                         </div>
                     </div>
@@ -3373,28 +3383,28 @@ export default class GeneratePdfController {
                     
                                             <div class="prop">
                                             <span class="title">Meta Año 0 </span>
-                                                <span> ${formaterNumberToCurrency(indicatorsIndicative.year0)}</span>
+                                                <span> ${(indicatorsIndicative.year0)}</span>
                                             </div>
                     
                                             <div class="prop">
                                             <span class="title">Meta Año 1 </span>
-                                                <span>${formaterNumberToCurrency(indicatorsIndicative.year1)}</span>
+                                                <span>${(indicatorsIndicative.year1)}</span>
                                             </div>
                                             <div class="prop">
                                             <span class="title">Meta Año 2 </span>
-                                                <span>${formaterNumberToCurrency(indicatorsIndicative.year2)}</span>
+                                                <span>${(indicatorsIndicative.year2)}</span>
                                             </div>
                                             <div class="prop">
                                             <span class="title">Meta Año 3 </span>
-                                                <span>${formaterNumberToCurrency(indicatorsIndicative.year3)}</span>
+                                                <span>${(indicatorsIndicative.year3)}</span>
                                             </div>
                                             <div class="prop">
                                             <span class="title">Meta Año 4 </span>
-                                                <span>${formaterNumberToCurrency(indicatorsIndicative.year4)}</span>
+                                                <span>${(indicatorsIndicative.year4)}</span>
                                             </div>
                                             <div class="prop">
                                             <span class="title">Meta global </span>
-                                                <span> ${formaterNumberToCurrency(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
+                                                <span> ${(indicatorsIndicative.year0 + indicatorsIndicative.year1 + indicatorsIndicative.year2 + indicatorsIndicative.year3 + indicatorsIndicative.year4)}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -3456,24 +3466,24 @@ export default class GeneratePdfController {
                 
                                         <div class="prop">
                                         <span class="title">Meta Año 0 </span>
-                                            <span>${formaterNumberToCurrency(indicatorsAction.year0)}</span>
+                                            <span>${(indicatorsAction.year0)}</span>
                                         </div>
                 
                                         <div class="prop">
                                         <span class="title">Meta Año 1 </span>
-                                            <span>${formaterNumberToCurrency(indicatorsAction.year1)}</span>
+                                            <span>${(indicatorsAction.year1)}</span>
                                         </div>
                                         <div class="prop">
                                         <span class="title">Meta Año 2 </span>
-                                            <span>${formaterNumberToCurrency(indicatorsAction.year2)}</span>
+                                            <span>${(indicatorsAction.year2)}</span>
                                         </div>
                                         <div class="prop">
                                         <span class="title">Meta Año 3 </span>
-                                            <span>${formaterNumberToCurrency(indicatorsAction.year3)}</span>
+                                            <span>${(indicatorsAction.year3)}</span>
                                         </div>
                                         <div class="prop">
                                         <span class="title">Meta Año 4 </span>
-                                            <span>${formaterNumberToCurrency(indicatorsAction.year4)}</span>
+                                            <span>${(indicatorsAction.year4)}</span>
                                         </div>
                                         <div class="prop">
                                         <span class="title">Acumulativo cuatrienio </span>
@@ -3481,7 +3491,7 @@ export default class GeneratePdfController {
                                         </div>
                                         <div class="prop">
                                         <span class="title">Meta global </span>
-                                            <span> ${indicatorsAction.total ? formaterNumberToCurrency(indicatorsAction?.total) : ""}</span>
+                                            <span> ${indicatorsAction.total ? (indicatorsAction?.total) : ""}</span>
                                         </div>
                                     </div>
                                 </div>

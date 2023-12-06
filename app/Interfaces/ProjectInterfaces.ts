@@ -316,7 +316,7 @@ export interface IIndicator {
   objective?: string;
   dpnIndicator?: number;
   dpn?: number;
-  staticValueCode?: number;
+  staticValueCode?: string;
   staticValue?: string;
   total?: number;
   accumulative?: number;
@@ -446,7 +446,7 @@ export interface IIndicatorAction {
   objective?: string;
   dpnIndicator?: number;
   dpn?: number;
-  staticValueCode?: number;
+  staticValueCode?: string;
   staticValue?: string;
   total?: number;
   accumulative?: number;

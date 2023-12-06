@@ -20,13 +20,18 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
       if (pai?.id) {
         const existingPai = await query.where("id", pai?.id)
           .limit(1);
-        if (existingPai && existingPai.length > 0 ) {
+        if (existingPai && existingPai.length > 0 && (pai?.status !== 2 && pai?.status !== 3)) {
           throw new Error("Ya existe un plan de acción institucional con este id.");
         }
-        toCreate.dateModify = DateTime.local().toJSDate();
-        toCreate.id = pai.id;
+        // const updatedVersion: string = pai.status === 2 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
+        // toCreate.version = updatedVersion;
+        // toCreate.dateModify = DateTime.local().toJSDate();
+        // toCreate.id = pai.id;
        }
-
+       const updatedVersion: string = pai.status === 2 ? "1.0" : "";
+       toCreate.version = updatedVersion;
+       
+    
        if (pai?.yearPAI) {
           toCreate.yearPAI = pai.yearPAI;
        }
@@ -45,7 +50,11 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
        if (pai?.articulationPAI) {
         toCreate.articulationPAI = pai.articulationPAI;
        }
-    const childrens = pai.linePAI;
+       if (pai?.status !== undefined) {
+        toCreate.status = pai.status;
+      }
+
+      const childrens = pai.linePAI;
        if(childrens) {
                 for(let children in childrens) {
                     await toCreate.related("articulationPAi").create({
@@ -55,7 +64,7 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
                 }
             }
 
-    const childrensRisks = pai.risksPAI;
+      const childrensRisks = pai.risksPAI;
        if(childrensRisks) {
                 for(let children in childrensRisks) {
                     await toCreate.related("riskAsociate").create({
@@ -88,6 +97,10 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
         if (existingPai) throw new Error("Ya existe un proyecto con este id.");
         toUpdate.id = pai.id;
       }
+
+      if (pai?.status !== undefined) {
+        toUpdate.status = pai.status;
+      }
   
       toUpdate.user = pai.user;
       if (pai?.yearPAI) {
@@ -110,11 +123,24 @@ import {ICreatePlanAction} from "App/Interfaces/CreatePlanActionInterfaces";
      }
   
       toUpdate.dateModify = DateTime.local().toJSDate();
-     
+      if (pai.status === 2) {
+        const updatedVersion = Number(toUpdate.version.split(".")[0]);
+        toUpdate.version = `${updatedVersion+1}.0`;
+      } else {
+        const updatedVersion: string = this.updatePaiVersion(toUpdate.version);
+        toUpdate.version = updatedVersion;
+      }
       toUpdate.useTransaction(trx);
   
       await toUpdate.save();
       return toUpdate.serialize() as ICreatePlanAction;
+    }
+
+    private updatePaiVersion(version: string = "0.0"): string {
+      const [major, minor] = version.split('.').map(Number);
+      const newMinor = minor + 1;
+      const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
+      return newVersion;
     }
   }
   

@@ -48,6 +48,13 @@ export default class extends BaseSchema {
       .string("PAI_USUARIO",20)
       .nullable()
       .comment("Usuario que guarda la formulacion PAI");
+      table
+      .integer("PAI_ESTADO_PLAN")
+      .notNullable()
+      .unsigned()
+      .references("PAI_CODIGO")
+      .inTable("PAI_PLAN_ESTADOS")
+      .comment("codigo de los estados del PAI ");
     })
   }
 

@@ -2,6 +2,7 @@ import { BaseModel, HasMany, column, hasMany } from "@ioc:Adonis/Lucid/Orm";
 import RiskAsociate from "./RiskAsociatePAI";
 import { DateTime } from "luxon";
 import ArticulationEstrategicPAi from "./ArticulationEstrategicPAI";
+import ActionPlanStates from "./ActionPlanStates";
 
 export default class ActionPlan extends BaseModel {
   public static table = "PAI_PLAN_ACCION_INSTITUCIONAL";
@@ -44,6 +45,9 @@ export default class ActionPlan extends BaseModel {
   @column({ columnName: "PAI_VERSION", serializeAs: "version" })
   public version: string;
 
+  @column({ columnName: "PAI_ESTADO_PLAN", serializeAs: "status" })
+  public status: number;
+
 //RELACIONES
 
   @hasMany(() => ArticulationEstrategicPAi, {
@@ -57,5 +61,11 @@ export default class ActionPlan extends BaseModel {
     foreignKey: 'idPai',
   })
   public riskAsociate: HasMany<typeof RiskAsociate>;
+
+  @hasMany(() => ActionPlanStates, {
+    localKey: 'id',
+    foreignKey: 'status',
+  })
+  public actionPlanStates: HasMany<typeof ActionPlanStates>;
 
 }
