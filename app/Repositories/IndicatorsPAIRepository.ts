@@ -52,10 +52,14 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
         for (let index in indicators) {
           const indicator = indicators[index];
           const toCreate = new IndicatorsPAI();
-          toCreate.idPAI = idPAI;
-          toCreate.projectIndicator = indicator.projectIndicator;
+          toCreate.actionId = idPAI;
+          if(toCreate.projectIndicator){
+            toCreate.projectIndicator = indicator.projectIndicator || 0;
+          }
+          if(toCreate.indicatorDesc){
+            toCreate.indicatorDesc = indicator.indicatorDesc || "";
+          }
           toCreate.indicatorType = indicator.indicatorType;
-          toCreate.indicatorDesc = indicator.indicatorDesc;
           toCreate.firstBimester = indicator.bimesters.at(0)?.value || 0;
           toCreate.secondBimester = indicator.bimesters.at(1)?.value || 0;
           toCreate.thirdBimester = indicator.bimesters.at(2)?.value || 0;

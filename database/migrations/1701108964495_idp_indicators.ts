@@ -53,12 +53,12 @@ export default class extends BaseSchema {
         .nullable()
         .comment("Meta total planeada");
         table
-        .integer("IDP_CODPAI_PAI")
+        .integer("IDP_CODACC_PAI")
         .notNullable()
         .unsigned()
-        .references("PAI_CODIGO")
-        .inTable("PAI_PLAN_ACCION_INSTITUCIONAL")
-        .comment("llave foranea Tabla PAI_PLAN_ACCION_INSTITUCIONAL(FK PAI_PLANEACION)");
+        .references("ACC_CODIGO")
+        .inTable("ACC_ACCIONES_PAI")
+        .comment("llave foranea Tabla PAI_PLAN_ACCION_INSTITUCIONAL(FK ACC_ACCIONES_PAI)");
       })
   }
 

@@ -2,7 +2,7 @@ import { BaseModel, BelongsTo, belongsTo, HasMany, hasMany, column } from "@ioc:
 import ProductsPAI from "./PAIProducts";
 import ResponsiblesPAI from "./PAIResponsibles";
 import CoResponsiblesPAI from "./PAICoResponsibles";
-import ActionPlan from "./ActionPlan";
+import ActionPAI from "./ActionPAI";
 export default class IndicatorsPAI extends BaseModel {
     public static table = "IDP_INDICADORES";
 
@@ -39,8 +39,8 @@ export default class IndicatorsPAI extends BaseModel {
     @column({ columnName: "IDP_META_TOTAL", serializeAs: "totalPlannedGoal" })
     public totalPlannedGoal: number;
 
-    @column({ columnName: "IDP_CODPAI_PAI", serializeAs: "idPAI" })
-    public idPAI: number;
+    @column({ columnName: "IDP_CODACC_PAI", serializeAs: "actionId" })
+    public actionId: number;
 
     @hasMany(() => ProductsPAI, {
         localKey: 'id',
@@ -60,9 +60,9 @@ export default class IndicatorsPAI extends BaseModel {
     })
     public CoResponsiblesPAI: HasMany<typeof CoResponsiblesPAI>;
 
-    @belongsTo(() => ActionPlan, {
+    @belongsTo(() => ActionPAI, {
         localKey: 'id',
-        foreignKey: 'idPAI',
+        foreignKey: 'actionId',
     })
-    public indicator: BelongsTo<typeof ActionPlan>;
+    public actionPAI: BelongsTo<typeof ActionPAI>;
 }

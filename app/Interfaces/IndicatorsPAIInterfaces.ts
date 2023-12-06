@@ -1,9 +1,9 @@
 
 export interface IIndicatorsPAI {
     id?: number;
-    projectIndicator: number;
+    projectIndicator?: number;
     indicatorType: number;
-    indicatorDesc: string;
+    indicatorDesc?: string;
     bimesters: IBimester[];
     totalPlannedGoal: number;
     products: IProducts[];
@@ -13,7 +13,7 @@ export interface IIndicatorsPAI {
 
 export interface IBimester {
     bimester?: string;
-    value: number;
+    value?: number;
 }
 
 export interface IProducts {
