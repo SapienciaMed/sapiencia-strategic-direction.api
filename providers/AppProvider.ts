@@ -129,6 +129,10 @@ export default class AppProvider {
     const IndicatorsPAIRepository = await import(
       "App/Repositories/IndicatorsPAIRepository"
     );
+
+    const RevisionPAIRepository = await import(
+      "App/Repositories/RevisionPAIRepository"
+    );
     
     /**************************************************************************/
     /******************************** CORE  ***********************************/
@@ -167,6 +171,7 @@ export default class AppProvider {
       "core.ActionPlanProvider",
       () => new ActionPlanService.default(
         new ActionPlanRepository.default(),
+        new RevisionPAIRepository.default(),
       )
     );
 

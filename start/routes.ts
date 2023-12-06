@@ -46,13 +46,6 @@ Route.group(() => {
 
 
 Route.group(() => {
-  Route.post("/create", "ActionPlanController.createPAI");
-  Route.put("/update/:id", "ActionPlanController.updatePAI");
-})
-.prefix("/api/v1/pai")
-.middleware("auth");
-
-Route.group(() => {
   Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
   Route.get("/generate-pdf-consolidate/:id/generate-pdf-consolidate", "GeneratePdfController.CreatePdfConsolidate");
   Route.get("/generate-pdf-historic/:id/:oldId/generate-pdf-historic", "GeneratePdfController.CreatePdfHistoric");
@@ -159,6 +152,16 @@ Route.group(() => {
 })
 .prefix("/api/v1/indicators")
 .middleware("auth");
+
+Route.group(() => {
+  Route.post("/create", "ActionPlanController.createPAI");
+  Route.put("/update/:id", "ActionPlanController.updatePAI");
+  Route.get("/get-by-id/:id", "ActionPlanController.getPAIById");
+  Route.post("/revision/create", "ActionPlanController.createRevisionPAI");
+  Route.put("/revision/update/:id", "ActionPlanController.updateRevisionPAI");
+})
+.prefix("/api/v1/pai")
+//.middleware("auth");
 
 Route.group(() => {
   Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");

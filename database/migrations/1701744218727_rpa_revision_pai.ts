@@ -17,12 +17,20 @@ export default class extends BaseSchema {
         .inTable("PAI_PLAN_ACCION_INSTITUCIONAL")
         .comment("codigo del pai , llave foranea de la tabla proyecto PAI_PLAN_ACCION_INSTITUCIONAL (PAI_CODIGO)");
       table
+        .json("RPA_JSON")
+        .nullable()
+        .comment("json que contiene la informacion de los campos con anormalidades");
+      table
         .boolean("RFI_COMPLETADO")
         .notNullable()
         .comment("booleano con posibles valores True o False.");
       table
+        .integer("RFI_VERSION")
+        .notNullable()
+        .comment("Version de la revision");
+      table
         .string("RFI_USUARIO", 20)
-        .nullable()
+        .notNullable()
         .comment("usuario que crea");
       table
         .datetime("RFI_FECHA_CREO")
