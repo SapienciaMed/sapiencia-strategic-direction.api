@@ -155,7 +155,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
 
   async getPAIById(id: number): Promise<ICreatePlanAction | null> {
     const res = await ActionPlan.find(id);
-    res?.load("revision");
+    await res?.load("revision");
+    await res?.load("riskAsociate");
+    await res?.load("articulationPAi");
     return res && res.serialize() as ICreatePlanAction || null;
   }
 }
