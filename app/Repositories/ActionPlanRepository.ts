@@ -91,7 +91,10 @@ export default class PlanActionRepository implements IPlanActionRepository {
       });
     };
     
-    const createProducts = async (parentIndicator: IndicatorsPAI, products: IProducts[]) => {
+    const createProducts = async (
+      parentIndicator: IndicatorsPAI, 
+      products: IProducts[]
+    ) => {
       for (const product of products) {
         await parentIndicator.related("ProductsPAI").create({
           product: product.product,
@@ -99,7 +102,10 @@ export default class PlanActionRepository implements IPlanActionRepository {
       }
     };
     
-    const createResponsibles = async (parentIndicator: IndicatorsPAI, responsibles: IResponsible[]) => {
+    const createResponsibles = async (
+      parentIndicator: IndicatorsPAI, 
+      responsibles: IResponsible[]
+    ) => {
       for (const responsible of responsibles) {
         await parentIndicator.related("ResponsiblesPAI").create({
           responsible: responsible.responsible,
@@ -107,7 +113,10 @@ export default class PlanActionRepository implements IPlanActionRepository {
       }
     };
     
-    const createCoresponsibles = async (parentIndicator: IndicatorsPAI, coresponsibles: ICoResponsible[]) => {
+    const createCoresponsibles = async (
+      parentIndicator: IndicatorsPAI, 
+      coresponsibles: ICoResponsible[]
+    ) => {
       for (const coresponsible of coresponsibles) {
         await parentIndicator.related("CoResponsiblesPAI").create({
           coresponsible: coresponsible.coresponsible,
