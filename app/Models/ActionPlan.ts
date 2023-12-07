@@ -56,13 +56,13 @@ export default class ActionPlan extends BaseModel {
     localKey: 'id',
     foreignKey: 'idPai',
   })
-  public articulationPAi: HasMany<typeof ArticulationEstrategicPAi>;
+  public linePAI: HasMany<typeof ArticulationEstrategicPAi>;
   
   @hasMany(() => RiskAsociate, {
     localKey: 'id',
     foreignKey: 'idPai',
   })
-  public riskAsociate: HasMany<typeof RiskAsociate>;
+  public risksPAI: HasMany<typeof RiskAsociate>;
 
   @hasMany(() => ActionPAI, {
     localKey: 'id',

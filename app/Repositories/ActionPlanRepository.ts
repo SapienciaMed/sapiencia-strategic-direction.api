@@ -3,6 +3,8 @@ import ActionPlan from "../Models/ActionPlan";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
+import IndicatorsPAI from "App/Models/PAIIndicators";
+import { ICoResponsible, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -57,8 +59,8 @@ export default class PlanActionRepository implements IPlanActionRepository {
     const childrens = pai.linePAI;
     if (childrens) {
       for (let children in childrens) {
-        await toCreate.related("articulationPAi").create({
-          description: childrens[children].line,
+        await toCreate.related("linePAI").create({
+          line: childrens[children].line,
           idPai: toCreate.id
         })
       }
@@ -67,8 +69,8 @@ export default class PlanActionRepository implements IPlanActionRepository {
     const childrensRisks = pai.risksPAI;
     if (childrensRisks) {
       for (let children in childrensRisks) {
-        await toCreate.related("riskAsociate").create({
-          description: childrensRisks[children].risk,
+        await toCreate.related("risksPAI").create({
+          risk: childrensRisks[children].risk,
           idPai: toCreate.id
         })
       }
@@ -89,7 +91,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
       });
     };
     
-    const createProducts = async (parentIndicator, products) => {
+    const createProducts = async (parentIndicator: IndicatorsPAI, products: IProducts[]) => {
       for (const product of products) {
         await parentIndicator.related("ProductsPAI").create({
           product: product.product,
@@ -97,7 +99,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
       }
     };
     
-    const createResponsibles = async (parentIndicator, responsibles) => {
+    const createResponsibles = async (parentIndicator: IndicatorsPAI, responsibles: IResponsible[]) => {
       for (const responsible of responsibles) {
         await parentIndicator.related("ResponsiblesPAI").create({
           responsible: responsible.responsible,
@@ -105,7 +107,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
       }
     };
     
-    const createCoresponsibles = async (parentIndicator, coresponsibles) => {
+    const createCoresponsibles = async (parentIndicator: IndicatorsPAI, coresponsibles: ICoResponsible[]) => {
       for (const coresponsible of coresponsibles) {
         await parentIndicator.related("CoResponsiblesPAI").create({
           coresponsible: coresponsible.coresponsible,
@@ -213,8 +215,8 @@ export default class PlanActionRepository implements IPlanActionRepository {
   async getPAIById(id: number): Promise<ICreatePlanAction | null> {
     const res = await ActionPlan.find(id);
     await res?.load("revision");
-    await res?.load("riskAsociate");
-    await res?.load("articulationPAi");
+    await res?.load("risksPAI");
+    await res?.load("linePAI");
     return res && res.serialize() as ICreatePlanAction || null;
   }
 }
