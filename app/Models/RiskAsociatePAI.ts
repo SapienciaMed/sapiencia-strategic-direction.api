@@ -7,8 +7,8 @@ export default class RiskAsociate extends BaseModel {
   @column({ isPrimary: true, columnName: "RIA_CODIGO", serializeAs: "id" })
   public id: number;
 
-  @column({ columnName: "RIA_RIESGO_ASOCIADO", serializeAs: "description" })
-  public description: string;
+  @column({ columnName: "RIA_RIESGO_ASOCIADO", serializeAs: "risk" })
+  public risk: string;
 
   @column({ columnName: "RIA_CODIGO_PAI", serializeAs: "idPai" })
   public idPai: number;

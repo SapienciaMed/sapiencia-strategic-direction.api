@@ -57,8 +57,8 @@ export default class PlanActionRepository implements IPlanActionRepository {
     const childrens = pai.linePAI;
     if (childrens) {
       for (let children in childrens) {
-        await toCreate.related("articulationPAi").create({
-          description: childrens[children].line,
+        await toCreate.related("linePAI").create({
+          line: childrens[children].line,
           idPai: toCreate.id
         })
       }
@@ -67,8 +67,8 @@ export default class PlanActionRepository implements IPlanActionRepository {
     const childrensRisks = pai.risksPAI;
     if (childrensRisks) {
       for (let children in childrensRisks) {
-        await toCreate.related("riskAsociate").create({
-          description: childrensRisks[children].risk,
+        await toCreate.related("risksPAI").create({
+          risk: childrensRisks[children].risk,
           idPai: toCreate.id
         })
       }
@@ -156,8 +156,8 @@ export default class PlanActionRepository implements IPlanActionRepository {
   async getPAIById(id: number): Promise<ICreatePlanAction | null> {
     const res = await ActionPlan.find(id);
     await res?.load("revision");
-    await res?.load("riskAsociate");
-    await res?.load("articulationPAi");
+    await res?.load("risksPAI");
+    await res?.load("linePAI");
     return res && res.serialize() as ICreatePlanAction || null;
   }
 }

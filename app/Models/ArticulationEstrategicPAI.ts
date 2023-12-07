@@ -7,8 +7,8 @@ export default class ArticulationEstrategicPAi extends BaseModel {
   @column({ isPrimary: true, columnName: "APE_CODIGO", serializeAs: "id" })
   public id: number;
 
-  @column({ columnName: "APE_LINEA", serializeAs: "description" })
-  public description: string;
+  @column({ columnName: "APE_LINEA", serializeAs: "line" })
+  public line: string;
 
   @column({ columnName: "APE_CODIGO_PAI", serializeAs: "idPai" })
   public idPai: number;
