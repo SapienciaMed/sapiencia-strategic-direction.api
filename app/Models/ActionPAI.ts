@@ -1,5 +1,6 @@
-import { BaseModel, BelongsTo, belongsTo, column } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from "@ioc:Adonis/Lucid/Orm";
 import Pai from "./ActionPlan";
+import IndicatorsPAI from "./PAIIndicators";
 
 export default class ActionPAI extends BaseModel {
   public static table = "ACC_ACCIONES_PAI";
@@ -16,6 +17,11 @@ export default class ActionPAI extends BaseModel {
   @column({ columnName: "ACC_CODIGO_PAI", serializeAs: "idPai" })
   public idPai: number;
 
+  @hasMany(() => IndicatorsPAI, {
+    localKey: 'id',
+    foreignKey: 'actionId',
+  })
+  public IndicatorsPAI: HasMany<typeof IndicatorsPAI>;
 
   @belongsTo(() => Pai, {
     localKey: 'id',

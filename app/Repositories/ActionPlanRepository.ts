@@ -73,14 +73,71 @@ export default class PlanActionRepository implements IPlanActionRepository {
         })
       }
     }
+
+    const createIndicator = async (parentAction, indicator) => {
+      return await parentAction.related("IndicatorsPAI").create({
+        projectIndicator: indicator.projectIndicator,
+        indicatorType: indicator.indicatorType,
+        indicatorDesc: indicator.indicatorDesc,
+        firstBimester: indicator.bimesters.at(0)?.value,
+        secondBimester: indicator.bimesters.at(1)?.value,
+        thirdBimester: indicator.bimesters.at(2)?.value,
+        fourthBimester: indicator.bimesters.at(3)?.value,
+        fifthBimester: indicator.bimesters.at(4)?.value,
+        sixthBimester: indicator.bimesters.at(5)?.value,
+        totalPlannedGoal: indicator.totalPlannedGoal,
+      });
+    };
+    
+    const createProducts = async (parentIndicator, products) => {
+      for (const product of products) {
+        await parentIndicator.related("ProductsPAI").create({
+          product: product.product,
+        });
+      }
+    };
+    
+    const createResponsibles = async (parentIndicator, responsibles) => {
+      for (const responsible of responsibles) {
+        await parentIndicator.related("ResponsiblesPAI").create({
+          responsible: responsible.responsible,
+        });
+      }
+    };
+    
+    const createCoresponsibles = async (parentIndicator, coresponsibles) => {
+      for (const coresponsible of coresponsibles) {
+        await parentIndicator.related("CoResponsiblesPAI").create({
+          coresponsible: coresponsible.coresponsible,
+        });
+      }
+    };
+    
     const childrensActions = pai.actionsPAi;
+    
     if (childrensActions) {
-      for (let children in childrensActions) {
-        await toCreate.related("actionPAI").create({
-          description: childrensActions[children].description,
-          action: childrensActions[children].action,
-          idPai: toCreate.id
-        })
+      for (const action of childrensActions) {
+        const createdAction = await toCreate.related("actionPAI").create({
+          description: action.description,
+          action: action.action,
+          idPai: toCreate.id,
+        });
+    
+        const indicators = action.indicators;
+    
+        if (indicators) {
+          for (const indicator of indicators) {
+            const createdIndicator = await createIndicator(createdAction, indicator);
+    
+            const products = indicator.products;
+            const responsibles = indicator.responsibles;
+            const coresponsibles = indicator.coresponsibles;
+    
+            if (products) await createProducts(createdIndicator, products);
+            if (responsibles) await createResponsibles(createdIndicator, responsibles);
+            if (coresponsibles) await createCoresponsibles(createdIndicator, coresponsibles);
+          }
+        }
       }
     }
 
