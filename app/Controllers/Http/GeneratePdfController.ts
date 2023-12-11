@@ -434,7 +434,7 @@ export default class GeneratePdfController {
 
             .container {
                 margin: 0 auto;
-                max-width: 600px;
+                max-width: 700px;
             }
 
             .container .section {
@@ -697,7 +697,7 @@ export default class GeneratePdfController {
                 </div>
 
                 <div class="section-name">
-                    <div class="section-title-name">Plan de desarrollo distirtal</div> 
+                    <div class="section-title-name">Plan de desarrollo distrital</div> 
                 </div>
 
                 <div class="section-object">
@@ -868,7 +868,7 @@ export default class GeneratePdfController {
 
                 <div class="section-object-2">
                     <div class="section-title">Meta</div>
-                    <div> ${formaterNumberToCurrency(project.data.goal)}</div>
+                    <div> ${(project.data.goal)}</div>
                 </div>
 
                 <br> <br> <br> 
@@ -1191,6 +1191,7 @@ export default class GeneratePdfController {
 
                             ${activities.detailActivities?.map(detailActivities => {
                         const currentCost = detailActivities.amount * detailActivities.unitCost;
+                        const productClassification =  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications
                         return `
                                     <div class="prop">
                                         <span class="title">No. y descripción actividad detallada</span>
@@ -1236,8 +1237,9 @@ export default class GeneratePdfController {
 
                                     <div class="prop">
                                         <span class="title">Clasificador CPC </span>
-                                        <span> ${detailActivities.clasificatorCPC != undefined ? External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number : " " +
-                                        ' - ' + detailActivities.clasificatorCPC != undefined ? External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description : " "} </span>
+                                        <span> ${
+                                            detailActivities.clasificatorCPC != undefined && detailActivities.clasificatorCPC != null && productClassification != undefined && productClassification?.length > 0 ? 
+                                            productClassification?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +' - ' +  productClassification?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description : " "} </span>
                                     </div>
 
                                     <div class="prop">
@@ -1685,11 +1687,11 @@ export default class GeneratePdfController {
       </html>
       `;
             // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-              const browser = await puppeteer.launch({
-                  headless: "new",
-                  args: ["--no-sandbox"],
-                  executablePath: "/usr/bin/chromium",
-              });
+               const browser = await puppeteer.launch({
+                   headless: "new",
+                   args: ["--no-sandbox"],
+                   executablePath: "/usr/bin/chromium",
+               });
 
             //const browser = await puppeteer.launch();
             const page = await browser.newPage();
@@ -2172,6 +2174,8 @@ export default class GeneratePdfController {
     
                                 ${activities.detailActivities?.map(detailActivities => {
                             const currentCost = detailActivities.amount * detailActivities.unitCost;
+                            const productClassification =  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications
+
                             return `
                                         <div class="prop">
                                             <span class="title">No. y descripción actividad detallada</span>
@@ -2216,11 +2220,12 @@ export default class GeneratePdfController {
                                         </div>
 
                                         <div class="prop">
-                                            <span class="title">Clasificador CPC </span>
-                                            <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +
-                                            ' - ' +  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description} </span>
-                                        </div>
-    
+                                        <span class="title">Clasificador CPC </span>
+                                        <span> ${
+                                            detailActivities.clasificatorCPC != undefined && detailActivities.clasificatorCPC != null && productClassification != undefined && productClassification?.length > 0 ? 
+                                            productClassification?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +' - ' +  productClassification?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description : " "} </span>
+                                    </div>
+
                                         <div class="prop">
                                             <span class="title">Validador sección CPC </span>
                                             <span> ${detailActivities.sectionValidatorCPC ? detailActivities.sectionValidatorCPC : ""}</span>
@@ -3139,6 +3144,8 @@ export default class GeneratePdfController {
 
                                         ${activities.detailActivities?.map(detailActivities => {
                                 const currentCost = detailActivities.amount * detailActivities.unitCost;
+                                const productClassification =  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications
+
                                 return `
                                                 <div class="prop">
                                                     <span class="title">No. y descripción actividad detallada</span>
@@ -3182,11 +3189,12 @@ export default class GeneratePdfController {
                                                     <span>  ${detailActivities.validatorCPC ? detailActivities.validatorCPC : ""}</span>
                                                 </div>
             
-                                                <div class="prop">
-                                                    <span class="title">Clasificador CPC </span>
-                                                    <span> ${External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +
-                                                    ' - ' +  External.data.find(stage => stage.id === detailActivities.pospre)?.productClassifications?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description} </span>
-                                                </div>
+                                                     <div class="prop">
+                                                        <span class="title">Clasificador CPC </span>
+                                                        <span> ${
+                                                            detailActivities.clasificatorCPC != undefined && detailActivities.clasificatorCPC != null && productClassification != undefined && productClassification?.length > 0 ? 
+                                                            productClassification?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.number +' - ' +  productClassification?.find(cpc=>cpc.id === detailActivities.clasificatorCPC)?.description : " "} </span>
+                                                    </div>
 
                                                 <div class="prop">
                                                     <span class="title">Validador sección CPC </span>

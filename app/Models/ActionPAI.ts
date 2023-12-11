@@ -21,7 +21,7 @@ export default class ActionPAI extends BaseModel {
     localKey: 'id',
     foreignKey: 'actionId',
   })
-  public IndicatorsPAI: HasMany<typeof IndicatorsPAI>;
+  public indicators: HasMany<typeof IndicatorsPAI>;
 
   @belongsTo(() => Pai, {
     localKey: 'id',
