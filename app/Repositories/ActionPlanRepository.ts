@@ -4,7 +4,8 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
 import IndicatorsPAI from "App/Models/PAIIndicators";
-import { ICoResponsible, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { ICoResponsible, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import ActionPAI from "App/Models/ActionPAI";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -76,8 +77,11 @@ export default class PlanActionRepository implements IPlanActionRepository {
       }
     }
 
-    const createIndicator = async (parentAction, indicator) => {
-      return await parentAction.related("IndicatorsPAI").create({
+    const createIndicator = async (
+      parentAction: ActionPAI, 
+      indicator: IIndicatorsPAITemp
+    ) => {
+      return await parentAction.related("indicators").create({
         projectIndicator: indicator.projectIndicator,
         indicatorType: indicator.indicatorType,
         indicatorDesc: indicator.indicatorDesc,
@@ -96,7 +100,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
       products: IProducts[]
     ) => {
       for (const product of products) {
-        await parentIndicator.related("ProductsPAI").create({
+        await parentIndicator.related("products").create({
           product: product.product,
         });
       }
@@ -107,7 +111,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
       responsibles: IResponsible[]
     ) => {
       for (const responsible of responsibles) {
-        await parentIndicator.related("ResponsiblesPAI").create({
+        await parentIndicator.related("responsibles").create({
           responsible: responsible.responsible,
         });
       }
@@ -118,32 +122,31 @@ export default class PlanActionRepository implements IPlanActionRepository {
       coresponsibles: ICoResponsible[]
     ) => {
       for (const coresponsible of coresponsibles) {
-        await parentIndicator.related("CoResponsiblesPAI").create({
+        await parentIndicator.related("coresponsibles").create({
           coresponsible: coresponsible.coresponsible,
         });
       }
     };
-    
+
     const childrensActions = pai.actionsPAi;
-    
+
     if (childrensActions) {
       for (const action of childrensActions) {
-        const createdAction = await toCreate.related("actionPAI").create({
+        const createdAction = await toCreate.related("actionsPAi").create({
           description: action.description,
           action: action.action,
           idPai: toCreate.id,
         });
-    
+
         const indicators = action.indicators;
-    
+
         if (indicators) {
           for (const indicator of indicators) {
             const createdIndicator = await createIndicator(createdAction, indicator);
-    
             const products = indicator.products;
             const responsibles = indicator.responsibles;
             const coresponsibles = indicator.coresponsibles;
-    
+
             if (products) await createProducts(createdIndicator, products);
             if (responsibles) await createResponsibles(createdIndicator, responsibles);
             if (coresponsibles) await createCoresponsibles(createdIndicator, coresponsibles);
@@ -226,6 +229,13 @@ export default class PlanActionRepository implements IPlanActionRepository {
     await res?.load("revision");
     await res?.load("risksPAI");
     await res?.load("linePAI");
+    await res?.load("actionsPAi", (actionsQuery) => {
+      actionsQuery.preload("indicators", (indicatorsQuery) => {
+        indicatorsQuery.preload("products");
+        indicatorsQuery.preload("responsibles");
+        indicatorsQuery.preload("coresponsibles");
+      });
+    })
     return res && res.serialize() as ICreatePlanAction || null;
   }
 }

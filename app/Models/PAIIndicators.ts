@@ -46,19 +46,19 @@ export default class IndicatorsPAI extends BaseModel {
         localKey: 'id',
         foreignKey: 'idIndicatorPAI',
     })
-    public ProductsPAI: HasMany<typeof ProductsPAI>;
+    public products: HasMany<typeof ProductsPAI>;
 
     @hasMany(() => ResponsiblesPAI, {
         localKey: 'id',
         foreignKey: 'idIndicatorPAI',
     })
-    public ResponsiblesPAI: HasMany<typeof ResponsiblesPAI>;
+    public responsibles: HasMany<typeof ResponsiblesPAI>;
 
     @hasMany(() => CoResponsiblesPAI, {
         localKey: 'id',
         foreignKey: 'idIndicatorPAI',
     })
-    public CoResponsiblesPAI: HasMany<typeof CoResponsiblesPAI>;
+    public coresponsibles: HasMany<typeof CoResponsiblesPAI>;
 
     @belongsTo(() => ActionPAI, {
         localKey: 'id',
