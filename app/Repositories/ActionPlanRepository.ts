@@ -4,7 +4,8 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
 import IndicatorsPAI from "App/Models/PAIIndicators";
-import { ICoResponsible, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { ICoResponsible, IIndicatorsPAI, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import ActionPAI from "App/Models/ActionPAI";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -76,7 +77,10 @@ export default class PlanActionRepository implements IPlanActionRepository {
       }
     }
 
-    const createIndicator = async (parentAction, indicator) => {
+    const createIndicator = async (
+      parentAction: ActionPAI, 
+      indicator: IIndicatorsPAI 
+    ) => {
       return await parentAction.related("IndicatorsPAI").create({
         projectIndicator: indicator.projectIndicator,
         indicatorType: indicator.indicatorType,
@@ -226,6 +230,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
     await res?.load("revision");
     await res?.load("risksPAI");
     await res?.load("linePAI");
+    await res?.load("actionPAI")
     return res && res.serialize() as ICreatePlanAction || null;
   }
 }
