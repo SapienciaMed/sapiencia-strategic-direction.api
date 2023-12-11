@@ -68,7 +68,7 @@ export default class ActionPlan extends BaseModel {
     localKey: 'id',
     foreignKey: 'idPai',
   })
-  public actionPAI: HasMany<typeof ActionPAI>;
+  public actionsPAi: HasMany<typeof ActionPAI>;
 
   @hasMany(() => ActionPlanStates, {
     localKey: 'id',
