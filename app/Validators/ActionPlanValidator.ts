@@ -39,6 +39,12 @@ export default class ActionPlanValidator {
             projectIndicator: schema.number.optional(),
             indicatorType: schema.number(),
             indicatorDesc: schema.string.optional(),
+            firstBimester: schema.number.optional(),
+            secondBimester: schema.number.optional(),
+            thirdBimester: schema.number.optional(),
+            fourthBimester: schema.number.optional(),
+            fifthBimester: schema.number.optional(),
+            sixthBimester: schema.number.optional(),
             bimesters: schema.array().members(
               schema.object().members({
                 bimester: schema.string.optional(),

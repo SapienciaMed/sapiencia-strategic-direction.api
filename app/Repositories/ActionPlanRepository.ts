@@ -4,7 +4,7 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
 import IndicatorsPAI from "App/Models/PAIIndicators";
-import { ICoResponsible, IIndicatorsPAI, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { ICoResponsible, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
 import ActionPAI from "App/Models/ActionPAI";
 
 
@@ -79,7 +79,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
 
     const createIndicator = async (
       parentAction: ActionPAI, 
-      indicator: IIndicatorsPAI 
+      indicator: IIndicatorsPAITemp
     ) => {
       return await parentAction.related("indicators").create({
         projectIndicator: indicator.projectIndicator,
@@ -143,7 +143,6 @@ export default class PlanActionRepository implements IPlanActionRepository {
         if (indicators) {
           for (const indicator of indicators) {
             const createdIndicator = await createIndicator(createdAction, indicator);
-
             const products = indicator.products;
             const responsibles = indicator.responsibles;
             const coresponsibles = indicator.coresponsibles;

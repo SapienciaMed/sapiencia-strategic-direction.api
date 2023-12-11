@@ -5,6 +5,7 @@ import ResponsiblesPAI from "App/Models/PAIResponsibles";
 import CoResponsiblesPAI from "App/Models/PAICoResponsibles";
 import { ICoResponsible, 
          IIndicatorsPAI, 
+         IIndicatorsPAITemp, 
          IProducts, 
          IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
@@ -41,11 +42,11 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
       return res || null;
     }
     async createIndicator(
-      indicators: IIndicatorsPAI[],
+      indicators: IIndicatorsPAITemp[],
       idPAI: number, 
       trx: TransactionClientContract
-    ): Promise<IIndicatorsPAI[]> {
-        const indicatorsCreate: IIndicatorsPAI[] = [];
+    ): Promise<IIndicatorsPAITemp[]> {
+        const indicatorsCreate: IIndicatorsPAITemp[] = [];
         let products: IProducts[] | [];
         let responsibles: IResponsible[] | [];
         let coresponsibles: ICoResponsible[] | [];
@@ -79,7 +80,7 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
             coresponsibles = await this.createCoResponsible(indicator?.coresponsibles,toCreate.id,trx);
           }
           indicatorsCreate.push({ 
-            ...toCreate.serialize() as IIndicatorsPAI,
+            ...toCreate.serialize() as IIndicatorsPAITemp,
             products: products!,
             responsibles: responsibles!,
             coresponsibles: coresponsibles!,
