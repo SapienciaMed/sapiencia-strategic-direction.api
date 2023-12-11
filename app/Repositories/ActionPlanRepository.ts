@@ -3,6 +3,8 @@ import ActionPlan from "../Models/ActionPlan";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
+import IndicatorsPAI from "App/Models/PAIIndicators";
+import { ICoResponsible, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -88,24 +90,33 @@ export default class PlanActionRepository implements IPlanActionRepository {
         totalPlannedGoal: indicator.totalPlannedGoal,
       });
     };
-
-    const createProducts = async (parentIndicator, products) => {
+    
+    const createProducts = async (
+      parentIndicator: IndicatorsPAI, 
+      products: IProducts[]
+    ) => {
       for (const product of products) {
         await parentIndicator.related("products").create({
           product: product.product,
         });
       }
     };
-
-    const createResponsibles = async (parentIndicator, responsibles) => {
+    
+    const createResponsibles = async (
+      parentIndicator: IndicatorsPAI, 
+      responsibles: IResponsible[]
+    ) => {
       for (const responsible of responsibles) {
         await parentIndicator.related("responsibles").create({
           responsible: responsible.responsible,
         });
       }
     };
-
-    const createCoresponsibles = async (parentIndicator, coresponsibles) => {
+    
+    const createCoresponsibles = async (
+      parentIndicator: IndicatorsPAI, 
+      coresponsibles: ICoResponsible[]
+    ) => {
       for (const coresponsible of coresponsibles) {
         await parentIndicator.related("coresponsibles").create({
           coresponsible: coresponsible.coresponsible,
