@@ -17,5 +17,4 @@ export interface IPlanActionRepository {
   getPAIById(
     id: number
   ): Promise<ICreatePlanAction | null>;
-  getAllPAI(): Promise<ICreatePlanAction[] | null>;
 }
