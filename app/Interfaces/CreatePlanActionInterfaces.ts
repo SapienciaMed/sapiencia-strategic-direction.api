@@ -18,7 +18,7 @@ export interface ICreatePlanAction {
   version?: string | null;
   status: number;
   user: string;
-  revision?: IRevisionPAI;
+  revision?: IRevisionPAI[];
 }
 
 export interface IAddAction {
