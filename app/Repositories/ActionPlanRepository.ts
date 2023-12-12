@@ -1,11 +1,16 @@
 import { ICreatePlanAction } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "../Models/ActionPlan";
+
+import ActionPlanStates from "../Models/ActionPlanStates"
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
 import IndicatorsPAI from "App/Models/PAIIndicators";
 import { ICoResponsible, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 import ActionPAI from "App/Models/ActionPAI";
+import { IPagingData } from "App/Utils/ApiResponses";
+import { IActionPlanFilters, IActionPlanFiltersPaginated } from "App/Interfaces/ActionPlanInterface";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -237,5 +242,67 @@ export default class PlanActionRepository implements IPlanActionRepository {
       });
     })
     return res && res.serialize() as ICreatePlanAction || null;
+  }
+
+  async getAllStatus(): Promise<MasterTable[]> {
+    const res = await ActionPlanStates.query().orderBy('PAI_ORDEN', 'asc');
+    return res.map((i) => i.serialize() as MasterTable);
+  }
+
+  async getActionPlanPaginated(filters: IActionPlanFiltersPaginated): Promise<IPagingData<ICreatePlanAction>> {
+    const query = ActionPlan.query()
+      .where(
+        "PAI_VERSION",
+        "=",
+        ActionPlan.query()
+          .max('PAI_VERSION')
+          .from("PAI_PLAN_ACCION_INSTITUCIONAL as p2")
+          .whereRaw('p2.PAI_CODIGO = PAI_PLAN_ACCION_INSTITUCIONAL.PAI_CODIGO')
+          .groupBy("PAI_CODIGO")
+      )
+      .distinct()
+      .orderBy('PAI_CODIGO', 'asc')
+      .orderBy('PAI_ESTADO_PLAN', 'asc')
+      .orderBy('PAI_FECHA_CREO', 'desc');
+
+    if (filters.yearPAI) {
+      query.where("yearPAI", filters.yearPAI);
+    }
+
+    if (filters.namePAI) {
+      query.where("namePAI", filters.namePAI);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+
+    const res = await query.paginate(filters.page, filters.perPage);
+
+    const { data, meta } = res.serialize();
+
+    return {
+      array: data as ICreatePlanAction[],
+      meta,
+    };
+  }
+
+  async getActionPlanByFilters(filters: IActionPlanFilters): Promise<ICreatePlanAction[]> {
+    const query = ActionPlan.query();
+
+    if (filters.codeList) {
+      query.whereIn("bpin", filters.codeList);
+    }
+
+    if (filters.idList) {
+      query.whereIn("id", filters.idList);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+    const res = await query;
+
+    return res.map((i) => i.serialize() as ICreatePlanAction);
   }
 }

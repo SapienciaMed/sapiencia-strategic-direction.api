@@ -20,7 +20,7 @@ export default class CoreService {
   constructor() {
     this.axiosInstance = axios.create({
       baseURL: process.env.URL_API_CORE,
-      timeout: 7000,
+      timeout: 20000,
     });
   }
 

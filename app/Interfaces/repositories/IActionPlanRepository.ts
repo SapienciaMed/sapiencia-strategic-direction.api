@@ -2,6 +2,9 @@ import {
   ICreatePlanAction
 } from "App/Interfaces/CreatePlanActionInterfaces";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
+import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
+import { IPagingData } from "App/Utils/ApiResponses";
+import { IActionPlanFilters, IActionPlanFiltersPaginated } from "../ActionPlanInterface";
 
 
 export interface IPlanActionRepository {
@@ -17,4 +20,7 @@ export interface IPlanActionRepository {
   getPAIById(
     id: number
   ): Promise<ICreatePlanAction | null>;
+  getAllStatus(): Promise<MasterTable[]>;
+  getActionPlanByFilters(filters: IActionPlanFilters): Promise<ICreatePlanAction[]>;
+  getActionPlanPaginated(filters: IActionPlanFiltersPaginated): Promise<IPagingData<ICreatePlanAction>>;
 }

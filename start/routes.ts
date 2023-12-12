@@ -159,6 +159,8 @@ Route.group(() => {
   Route.get("/get-by-id/:id", "ActionPlanController.getPAIById");
   Route.post("/revision/create", "ActionPlanController.createRevisionPAI");
   Route.put("/revision/update/:id", "ActionPlanController.updateRevisionPAI");
+  Route.get("/status/get-all", "ActionPlanController.getAllStatus");
+  Route.post("/get-pai-paginated", "ActionPlanController.getActionPlanPaginated");
 })
 .prefix("/api/v1/pai")
 //.middleware("auth");
