@@ -61,12 +61,6 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
             toCreate.indicatorDesc = indicator.indicatorDesc || "";
           }
           toCreate.indicatorType = indicator.indicatorType;
-          toCreate.firstBimester = indicator.bimesters.at(0)?.value || 0;
-          toCreate.secondBimester = indicator.bimesters.at(1)?.value || 0;
-          toCreate.thirdBimester = indicator.bimesters.at(2)?.value || 0;
-          toCreate.fourthBimester = indicator.bimesters.at(3)?.value || 0;
-          toCreate.fifthBimester = indicator.bimesters.at(4)?.value || 0;
-          toCreate.sixthBimester = indicator.bimesters.at(5)?.value || 0;
           toCreate.totalPlannedGoal = indicator.totalPlannedGoal;
           toCreate.useTransaction(trx);
           await toCreate.save();

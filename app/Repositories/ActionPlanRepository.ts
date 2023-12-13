@@ -6,11 +6,12 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
 import IndicatorsPAI from "App/Models/PAIIndicators";
-import { ICoResponsible, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { IBimester, ICoResponsible, IDisaggregate, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 import ActionPAI from "App/Models/ActionPAI";
 import { IPagingData } from "App/Utils/ApiResponses";
 import { IActionPlanFilters, IActionPlanFiltersPaginated } from "App/Interfaces/ActionPlanInterface";
+import BimestersPAI from "App/Models/PAIBimesters";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -90,16 +91,39 @@ export default class PlanActionRepository implements IPlanActionRepository {
         projectIndicator: indicator.projectIndicator,
         indicatorType: indicator.indicatorType,
         indicatorDesc: indicator.indicatorDesc,
-        firstBimester: indicator.bimesters.at(0)?.value,
-        secondBimester: indicator.bimesters.at(1)?.value,
-        thirdBimester: indicator.bimesters.at(2)?.value,
-        fourthBimester: indicator.bimesters.at(3)?.value,
-        fifthBimester: indicator.bimesters.at(4)?.value,
-        sixthBimester: indicator.bimesters.at(5)?.value,
         totalPlannedGoal: indicator.totalPlannedGoal,
       });
     };
+
+    const createBimesters = async (
+      parentIndicator: IndicatorsPAI, 
+      bimesters: IBimester[]
+    ) => {
+      for (const bimester of bimesters) {
+        const createBimester = await parentIndicator.related("bimesters").create({
+          bimester: bimester.bimester,
+          value: bimester.value,
+          showDisaggregate: bimester.showDisaggregate,
+          sumOfPercentage: bimester.sumOfPercentage
+        });
+
+        const disaggregate = bimester.disaggregate;
+        if(disaggregate) await createDisaggregate(createBimester,disaggregate);
+      }
+    };
     
+    const createDisaggregate = async (
+      parentBimester: BimestersPAI, 
+      disaggregates: IDisaggregate[]
+    ) => {
+      for (const disaggregate of disaggregates) {
+        await parentBimester.related("disaggregate").create({
+          percentage: disaggregate.percentage,
+          description: disaggregate.description
+        });
+      }
+    };
+
     const createProducts = async (
       parentIndicator: IndicatorsPAI, 
       products: IProducts[]
@@ -151,7 +175,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
             const products = indicator.products;
             const responsibles = indicator.responsibles;
             const coresponsibles = indicator.coresponsibles;
+            const bimesters = indicator.bimesters;
 
+            if(bimesters) await createBimesters(createdIndicator,bimesters);
             if (products) await createProducts(createdIndicator, products);
             if (responsibles) await createResponsibles(createdIndicator, responsibles);
             if (coresponsibles) await createCoresponsibles(createdIndicator, coresponsibles);
@@ -239,6 +265,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
         indicatorsQuery.preload("products");
         indicatorsQuery.preload("responsibles");
         indicatorsQuery.preload("coresponsibles");
+        indicatorsQuery.preload("bimesters",(bimestersQuery)=>{
+          bimestersQuery.preload("disaggregate")
+        });
       });
     })
     return res && res.serialize() as ICreatePlanAction || null;
