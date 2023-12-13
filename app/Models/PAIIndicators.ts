@@ -2,6 +2,7 @@ import { BaseModel, BelongsTo, belongsTo, HasMany, hasMany, column } from "@ioc:
 import ProductsPAI from "./PAIProducts";
 import ResponsiblesPAI from "./PAIResponsibles";
 import CoResponsiblesPAI from "./PAICoResponsibles";
+import BimestersPAI from "./PAIBimesters";
 import ActionPAI from "./ActionPAI";
 export default class IndicatorsPAI extends BaseModel {
     public static table = "IDP_INDICADORES";
@@ -18,29 +19,17 @@ export default class IndicatorsPAI extends BaseModel {
     @column({ columnName: "IDP_DESCRIPCION_INDICADOR", serializeAs: "indicatorDesc" })
     public indicatorDesc: string;
 
-    @column({ columnName: "IDP_PRIMER_BIMESTRE", serializeAs: "firstBimester" })
-    public firstBimester: number;
-
-    @column({ columnName: "IDP_SEGUNDO_BIMESTRE", serializeAs: "secondBimester" })
-    public secondBimester: number;
-
-    @column({ columnName: "IDP_TERCER_BIMESTRE", serializeAs: "thirdBimester" })
-    public thirdBimester: number;
-
-    @column({ columnName: "IDP_CUARTO_BIMESTRE", serializeAs: "fourthBimester" })
-    public fourthBimester: number;
-
-    @column({ columnName: "IDP_QUINTO_BIMESTRE", serializeAs: "fifthBimester" })
-    public fifthBimester: number;
-
-    @column({ columnName: "IDP_SEXTO_BIMESTRE", serializeAs: "sixthBimester" })
-    public sixthBimester: number;
-
     @column({ columnName: "IDP_META_TOTAL", serializeAs: "totalPlannedGoal" })
     public totalPlannedGoal: number;
 
     @column({ columnName: "IDP_CODACC_PAI", serializeAs: "actionId" })
     public actionId: number;
+
+    @hasMany(() => BimestersPAI, {
+        localKey: 'id',
+        foreignKey: 'idIndicatorPAI',
+    })
+    public bimesters: HasMany<typeof BimestersPAI>;
 
     @hasMany(() => ProductsPAI, {
         localKey: 'id',
@@ -59,6 +48,7 @@ export default class IndicatorsPAI extends BaseModel {
         foreignKey: 'idIndicatorPAI',
     })
     public coresponsibles: HasMany<typeof CoResponsiblesPAI>;
+    
 
     @belongsTo(() => ActionPAI, {
         localKey: 'id',
