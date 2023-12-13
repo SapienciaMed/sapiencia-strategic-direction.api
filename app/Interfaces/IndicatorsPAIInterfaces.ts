@@ -4,12 +4,6 @@ export interface IIndicatorsPAI {
     projectIndicator?: number;
     indicatorType: number;
     indicatorDesc?: string;
-    firstBimester?: number,
-    secondBimester?: number,
-    thirdBimester?: number,
-    fourthBimester?: number,
-    fifthBimester?: number,
-    sixthBimester?: number,
     totalPlannedGoal: number;
     products: IProducts[];
     responsibles: IResponsible[];
@@ -25,14 +19,14 @@ export interface IBimester {
     bimester?: string;
     value?: number;
     disaggregate?: IDisaggregate[];
-    showDisaggregate?: boolean;
+    showDisaggregate?: number;
     sumOfPercentage?: number;
 }
 
 export interface IDisaggregate {
     id?: number;
     percentage: number,
-    description: string;
+    description?: string;
 }
 
 export interface IProducts {

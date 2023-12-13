@@ -1,8 +1,7 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'dsg_disaggregate_pais'
-
+  protected tableName = 'DSG_DESAGREGAR_PAI'
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.comment("Tabla que contiene la desagregación de cada bimestre pai");
@@ -27,7 +26,6 @@ export default class extends BaseSchema {
       .comment("descripción de desagregación");
     })
   }
-
   public async down () {
     this.schema.dropTable(this.tableName)
   }

@@ -8,7 +8,7 @@ export default class DisaggregatePAI extends BaseModel {
     public id: number;
 
     @column({ columnName: "DSG_PORCENTAJE", serializeAs: "percentage" })
-    public projectIndicator: number;
+    public percentage: number;
 
     @column({ columnName: "DSG_DESCRIPCION", serializeAs: "description" })
     public description: string;

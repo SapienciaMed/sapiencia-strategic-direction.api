@@ -21,6 +21,11 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("nombre del bimestre");
       table
+      .integer("BMP_VALOR")
+      .notNullable()
+      .defaultTo(0)
+      .comment("valor del bimestre");
+      table
       .integer("BMP_DESAGREGAR")
       .notNullable()
       .defaultTo(0)
@@ -30,9 +35,6 @@ export default class extends BaseSchema {
       .nullable()
       .defaultTo(0)
       .comment("total porcentaje de desagregación");
-      table
-      .integer("ACC_ACCION")
-      .comment("");
     })
   }
 
