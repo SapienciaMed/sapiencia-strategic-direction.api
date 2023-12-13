@@ -44,6 +44,7 @@ export default class IndicatorsController {
     }
   }
 
+  
   public async getProgramation({ response }: HttpContextContract) {
     try {
       return response.send(await IndicatorsProvider.getProgramation());
