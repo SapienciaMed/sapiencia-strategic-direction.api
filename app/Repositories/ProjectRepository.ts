@@ -54,6 +54,9 @@ export default class ProjectRepository implements IProjectRepository {
     if (filters.status) {
       query.where("status", filters.status);
     }
+    query.preload("activities");
+    query.preload("indicatorsAction");
+    query.preload("indicatorsIndicative");
     const res = await query;
 
     return res.map((i) => i.serialize() as IProject);
