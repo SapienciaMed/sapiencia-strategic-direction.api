@@ -5,7 +5,7 @@ import {
   IProjectTemp,
   IProjectFiltersPaginated,
   IFinishProjectForm,
-  IProjectFiltersHistorical
+  IProjectFiltersHistorical,
 } from "App/Interfaces/ProjectInterfaces";
 import Projects from "../Models/Projects";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -42,6 +42,17 @@ export default class ProjectRepository implements IProjectRepository {
 
   async getProjectsByFilters(filters: IProjectFilters): Promise<IProject[]> {
     const query = Projects.query();
+    query.preload("activities", (sub) => sub.preload("detailActivities"));
+    query.preload("indicatorsAction");
+    query.preload("indicatorsIndicative");
+
+    if (filters.pospreId) {
+      query.whereHas("activities", (q1) =>
+        q1.whereHas("detailActivities", (q2) =>
+          q2.where("pospre", String(filters.pospreId))
+        )
+      );
+    }
 
     if (filters.codeList) {
       query.whereIn("bpin", filters.codeList);
@@ -54,9 +65,7 @@ export default class ProjectRepository implements IProjectRepository {
     if (filters.status) {
       query.where("status", filters.status);
     }
-    query.preload("activities");
-    query.preload("indicatorsAction");
-    query.preload("indicatorsIndicative");
+
     const res = await query;
 
     return res.map((i) => i.serialize() as IProject);
@@ -89,13 +98,15 @@ export default class ProjectRepository implements IProjectRepository {
     query.preload("indicatorsIndicative");
     query.preload("logicFrame");
     const resQuery = await query;
-    resQuery.forEach(res => {
+    resQuery.forEach((res) => {
       if (res?.goal) {
         res.goal = Number(res.goal);
       }
       if (res?.specificObjectives) {
         res.specificObjectives.forEach((obj, index) => {
-          const objetive = res.causes.find((cause) => cause.id === obj.objetive);
+          const objetive = res.causes.find(
+            (cause) => cause.id === obj.objetive
+          );
           if (objetive) {
             res.specificObjectives[index].objetive = objetive;
           }
@@ -111,8 +122,8 @@ export default class ProjectRepository implements IProjectRepository {
           }
         });
       }
-    })
-    return resQuery[0] ? resQuery[0].serialize() as IProject : null;
+    });
+    return resQuery[0] ? (resQuery[0].serialize() as IProject) : null;
   }
 
   async getProjectById(id: number): Promise<IProject | null> {
@@ -142,13 +153,15 @@ export default class ProjectRepository implements IProjectRepository {
     query.preload("indicatorsIndicative");
     query.preload("logicFrame");
     const resQuery = await query;
-    resQuery.forEach(res => {
+    resQuery.forEach((res) => {
       if (res?.goal) {
         res.goal = Number(res.goal);
       }
       if (res?.specificObjectives) {
         res.specificObjectives.forEach((obj, index) => {
-          const objetive = res.causes.find((cause) => cause.id === obj.objetive);
+          const objetive = res.causes.find(
+            (cause) => cause.id === obj.objetive
+          );
           if (objetive) {
             res.specificObjectives[index].objetive = objetive;
           }
@@ -164,8 +177,8 @@ export default class ProjectRepository implements IProjectRepository {
           }
         });
       }
-    })
-    return resQuery[0] ? resQuery[0].serialize() as IProject : null;
+    });
+    return resQuery[0] ? (resQuery[0].serialize() as IProject) : null;
   }
 
   async createProject(
@@ -178,13 +191,22 @@ export default class ProjectRepository implements IProjectRepository {
     const query = Projects.query();
 
     if (project.register?.bpin) {
-      const existingProject = await query.where("bpin", project.register?.bpin)
-        .orderBy('PRY_VERSION', 'desc')
+      const existingProject = await query
+        .where("bpin", project.register?.bpin)
+        .orderBy("PRY_VERSION", "desc")
         .limit(1);
-      if (existingProject && existingProject.length > 0 && (project?.status !== 2 && project?.status !== 3)) {
+      if (
+        existingProject &&
+        existingProject.length > 0 &&
+        project?.status !== 2 &&
+        project?.status !== 3
+      ) {
         throw new Error("Ya existe un proyecto con este BPIN.");
       }
-      const updatedVersion: string = project.status === 2 ? "1.0" : this.updateProjectVersion(existingProject[0]?.version);
+      const updatedVersion: string =
+        project.status === 2
+          ? "1.0"
+          : this.updateProjectVersion(existingProject[0]?.version);
       toCreate.dateModify = DateTime.local().toJSDate();
       toCreate.version = updatedVersion;
       toCreate.bpin = project.register.bpin;
@@ -348,9 +370,13 @@ export default class ProjectRepository implements IProjectRepository {
 
     const query = Projects.query();
 
-    if (project.register?.bpin && toUpdate.$attributes.bpin != project.register?.bpin) {
+    if (
+      project.register?.bpin &&
+      toUpdate.$attributes.bpin != project.register?.bpin
+    ) {
       const existingProject = await query.where("bpin", project.register?.bpin);
-      if (existingProject) throw new Error("Ya existe un proyecto con este BPIN.");
+      if (existingProject)
+        throw new Error("Ya existe un proyecto con este BPIN.");
       toUpdate.bpin = project.register.bpin;
     }
 
@@ -503,9 +529,11 @@ export default class ProjectRepository implements IProjectRepository {
     toUpdate.dateModify = DateTime.local().toJSDate();
     if (project.status === 2) {
       const updatedVersion = Number(toUpdate.version.split(".")[0]);
-      toUpdate.version = `${updatedVersion+1}.0`;
+      toUpdate.version = `${updatedVersion + 1}.0`;
     } else {
-      const updatedVersion: string = this.updateProjectVersion(toUpdate.version);
+      const updatedVersion: string = this.updateProjectVersion(
+        toUpdate.version
+      );
       toUpdate.version = updatedVersion;
     }
     toUpdate.useTransaction(trx);
@@ -514,19 +542,18 @@ export default class ProjectRepository implements IProjectRepository {
     return toUpdate.serialize() as IProject;
   }
 
-
   async getAllHistorical(data: IProjectFiltersHistorical): Promise<IProject[]> {
     const query = Projects.query();
     if (data.bpin) {
-      query.where('bpin', data.bpin);
+      query.where("bpin", data.bpin);
     }
     if (data.project) {
-      query.where('project', data.project);
+      query.where("project", data.project);
     }
     if (data.validity) {
-      query.whereRaw("YEAR(PRY_FECHA_CREO) = ?", [data.validity])
+      query.whereRaw("YEAR(PRY_FECHA_CREO) = ?", [data.validity]);
     }
-    query.orderBy('PRY_VERSION', 'desc')
+    query.orderBy("PRY_VERSION", "desc");
     const res = await query;
     return res as unknown as IProject[];
   }
@@ -537,29 +564,31 @@ export default class ProjectRepository implements IProjectRepository {
         "PRY_VERSION",
         "=",
         Projects.query()
-          .max('PRY_VERSION')
+          .max("PRY_VERSION")
           .from("PRY_PROYECTOS as p2")
-          .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
+          .whereRaw("p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN")
           .groupBy("PRY_CODIGO_BPIN")
       )
       .distinct();
     return res as unknown as IProject[];
   }
 
-  async getProjectPaginated(filters: IProjectFiltersPaginated): Promise<IPagingData<IProject>> {
+  async getProjectPaginated(
+    filters: IProjectFiltersPaginated
+  ): Promise<IPagingData<IProject>> {
     const query = Projects.query()
       .where(
         "PRY_VERSION",
         "=",
         Projects.query()
-          .max('PRY_VERSION')
+          .max("PRY_VERSION")
           .from("PRY_PROYECTOS as p2")
-          .whereRaw('p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN')
+          .whereRaw("p2.PRY_CODIGO_BPIN = PRY_PROYECTOS.PRY_CODIGO_BPIN")
           .groupBy("PRY_CODIGO_BPIN")
       )
       .distinct()
-      .orderBy('PRY_ESTADO_PROYECTO', 'asc')
-      .orderBy('PRY_FECHA_CREO', 'desc');
+      .orderBy("PRY_ESTADO_PROYECTO", "asc")
+      .orderBy("PRY_FECHA_CREO", "desc");
     if (filters.bpin) {
       query.where("bpin", filters.bpin);
     }
@@ -583,14 +612,17 @@ export default class ProjectRepository implements IProjectRepository {
   }
 
   async getAllStatus(): Promise<MasterTable[]> {
-    const res = await Status.query().orderBy('PRS_ORDEN', 'asc');
+    const res = await Status.query().orderBy("PRS_ORDEN", "asc");
     return res.map((i) => i.serialize() as MasterTable);
   }
 
   private updateProjectVersion(version: string = "0.0"): string {
-    const [major, minor] = version.split('.').map(Number);
+    const [major, minor] = version.split(".").map(Number);
     const newMinor = minor + 1;
-    const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
+    const newVersion =
+      newMinor + major < 11
+        ? `${major}.${0}${newMinor}`
+        : `${major}.${newMinor}`;
     return newVersion;
   }
 
