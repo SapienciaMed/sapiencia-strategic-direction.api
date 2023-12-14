@@ -5,6 +5,7 @@ import ResponsiblesPAI from "App/Models/PAIResponsibles";
 import CoResponsiblesPAI from "App/Models/PAICoResponsibles";
 import { ICoResponsible, 
          IIndicatorsPAI, 
+         IIndicatorsPAITemp, 
          IProducts, 
          IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
 import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
@@ -41,27 +42,25 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
       return res || null;
     }
     async createIndicator(
-      indicators: IIndicatorsPAI[],
+      indicators: IIndicatorsPAITemp[],
       idPAI: number, 
       trx: TransactionClientContract
-    ): Promise<IIndicatorsPAI[]> {
-        const indicatorsCreate: IIndicatorsPAI[] = [];
+    ): Promise<IIndicatorsPAITemp[]> {
+        const indicatorsCreate: IIndicatorsPAITemp[] = [];
         let products: IProducts[] | [];
         let responsibles: IResponsible[] | [];
         let coresponsibles: ICoResponsible[] | [];
         for (let index in indicators) {
           const indicator = indicators[index];
           const toCreate = new IndicatorsPAI();
-          toCreate.idPAI = idPAI;
-          toCreate.projectIndicator = indicator.projectIndicator;
+          toCreate.actionId = idPAI;
+          if(toCreate.projectIndicator){
+            toCreate.projectIndicator = indicator.projectIndicator || 0;
+          }
+          if(toCreate.indicatorDesc){
+            toCreate.indicatorDesc = indicator.indicatorDesc || "";
+          }
           toCreate.indicatorType = indicator.indicatorType;
-          toCreate.indicatorDesc = indicator.indicatorDesc;
-          toCreate.firstBimester = indicator.bimesters.at(0)?.value || 0;
-          toCreate.secondBimester = indicator.bimesters.at(1)?.value || 0;
-          toCreate.thirdBimester = indicator.bimesters.at(2)?.value || 0;
-          toCreate.fourthBimester = indicator.bimesters.at(3)?.value || 0;
-          toCreate.fifthBimester = indicator.bimesters.at(4)?.value || 0;
-          toCreate.sixthBimester = indicator.bimesters.at(5)?.value || 0;
           toCreate.totalPlannedGoal = indicator.totalPlannedGoal;
           toCreate.useTransaction(trx);
           await toCreate.save();
@@ -75,7 +74,7 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
             coresponsibles = await this.createCoResponsible(indicator?.coresponsibles,toCreate.id,trx);
           }
           indicatorsCreate.push({ 
-            ...toCreate.serialize() as IIndicatorsPAI,
+            ...toCreate.serialize() as IIndicatorsPAITemp,
             products: products!,
             responsibles: responsibles!,
             coresponsibles: coresponsibles!,

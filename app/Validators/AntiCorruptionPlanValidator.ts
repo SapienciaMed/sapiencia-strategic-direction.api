@@ -1,7 +1,7 @@
 import { schema, CustomMessages } from "@ioc:Adonis/Core/Validator";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
-export default class SchedulesPAIValidator {
+export default class MeasurementCapacityValidator {
   constructor(protected ctx: HttpContextContract) { }
 
   /*
@@ -20,23 +20,15 @@ export default class SchedulesPAIValidator {
    *     schema.string({}, [
    *       rules.email(),
    *       rules.unique({ table: 'users', column: 'email' }),
+   *       rules.unique({ table: 'users', column: 'email' }),
    *     ])
    *    ```
    */
   public schema = schema.create({
-    data: schema.array().members(
-      schema.object().members({
-        id: schema.number.optional(),
-        idRol: schema.number(),
-        idStatus: schema.number(),
-        bimester: schema.number(),
-        startDate: schema.date({ format: "yyyy/MM/dd" }),
-        endDate: schema.date({ format: "yyyy/MM/dd" }),
-        userCreate: schema.string.optional(),
-        dateCreate: schema.date.optional(),
-        dateModified: schema.date.optional()
-      })
-    )
+    id: schema.number.optional(),
+    name: schema.string(),
+    date: schema.string.optional(),
+    status: schema.number(),
   });
 
   /**

@@ -1,8 +1,9 @@
 import { BaseModel, BelongsTo, belongsTo, HasMany, hasMany, column } from "@ioc:Adonis/Lucid/Orm";
-import PAI from "./PAI";
 import ProductsPAI from "./PAIProducts";
 import ResponsiblesPAI from "./PAIResponsibles";
 import CoResponsiblesPAI from "./PAICoResponsibles";
+import BimestersPAI from "./PAIBimesters";
+import ActionPAI from "./ActionPAI";
 export default class IndicatorsPAI extends BaseModel {
     public static table = "IDP_INDICADORES";
 
@@ -18,51 +19,40 @@ export default class IndicatorsPAI extends BaseModel {
     @column({ columnName: "IDP_DESCRIPCION_INDICADOR", serializeAs: "indicatorDesc" })
     public indicatorDesc: string;
 
-    @column({ columnName: "IDP_PRIMER_BIMESTRE", serializeAs: "firstBimester" })
-    public firstBimester: number;
-
-    @column({ columnName: "IDP_SEGUNDO_BIMESTRE", serializeAs: "secondBimester" })
-    public secondBimester: number;
-
-    @column({ columnName: "IDP_TERCER_BIMESTRE", serializeAs: "thirdBimester" })
-    public thirdBimester: number;
-
-    @column({ columnName: "IDP_CUARTO_BIMESTRE", serializeAs: "fourthBimester" })
-    public fourthBimester: number;
-
-    @column({ columnName: "IDP_QUINTO_BIMESTRE", serializeAs: "fifthBimester" })
-    public fifthBimester: number;
-
-    @column({ columnName: "IDP_SEXTO_BIMESTRE", serializeAs: "sixthBimester" })
-    public sixthBimester: number;
-
     @column({ columnName: "IDP_META_TOTAL", serializeAs: "totalPlannedGoal" })
     public totalPlannedGoal: number;
 
-    @column({ columnName: "IDP_CODPAI_PAI", serializeAs: "idPAI" })
-    public idPAI: number;
+    @column({ columnName: "IDP_CODACC_PAI", serializeAs: "actionId" })
+    public actionId: number;
+
+    @hasMany(() => BimestersPAI, {
+        localKey: 'id',
+        foreignKey: 'idIndicatorPAI',
+    })
+    public bimesters: HasMany<typeof BimestersPAI>;
 
     @hasMany(() => ProductsPAI, {
         localKey: 'id',
         foreignKey: 'idIndicatorPAI',
     })
-    public ProductsPAI: HasMany<typeof ProductsPAI>;
+    public products: HasMany<typeof ProductsPAI>;
 
     @hasMany(() => ResponsiblesPAI, {
         localKey: 'id',
         foreignKey: 'idIndicatorPAI',
     })
-    public ResponsiblesPAI: HasMany<typeof ResponsiblesPAI>;
+    public responsibles: HasMany<typeof ResponsiblesPAI>;
 
     @hasMany(() => CoResponsiblesPAI, {
         localKey: 'id',
         foreignKey: 'idIndicatorPAI',
     })
-    public CoResponsiblesPAI: HasMany<typeof CoResponsiblesPAI>;
+    public coresponsibles: HasMany<typeof CoResponsiblesPAI>;
+    
 
-    @belongsTo(() => PAI, {
+    @belongsTo(() => ActionPAI, {
         localKey: 'id',
-        foreignKey: 'idPAI',
+        foreignKey: 'actionId',
     })
-    public indicator: BelongsTo<typeof PAI>;
+    public actionPAI: BelongsTo<typeof ActionPAI>;
 }

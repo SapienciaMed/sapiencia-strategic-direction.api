@@ -1,30 +1,26 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'RFI_REVISION_CAMPOS'
+  protected tableName = 'EPA_ESTADOS_PLAN_ANTICORRUPCION'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
-      table.comment("Tabla maestra que contiene los campos para la revision del PAI");
-      table.increments("RFI_CODIGO")
+      table.comment("Tabla maestra que describe  el estado del plan anticorrupción");
+      table.increments("EPA_CODIGO")
       .primary()
       .comment("Llave primaria");
       table
-      .text("RFI_DESCRIPCION")
+      .string("EPA_DESCRIPCION",50)
       .notNullable()
-      .comment("Campos");
+      .comment("Descripcion del estado del plan anticorrupción");
       table
-      .boolean("RFI_ACTIVO")
+      .boolean("EPA_ACTIVO")
       .notNullable()
       .comment("booleano con posibles valores True o False.");
       table
-      .integer("RFI_ORDEN")
+      .integer("EPA_ORDEN")
       .notNullable()
       .comment("Valor que indica el orden");
-      table
-      .integer("RFI_TIPO")
-      .notNullable()
-      .comment('Tipo "1" para campos generales, tipo "2" para campos de acciones/indicadores.');
     })
   }
 

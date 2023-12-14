@@ -13,6 +13,8 @@ export default class AppProvider {
     const MeasurementCapacityService = await import("App/Services/MeasurementCapacityService");
     const ImpactLevelService = await import("App/Services/ImpactLevelService");
     const ImpactTypeService = await import("App/Services/ImpactTypeService");
+    const AntiCorruptionPlanStatusService = await import("App/Services/AntiCorruptionPlanStatusService");
+    const AntiCorruptionPlanService = await import("App/Services/AntiCorruptionPlanService");
     const ImpactRatingService = await import("App/Services/ImpactRatingService");
     const EntitiesService = await import("App/Services/EntitiesService");
     const ComponentsService = await import("App/Services/ComponentsService");
@@ -57,13 +59,21 @@ export default class AppProvider {
     const ActorsRepository = await import(
       "App/Repositories/ActorsRepository"
     );
-    
+
     const MeasurementCapacityRepository = await import(
       "App/Repositories/MeasurementCapacityRepository"
     );
 
     const ImpactLevelRepository = await import(
       "App/Repositories/ImpactLevelRepository"
+    );
+
+    const AntiCorruptionPlanStatusRepository = await import(
+      "App/Repositories/AntiCorruptionPlanStatusRepository"
+    );
+
+    const AntiCorruptionPlanRepository = await import(
+      "App/Repositories/AntiCorruptionPlanRepository"
     );
 
     const ImpactTypeRepository = await import(
@@ -129,7 +139,11 @@ export default class AppProvider {
     const IndicatorsPAIRepository = await import(
       "App/Repositories/IndicatorsPAIRepository"
     );
-    
+
+    const RevisionPAIRepository = await import(
+      "App/Repositories/RevisionPAIRepository"
+    );
+
     /**************************************************************************/
     /******************************** CORE  ***********************************/
     /**************************************************************************/
@@ -138,11 +152,11 @@ export default class AppProvider {
       "core.ActivityProvider",
       () => new ActivityService.default(
         new ActivitiesRepository.default(),
-    
+
       )
     );
 
-    
+
     this.app.container.singleton(
       "core.ProjectProvider",
       () => new ProjectService.default(
@@ -167,6 +181,7 @@ export default class AppProvider {
       "core.ActionPlanProvider",
       () => new ActionPlanService.default(
         new ActionPlanRepository.default(),
+        new RevisionPAIRepository.default(),
       )
     );
 
@@ -188,6 +203,20 @@ export default class AppProvider {
       "core.ImpactTypeProvider",
       () => new ImpactTypeService.default(
         new ImpactTypeRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.AntiCorruptionPlanStatusProvider",
+      () => new AntiCorruptionPlanStatusService.default(
+        new AntiCorruptionPlanStatusRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.AntiCorruptionPlanProvider",
+      () => new AntiCorruptionPlanService.default(
+        new AntiCorruptionPlanRepository.default(),
       ),
     );
 
@@ -249,7 +278,7 @@ export default class AppProvider {
     );
   }
 
-  
+
 
   public async boot() {
     // IoC container is ready

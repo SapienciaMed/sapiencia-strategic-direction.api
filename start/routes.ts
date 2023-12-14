@@ -46,13 +46,6 @@ Route.group(() => {
 
 
 Route.group(() => {
-  Route.post("/create", "ActionPlanController.createPAI");
-  Route.put("/update/:id", "ActionPlanController.updatePAI");
-})
-.prefix("/api/v1/pai")
-.middleware("auth");
-
-Route.group(() => {
   Route.get("/generate-pdf/:id/generate-pdf-register-project", "GeneratePdfController.generatePdf");
   Route.get("/generate-pdf-consolidate/:id/generate-pdf-consolidate", "GeneratePdfController.CreatePdfConsolidate");
   Route.get("/generate-pdf-historic/:id/:oldId/generate-pdf-historic", "GeneratePdfController.CreatePdfHistoric");
@@ -103,6 +96,25 @@ Route.group(() => {
   Route.put("/update/:id", "ImpactLevelController.updateImpactLevel");
 })
 .prefix("/api/v1/impact-level")
+.middleware("auth");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanStatusController.getAntiCorruptionPlanStatusById");
+  Route.get("/", "AntiCorruptionPlanStatusController.getAntiCorruptionPlanStatus");
+  Route.post("/create", "AntiCorruptionPlanStatusController.createAntiCorruptionPlanStatus");
+  Route.put("/update/:id", "AntiCorruptionPlanStatusController.updateAntiCorruptionPlanStatus");
+})
+.prefix("/api/v1/anti-corruption-plan-status")
+.middleware("auth");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanController.getAntiCorruptionPlanById");
+  Route.get("/get-by-status/:status", "AntiCorruptionPlanController.getAntiCorruptionPlanByStatus");
+  Route.get("/", "AntiCorruptionPlanController.getAntiCorruptionPlan");
+  Route.post("/create", "AntiCorruptionPlanController.createAntiCorruptionPlan");
+  Route.put("/update/:id", "AntiCorruptionPlanController.updateAntiCorruptionPlan");
+})
+.prefix("/api/v1/anti-corruption-plan")
 .middleware("auth");
 
 Route.group(() => {
@@ -157,6 +169,18 @@ Route.group(() => {
 })
 .prefix("/api/v1/indicators")
 .middleware("auth");
+
+Route.group(() => {
+  Route.post("/create", "ActionPlanController.createPAI");
+  Route.put("/update/:id", "ActionPlanController.updatePAI");
+  Route.get("/get-by-id/:id", "ActionPlanController.getPAIById");
+  Route.post("/revision/create", "ActionPlanController.createRevisionPAI");
+  Route.put("/revision/update/:id", "ActionPlanController.updateRevisionPAI");
+  Route.get("/status/get-all", "ActionPlanController.getAllStatus");
+  Route.post("/get-pai-paginated", "ActionPlanController.getActionPlanPaginated");
+})
+.prefix("/api/v1/pai")
+//.middleware("auth");
 
 Route.group(() => {
   Route.get("get-all", "SchedulesPAIController.getSchedulesPAI");
