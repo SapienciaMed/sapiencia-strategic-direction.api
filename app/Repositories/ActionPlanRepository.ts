@@ -290,8 +290,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
           .groupBy("PAI_CODIGO")
       )
       .distinct()
-      .orderBy('PAI_CODIGO', 'asc')
-      .orderBy('PAI_ESTADO_PLAN', 'asc')
+      //.orderBy('PAI_ESTADO_PLAN', 'asc')
       .orderBy('PAI_FECHA_CREO', 'desc');
 
     if (filters.yearPAI) {
