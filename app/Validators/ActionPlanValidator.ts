@@ -29,7 +29,6 @@ export default class ActionPlanValidator {
     actionsPAi: schema.array().members(
       schema.object().members({
         id: schema.number.optional(),
-        action: schema.number.optional(),
         description: schema.string(),
         indicators: schema.array.optional().members(
           schema.object().members({

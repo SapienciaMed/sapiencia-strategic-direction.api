@@ -2,7 +2,6 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IRevisionPAI } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "App/Models/ActionPlan";
 import RevisionPAI from "App/Models/RevisionPAI";
-
 export interface IRevisionPAIRepository {
     createRevisionPAI(revision: IRevisionPAI, trx: TransactionClientContract): Promise<IRevisionPAI>;
     updateRevisionPAI(id: number, revision: IRevisionPAI, trx: TransactionClientContract): Promise<IRevisionPAI | null>;
@@ -16,9 +15,15 @@ export default class RevisionPAIRepository implements IRevisionPAIRepository {
         toCreate.fill({ ...revision });
         toCreate.useTransaction(trx);
         if(revision.completed) {
-            if(revision.json !== null && revision.json !== undefined && revision.json !== "" && revision.json !== "{}") {
-                pai.status = 3;
-            } else {
+            if(revision.version === 1) {
+                if(revision.json !== null && revision.json !== undefined && revision.json !== "" && revision.json !== "{}") {
+                    pai.status = 3;
+                } else {
+                    pai.status = 5;
+                }
+            } else if (revision.version === 2) {
+                pai.status = 4;
+            }  else if (revision.version === 3) {
                 pai.status = 5;
             }
         }
@@ -37,9 +42,15 @@ export default class RevisionPAIRepository implements IRevisionPAIRepository {
             toUpdate.completed = revision.completed;
             toUpdate.useTransaction(trx);
             if(revision.completed) {
-                if(revision.json !== null && revision.json !== undefined && revision.json !== "" && revision.json !== "{}") {
-                    pai.status = 3;
-                } else {
+                if(revision.version === 1) {
+                    if(revision.json !== null && revision.json !== undefined && revision.json !== "" && revision.json !== "{}") {
+                        pai.status = 3;
+                    } else {
+                        pai.status = 5;
+                    }
+                } else if (revision.version === 2) {
+                    pai.status = 4;
+                }  else if (revision.version === 3) {
                     pai.status = 5;
                 }
             }
