@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Año del plan de acción institucional");
       table
-      .decimal("PAI_PRESUPUESTO",10,2)
+      .decimal("PAI_PRESUPUESTO",65,2)
       .nullable()
       .comment("campo de tipo moneda, presupuesto ");
       table

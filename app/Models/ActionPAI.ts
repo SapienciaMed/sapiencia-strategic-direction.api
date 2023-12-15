@@ -11,9 +11,6 @@ export default class ActionPAI extends BaseModel {
   @column({ columnName: "ACC_DESCRIPCION", serializeAs: "description" })
   public description: string;
 
-  @column({ columnName: "ACC_ACCION", serializeAs: "action" })
-  public action: number;
-
   @column({ columnName: "ACC_CODIGO_PAI", serializeAs: "idPai" })
   public idPai: number;
 

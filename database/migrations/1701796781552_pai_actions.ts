@@ -19,9 +19,6 @@ export default class extends BaseSchema {
       table
       .text("ACC_DESCRIPCION")
       .comment("");
-      table
-      .integer("ACC_ACCION")
-      .comment("");
     })
   }
 
