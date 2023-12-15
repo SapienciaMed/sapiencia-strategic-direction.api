@@ -163,7 +163,6 @@ export default class PlanActionRepository implements IPlanActionRepository {
       for (const action of childrensActions) {
         const createdAction = await toCreate.related("actionsPAi").create({
           description: action.description,
-          action: action.action,
           idPai: toCreate.id,
         });
 
