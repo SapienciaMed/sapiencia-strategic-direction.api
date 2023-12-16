@@ -25,30 +25,6 @@ export default class extends BaseSchema {
         .nullable()
         .comment("Descripción del indicador PAI");
         table
-        .integer("IDP_PRIMER_BIMESTRE")
-        .notNullable()
-        .comment("primer bimestre");
-        table
-        .integer("IDP_SEGUNDO_BIMESTRE")
-        .notNullable()
-        .comment("segundo bimestre");
-        table
-        .integer("IDP_TERCER_BIMESTRE")
-        .notNullable()
-        .comment("tercer bimestre");
-        table
-        .integer("IDP_CUARTO_BIMESTRE")
-        .notNullable()
-        .comment("cuarto bimestre");
-        table
-        .integer("IDP_QUINTO_BIMESTRE")
-        .notNullable()
-        .comment("quinto bimestre");
-        table
-        .integer("IDP_SEXTO_BIMESTRE")
-        .notNullable()
-        .comment("sexto bimestre");
-        table
         .integer("IDP_META_TOTAL")
         .nullable()
         .comment("Meta total planeada");

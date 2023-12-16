@@ -1060,7 +1060,7 @@ export default class GeneratePdfController {
                     </tbody>
                 </table>
 
-                <br><br>
+                <br><br><br>
 
                 <div class="section-name">
                     <div class="section-title-name">Capacidad</div> 
@@ -1129,7 +1129,7 @@ export default class GeneratePdfController {
                     `  : ""
                 }
                 
-                </br> </br>  </br> 
+                </br>
 
             <div class="section-name">
                 <div class="section-title-name">Actividades</div> 
@@ -1147,7 +1147,7 @@ export default class GeneratePdfController {
                         <div class="item">
                             <div class="prop">
                                 <span class="title">Producto MGA</span>
-                                <span>${activities.productMGA}</span>
+                                <span>${activities.productMGA}  ${activities.productDescriptionMGA}</span>
                             </div>
                             <div class="prop">
                                 <span class="title">Etapa</span>
@@ -1171,23 +1171,25 @@ export default class GeneratePdfController {
                                 <span> ${formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget + activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                             </div>
 
-                            ${activities.budgetsMGA?.map(budget => `
-                                <div class="prop">
-                                <span class="title">Vigencia</span>
-                                    <span>${budget.validity}</span>
-                                </div>
-                            
+                            <table>
+                            <thead>
+                                <tr>
+                                    <th>Vigencia</th>
+                                    <th>Año</th>
+                                    <th>Presupuesto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            ${activities.budgetsMGA?.map(budget =>`
+                                    <tr>
+                                        <td>${budget.validity}</td>
+                                        <td>${budget.year}</td>
+                                        <td>${budget.budget}</td>
+                                    </tr>
                                 `).join('')
-                    }
-                          
-
-                            ${activities.budgetsMGA?.map(budget => `
-                                <div class="prop">
-                                <span class="title">Año</span>
-                                    <span> ${budget.year}</span>
-                                </div>
-                                `).join('')
-                    }
+                        }
+                            </tbody>
+                        </table>
 
                             ${activities.detailActivities?.map(detailActivities => {
                         const currentCost = detailActivities.amount * detailActivities.unitCost;
@@ -1260,12 +1262,15 @@ export default class GeneratePdfController {
                 `).join('')
                 }
 
+                <br><br><br><br>
+                <br><br>
+
                 <div class="section-name">
                     <div class="section-title-name">Riesgos</div> 
                 </div>
 
                 <div class="table-container">
-                    <table style = "  font-size: 10px; ">
+                    <table style = "  font-size: 9.6px; ">
                         <thead>
                             <tr>
                                 <th>Nivel</th>
@@ -1687,10 +1692,10 @@ export default class GeneratePdfController {
       </html>
       `;
             // CONFIGURACION PARA AMBIENTE DE PRODUCCION DEV   
-               const browser = await puppeteer.launch({
-                   headless: "new",
+                const browser = await puppeteer.launch({
+                    headless: "new",
                    args: ["--no-sandbox"],
-                   executablePath: "/usr/bin/chromium",
+                    executablePath: "/usr/bin/chromium",
                });
 
             //const browser = await puppeteer.launch();
@@ -2154,23 +2159,28 @@ export default class GeneratePdfController {
                                 <span class="title">Presupuesto</span>
                                     <span> ${formaterNumberToCurrency(activities.budgetsMGA[0].budget + activities.budgetsMGA[1].budget + activities.budgetsMGA[2].budget + activities.budgetsMGA[3].budget + activities.budgetsMGA[4].budget)}</span>
                                 </div>
-                                ${activities.budgetsMGA?.map(budget => `
-                                    <div class="prop">
-                                    <span class="title">Vigencia</span>
-                                        <span>${budget.validity}</span>
-                                    </div>
-                                
-                                    `).join('')
-                        }
                               
 
-                                ${activities.budgetsMGA?.map(budget => `
-                                    <div class="prop">
-                                    <span class="title">Año</span>
-                                        <span> ${budget.year}</span>
-                                    </div>
+                                
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Vigencia</th>
+                                        <th>Año</th>
+                                        <th>Presupuesto</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                ${activities.budgetsMGA?.map(budget =>`
+                                        <tr>
+                                            <td>${budget.validity}</td>
+                                            <td>${budget.year}</td>
+                                            <td>${budget.budget}</td>
+                                        </tr>
                                     `).join('')
-                        }
+                            }
+                                </tbody>
+                            </table>
     
                                 ${activities.detailActivities?.map(detailActivities => {
                             const currentCost = detailActivities.amount * detailActivities.unitCost;
@@ -3124,23 +3134,26 @@ export default class GeneratePdfController {
                                         </div>
 
 
-                                        ${activities.budgetsMGA?.map(budget => `
-                                            <div class="prop">
-                                            <span class="title">Vigencia</span>
-                                                <span>${budget.validity}</span>
-                                            </div>
-                                        
+                            
+                                        <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Vigencia</th>
+                                                <th>Año</th>
+                                                <th>Presupuesto</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        ${activities.budgetsMGA?.map(budget =>`
+                                                <tr>
+                                                    <td>${budget.validity}</td>
+                                                    <td>${budget.year}</td>
+                                                    <td>${budget.budget}</td>
+                                                </tr>
                                             `).join('')
-                            }
-                                      
-
-                                        ${activities.budgetsMGA?.map(budget => `
-                                            <div class="prop">
-                                            <span class="title">Año</span>
-                                                <span> ${budget.year}</span>
-                                            </div>
-                                            `).join('')
-                            }
+                                    }
+                                        </tbody>
+                                    </table>
 
                                         ${activities.detailActivities?.map(detailActivities => {
                                 const currentCost = detailActivities.amount * detailActivities.unitCost;

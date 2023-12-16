@@ -6,6 +6,7 @@ import ActionPlanProvider from "@ioc:core.ActionPlanProvider";
 
 import ActionPlanValidator from "App/Validators/ActionPlanValidator";
 import RevisionPAIValidator from "App/Validators/RevisionPAIValidator";
+import { IActionPlanFiltersPaginated } from "App/Interfaces/ActionPlanInterface";
 
 
 
@@ -90,5 +91,39 @@ export default class ActionPlanController {
         );
       }
     });
+  }
+  public async getAllStatus({ response }: HttpContextContract) {
+    try {
+      return response.send(await ActionPlanProvider.getAllStatus());
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getActionPlanPaginated({ request, response }: HttpContextContract) {
+    try {
+      const data = request.body() as IActionPlanFiltersPaginated;
+      return response.send(await ActionPlanProvider.getActionPlanPaginated(data));
+    } catch (err) {
+      return response.badRequest(
+        new ApiResponse(null, EResponseCodes.FAIL, String(err))
+      );
+    }
+  }
+
+  public async getActionPlansByFilters({ request, response }: HttpContextContract) {
+      try {
+        const data = await request.all();
+        return response.send(
+          await ActionPlanProvider.getActionPlansByFilters(data)
+        );
+      } catch (err) {
+
+        return response.badRequest(
+          new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        );
+      }
   }
 }

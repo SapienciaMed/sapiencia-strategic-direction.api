@@ -1,11 +1,17 @@
 import { ICreatePlanAction } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "../Models/ActionPlan";
+
+import ActionPlanStates from "../Models/ActionPlanStates"
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
 import { IPlanActionRepository } from "App/Interfaces/repositories/IActionPlanRepository";
 import IndicatorsPAI from "App/Models/PAIIndicators";
-import { ICoResponsible, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { IBimester, ICoResponsible, IDisaggregate, IIndicatorsPAITemp, IProducts, IResponsible } from "App/Interfaces/IndicatorsPAIInterfaces";
+import { MasterTable } from "App/Interfaces/MasterTableInterfaces";
 import ActionPAI from "App/Models/ActionPAI";
+import { IPagingData } from "App/Utils/ApiResponses";
+import { IActionPlanFilters, IActionPlanFiltersPaginated } from "App/Interfaces/ActionPlanInterface";
+import BimestersPAI from "App/Models/PAIBimesters";
 
 
 export default class PlanActionRepository implements IPlanActionRepository {
@@ -16,7 +22,11 @@ export default class PlanActionRepository implements IPlanActionRepository {
     trx: TransactionClientContract
   ): Promise<ICreatePlanAction> {
     const toCreate = new ActionPlan();
-    toCreate.user = pai.user;
+
+    if (pai?.user) {
+      toCreate.user = pai.user;
+    }
+ 
 
     const query = ActionPlan.query();
 
@@ -85,16 +95,39 @@ export default class PlanActionRepository implements IPlanActionRepository {
         projectIndicator: indicator.projectIndicator,
         indicatorType: indicator.indicatorType,
         indicatorDesc: indicator.indicatorDesc,
-        firstBimester: indicator.bimesters.at(0)?.value,
-        secondBimester: indicator.bimesters.at(1)?.value,
-        thirdBimester: indicator.bimesters.at(2)?.value,
-        fourthBimester: indicator.bimesters.at(3)?.value,
-        fifthBimester: indicator.bimesters.at(4)?.value,
-        sixthBimester: indicator.bimesters.at(5)?.value,
         totalPlannedGoal: indicator.totalPlannedGoal,
       });
     };
+
+    const createBimesters = async (
+      parentIndicator: IndicatorsPAI, 
+      bimesters: IBimester[]
+    ) => {
+      for (const bimester of bimesters) {
+        const createBimester = await parentIndicator.related("bimesters").create({
+          bimester: bimester.bimester,
+          value: bimester.value,
+          showDisaggregate: bimester.showDisaggregate,
+          sumOfPercentage: bimester.sumOfPercentage
+        });
+
+        const disaggregate = bimester.disaggregate;
+        if(disaggregate) await createDisaggregate(createBimester,disaggregate);
+      }
+    };
     
+    const createDisaggregate = async (
+      parentBimester: BimestersPAI, 
+      disaggregates: IDisaggregate[]
+    ) => {
+      for (const disaggregate of disaggregates) {
+        await parentBimester.related("disaggregate").create({
+          percentage: disaggregate.percentage,
+          description: disaggregate.description
+        });
+      }
+    };
+
     const createProducts = async (
       parentIndicator: IndicatorsPAI, 
       products: IProducts[]
@@ -134,7 +167,6 @@ export default class PlanActionRepository implements IPlanActionRepository {
       for (const action of childrensActions) {
         const createdAction = await toCreate.related("actionsPAi").create({
           description: action.description,
-          action: action.action,
           idPai: toCreate.id,
         });
 
@@ -146,7 +178,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
             const products = indicator.products;
             const responsibles = indicator.responsibles;
             const coresponsibles = indicator.coresponsibles;
+            const bimesters = indicator.bimesters;
 
+            if(bimesters) await createBimesters(createdIndicator,bimesters);
             if (products) await createProducts(createdIndicator, products);
             if (responsibles) await createResponsibles(createdIndicator, responsibles);
             if (coresponsibles) await createCoresponsibles(createdIndicator, coresponsibles);
@@ -183,7 +217,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
       toUpdate.status = pai.status;
     }
 
-    toUpdate.user = pai.user;
+    if (pai?.user) {
+      toUpdate.user = pai.user;
+    }
     if (pai?.yearPAI) {
       toUpdate.yearPAI = pai.yearPAI;
     }
@@ -234,8 +270,72 @@ export default class PlanActionRepository implements IPlanActionRepository {
         indicatorsQuery.preload("products");
         indicatorsQuery.preload("responsibles");
         indicatorsQuery.preload("coresponsibles");
+        indicatorsQuery.preload("bimesters",(bimestersQuery)=>{
+          bimestersQuery.preload("disaggregate")
+        });
       });
     })
     return res && res.serialize() as ICreatePlanAction || null;
+  }
+
+  async getAllStatus(): Promise<MasterTable[]> {
+    const res = await ActionPlanStates.query().orderBy('PAI_ORDEN', 'asc');
+    return res.map((i) => i.serialize() as MasterTable);
+  }
+
+  async getActionPlanPaginated(filters: IActionPlanFiltersPaginated): Promise<IPagingData<ICreatePlanAction>> {
+    const query = ActionPlan.query()
+      .where(
+        "PAI_VERSION",
+        "=",
+        ActionPlan.query()
+          .max('PAI_VERSION')
+          .from("PAI_PLAN_ACCION_INSTITUCIONAL as p2")
+          .whereRaw('p2.PAI_CODIGO = PAI_PLAN_ACCION_INSTITUCIONAL.PAI_CODIGO')
+          .groupBy("PAI_CODIGO")
+      )
+      .distinct()
+      //.orderBy('PAI_ESTADO_PLAN', 'asc')
+      .orderBy('PAI_FECHA_CREO', 'desc');
+
+    if (filters.yearPAI) {
+      query.where("yearPAI", filters.yearPAI);
+    }
+
+    if (filters.namePAI) {
+      query.where("namePAI", filters.namePAI);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+
+    const res = await query.paginate(filters.page, filters.perPage);
+
+    const { data, meta } = res.serialize();
+
+    return {
+      array: data as ICreatePlanAction[],
+      meta,
+    };
+  }
+
+  async getActionPlanByFilters(filters: IActionPlanFilters): Promise<ICreatePlanAction[]> {
+    const query = ActionPlan.query();
+
+    if (filters.codeList) {
+      query.whereIn("bpin", filters.codeList);
+    }
+
+    if (filters.idList) {
+      query.whereIn("id", filters.idList);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+    const res = await query;
+
+    return res.map((i) => i.serialize() as ICreatePlanAction);
   }
 }

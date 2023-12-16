@@ -398,6 +398,7 @@ export interface IProjectFilters {
   idList?: number[];
   codeList?: string[];
   status?: boolean;
+  pospreId?: number
 }
 export interface IProjectPaginated {
   nameOrCode: string;
