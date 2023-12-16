@@ -12,18 +12,18 @@ import FinishProjectValidator from "App/Validators/FinishProjectValidator";
 
 export default class ProjectController {
 
-public async getProjectsPaginated({ request, response }: HttpContextContract) {
-    try {
-      const data = request.all();
-      return response.send(
-        await ProjectProvider.getProjectsPaginated(data as IProjectPaginated)
-      );
-    } catch (err) {
-      return response.badRequest(
-        new ApiResponse(null, EResponseCodes.FAIL, String(err))
-      );
-    }
-}
+  public async getProjectsPaginated({ request, response }: HttpContextContract) {
+      try {
+        const data = request.all();
+        return response.send(
+          await ProjectProvider.getProjectsPaginated(data as IProjectPaginated)
+        );
+      } catch (err) {
+        return response.badRequest(
+          new ApiResponse(null, EResponseCodes.FAIL, String(err))
+        );
+      }
+  }
 
   public async getProjectsByFilters({ request, response }: HttpContextContract) {
       try {

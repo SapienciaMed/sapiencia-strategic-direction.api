@@ -115,6 +115,7 @@ Route.group(() => {
   Route.get("/", "AntiCorruptionPlanController.getAntiCorruptionPlan");
   Route.post("/create", "AntiCorruptionPlanController.createAntiCorruptionPlan");
   Route.put("/update/:id", "AntiCorruptionPlanController.updateAntiCorruptionPlan");
+  Route.post("/paginated", "AntiCorruptionPlanController.getPaginated");
 })
 .prefix("/api/v1/anti-corruption-plan")
 .middleware("auth");
