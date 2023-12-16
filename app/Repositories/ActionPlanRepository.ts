@@ -22,7 +22,11 @@ export default class PlanActionRepository implements IPlanActionRepository {
     trx: TransactionClientContract
   ): Promise<ICreatePlanAction> {
     const toCreate = new ActionPlan();
-    toCreate.user = pai.user;
+
+    if (pai?.user) {
+      toCreate.user = pai.user;
+    }
+ 
 
     const query = ActionPlan.query();
 
@@ -213,7 +217,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
       toUpdate.status = pai.status;
     }
 
-    toUpdate.user = pai.user;
+    if (pai?.user) {
+      toUpdate.user = pai.user;
+    }
     if (pai?.yearPAI) {
       toUpdate.yearPAI = pai.yearPAI;
     }
