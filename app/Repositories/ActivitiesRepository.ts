@@ -17,77 +17,62 @@ export interface IActivitiesRepository {
 export default class ActivitiesRepository implements IActivitiesRepository {
     async getTotalCostsByFilters(filter: ITotalCostsFilter): Promise<number> {
         const res = await Activities.query()
-          .joinRaw(
-            `join (select ACD_ACTIVIDAD_DETALLADA.*, (ACD_COSTO_UNITARIO * ACD_CANTIDAD) as total  
+            .joinRaw(
+                `join (select ACD_ACTIVIDAD_DETALLADA.*, (ACD_COSTO_UNITARIO * ACD_CANTIDAD) as total  
                             from ACD_ACTIVIDAD_DETALLADA) as x on x.ACD_AMG_ACTIVIDAD_MGA  = AMG_CODIGO`
-          )
-          .sum("total as total")
-          .where("idProject", filter.projectId)
-          .where("AMG_VIGENCIA_MGA", filter.validityYear)
-          .where("ACD_OBJETIVO_GASTO_POSPRE", filter.pospreId);
+            )
+            .sum("total as total")
+            .where("idProject", filter.projectId)
+            .where("AMG_VIGENCIA_MGA", filter.validityYear)
+            .where("ACD_OBJETIVO_GASTO_POSPRE", filter.pospreId);
 
-         return res.length > 0 ? res[0].$extras.total || 0 : 0;
-      }
-      
-
-
+        return res.length > 0 ? res[0].$extras.total || 0 : 0;
+    }
 
     async getActivitiesByFilters(filters: IActivityFilter): Promise<IActivityMGA[]> {
-        const query = Activities.query().preload("detailActivities")
-
-        if(filters.year) {
-            query.where('validity', filters.year)
+        const query = Activities.query().preload("detailActivities");
+        if (filters.year) {
+            query.where('validity', filters.year);
         }
-
-        if(filters.projectId) {
-            query.where('idProject', filters.projectId)
+        if (filters.projectId) {
+            query.where('idProject', filters.projectId);
         }
-
-        const res = await query
-
-        return res.map(i => i.serialize() as IActivityMGA)
-
+        const res = await query;
+        return res.map(i => i.serialize() as IActivityMGA);
     }
 
     async getDetailedActivitiesPaginated(filters: IDetailedActivityPaginated): Promise<IPagingData<IDetailActivity>> {
-        const query = DetailActivities.query().preload('activity')
-
+        const query = DetailActivities.query().preload('activity');
         if (filters.detail) {
-            query.andWhere((sub)=> {
+            query.andWhere((sub) => {
                 sub.whereILike('consecutive', `%${filters.detail}%`)
                 sub.orWhereILike('detailActivity', `%${filters.detail}%`)
             });
         }
-
         const res = await query.paginate(filters.page, filters.perPage);
         const { data, meta } = res.serialize();
-
         return {
-        array: data as IDetailActivity[],
-        meta,
+            array: data as IDetailActivity[],
+            meta,
         };
     }
-    
+
     async getDetailedActivitiesByFilters(filters: IDetailedActivityFilter): Promise<IDetailActivity[]> {
         const query = DetailActivities.query().preload('activity')
-
         if (filters.detail) {
-            query.andWhere((sub)=> {
-                sub.whereILike('consecutive', `%${filters.detail}%`)
-                sub.orWhereILike('detailActivity', `%${filters.detail}%`)
+            query.andWhere((sub) => {
+                sub.whereILike('consecutive', `%${filters.detail}%`);
+                sub.orWhereILike('detailActivity', `%${filters.detail}%`);
             });
-          }
-
-        if (filters.idList) {
-          query.whereIn("id", filters.idList);
         }
-    
+        if (filters.idList) {
+            query.whereIn("id", filters.idList);
+        }
         if (filters.description) {
-          query.whereILike("detailActivity", `%${filters.description}%`);
+            query.whereILike("detailActivity", `%${filters.description}%`);
         }
         const res = await query;
-    
-        return res.map((i) => i.serialize() as IDetailActivity);   
+        return res.map((i) => i.serialize() as IDetailActivity);
     }
 
     async createActivities(activities: IActivityMGA[], causes: ICause[] | null, idProject: number, trx: TransactionClientContract): Promise<IActivityMGA[]> {
@@ -106,8 +91,8 @@ export default class ActivitiesRepository implements IActivitiesRepository {
             toCreate.activityMGA = activities[activity].activityMGA;
             toCreate.productDescriptionMGA = activities[activity].productDescriptionMGA;
             toCreate.activityDescriptionMGA = activities[activity].activityDescriptionMGA;
-            toCreate.validity = activities[activity].validity ? activities[activity]?.validity! : 0;
-            toCreate.year = activities[activity].year ? activities[activity]?.year! : 0;
+            toCreate.validity = activities[activity].validity ? Number(activities[activity]?.validity) : 0;
+            toCreate.year = activities[activity].year ? Number(activities[activity]?.year) : 0;
             toCreate.useTransaction(trx);
             await toCreate.save();
             const budgets = activities[activity].budgetsMGA;

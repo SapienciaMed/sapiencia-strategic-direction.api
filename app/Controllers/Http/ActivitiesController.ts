@@ -8,6 +8,8 @@ import ActivitiesValidator from "App/Validators/ActivitiesValidator";
 import xlsx, { ISettings } from "json-as-xlsx"
 import { IDetailedActivityPaginated } from "App/Interfaces/ProjectInterfaces";
 import { schema } from "@ioc:Adonis/Core/Validator";
+import FinancialExternalService from "App/Services/External/FinancialService";
+import CoreProvider from "@ioc:core.CoreProvider";
 
 export default class ActivityController {
   public async getTotalCostsByFilters({
@@ -76,6 +78,9 @@ export default class ActivityController {
         try {
             const stages = await StageProvider.getStages();
             const components = await ComponentsProvider.getComponents();
+            const measurementData = await CoreProvider.getParametersByGrouper("UNIDAD_MEDIDA_OBJETIVOS");
+            const financialService = new FinancialExternalService();
+            const budgets = await financialService.getAllBudgets();
             const activitiesData = (await request.validate(ActivitiesValidator)).activities;
             const content: any[] = []
             activitiesData.forEach((item, index) => {
@@ -83,7 +88,10 @@ export default class ActivityController {
                 const gruped = index > 0 ? JSON.stringify(activitiesData[index - 1].objetiveActivity) === JSON.stringify(item.objetiveActivity) : false;
                 if (item.detailActivities.length > 0) {
                     item.detailActivities.forEach((detail, index) => {
-                        const component = components.data.find(component => component.id === detail.component)
+                        const component = components.data.find(component => component.id === detail.component);
+                        const measurement = measurementData.find(measurement => Number(measurement.itemCode) === detail.measurement);
+                        const budget = budgets.data.find(budget => budget.id === detail.pospre);
+                        const cpc = budget?.productClassifications?.find(cpc => cpc.id === detail.clasificatorCPC);
                         if (index === 0) {
                             content.push({
                                 objetiveActivity: {
@@ -102,12 +110,12 @@ export default class ActivityController {
                                     consecutive: detail.consecutive,
                                     detailActivity: detail.detailActivity,
                                     component: component ? component.description : detail.component,
-                                    measurement: detail.measurement,
+                                    measurement: measurement ? measurement.itemDescription : "",
                                     amount: detail.amount,
                                     unitCost: detail.unitCost,
-                                    pospre: detail.pospre,
+                                    pospre: budget ? `${budget.number} - ${budget.description}` : "",
                                     validatorCPC: detail.validatorCPC,
-                                    clasificatorCPC: detail.clasificatorCPC,
+                                    clasificatorCPC: cpc ? `${cpc.number} - ${cpc.description}` : "",
                                     sectionValidatorCPC: detail.sectionValidatorCPC,
                                 }
                             });
@@ -170,9 +178,9 @@ export default class ActivityController {
                         { label: "Año 3", value: (row) => row.budgetsMGA.year3?.budget, format: "$#,##0.00" },
                         { label: "Año 4", value: (row) => row.budgetsMGA.year4?.budget, format: "$#,##0.00" },
                         { label: "Presupuesto", value: (row) => row.productMGA ? row.budgetsMGA.year0?.budget + row.budgetsMGA.year1?.budget + row.budgetsMGA.year2?.budget + row.budgetsMGA.year3?.budget + row.budgetsMGA.year4?.budget : null, format: "$#,##0.00" },
+                        { label: "Vigencia", value: (row) => row.validity },
+                        { label: "Año", value: (row) => row.year },
                         { label: "Actividad detallada", value: (row) => row.detailActivity?.consecutive ? `${row.detailActivity.consecutive}. ${row.detailActivity.detailActivity}` : null },
-                        { label: "Vigencia", value: (row) => row.detailActivity?.validity },
-                        { label: "Año", value: (row) => row.detailActivity?.year },
                         { label: "Componente", value: (row) => row.detailActivity?.component },
                         { label: "Unidad de medida", value: (row) => row.detailActivity?.measurement },
                         { label: "Cantidad", value: (row) => row.detailActivity?.amount },
