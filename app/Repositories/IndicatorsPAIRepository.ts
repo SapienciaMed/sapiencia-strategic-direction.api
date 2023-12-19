@@ -60,7 +60,10 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
           if(toCreate.indicatorDesc){
             toCreate.indicatorDesc = indicator.indicatorDesc || "";
           }
-          toCreate.indicatorType = indicator.indicatorType;
+          if(toCreate.indicatorType){
+            toCreate.indicatorType = indicator.indicatorType || 0;
+          }
+          
           toCreate.totalPlannedGoal = indicator.totalPlannedGoal;
           toCreate.useTransaction(trx);
           await toCreate.save();
