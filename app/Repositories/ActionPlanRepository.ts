@@ -249,33 +249,53 @@ export default class PlanActionRepository implements IPlanActionRepository {
     }
 
 
-    const childrens = pai.linePAI;
-    if (childrens) {
-      for (let children in childrens) {
-        const line = childrens[children];
-        await toUpdate.related("linePAI").updateOrCreate(
-          { line: line.line },
-          {
-            line: line.line,
-            idPai: toUpdate.id,
-          }
-        );
+    const childrensLines = pai.linePAI;
+    if (childrensLines) {
+      // Obtener IDs de las líneas existentes
+      const existingLines = await toUpdate.related("linePAI").query().select("id");
+    
+      // Pluck para obtener un array de IDs
+      const existingLineIds = existingLines.map((line) => line.id);
+    
+      // Eliminar las líneas existentes
+      await toUpdate.related("linePAI").query().whereIn("id", existingLineIds).delete();
+    
+      // Crear o actualizar las líneas
+      for (let children in childrensLines) {
+        const line = childrensLines[children];
+    
+        // Crear una nueva línea
+        await toUpdate.related("linePAI").create({
+          line: line.line,
+          idPai: toUpdate.id,
+        });
       }
     }
 
     const childrensRisks = pai.risksPAI;
     if (childrensRisks) {
+      // Obtener IDs de los riesgos existentes
+      const existingRisks = await toUpdate.related("risksPAI").query().select("id");
+    
+      // Pluck para obtener un array de IDs
+      const existingRiskIds = existingRisks.map((risk) => risk.id);
+    
+      // Eliminar los riesgos existentes
+      await toUpdate.related("risksPAI").query().whereIn("id", existingRiskIds).delete();
+    
+      // Crear o actualizar los riesgos
       for (let children in childrensRisks) {
         const risk = childrensRisks[children];
-        await toUpdate.related("risksPAI").updateOrCreate(
-          { risk: risk.risk },
-          {
-            risk: risk.risk,
-            idPai: toUpdate.id,
-          }
-        );
+    
+        // Crear un nuevo riesgo
+        await toUpdate.related("risksPAI").create({
+          risk: risk.risk,
+          idPai: toUpdate.id,
+        });
       }
     }
+
+
     toUpdate.useTransaction(trx);
 
     await toUpdate.save();
