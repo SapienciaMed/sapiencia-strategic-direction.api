@@ -36,16 +36,16 @@ export default class ActionPlanValidator {
             actionId: schema.number.optional(),
             typePAI: schema.number.optional(),
             projectIndicator: schema.number.optional(),
-            indicatorType: schema.number(),
+            indicatorType: schema.number.optional(),
             indicatorDesc: schema.string.optional(),
             bimesters: schema.array().members(
               schema.object().members({
                 bimester: schema.string.optional(),
                 value: schema.number(),
-                disaggregate: schema.array.nullableAndOptional().members(
-                  schema.object.nullableAndOptional().members({
+                disaggregate: schema.array.optional().members(
+                  schema.object.optional().members({
                     id: schema.number.optional(),
-                    percentage: schema.number(),
+                    percentage: schema.number.optional(),
                     description: schema.string.optional(),
                   })
                 ),
