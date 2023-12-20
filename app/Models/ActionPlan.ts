@@ -1,10 +1,12 @@
-import { BaseModel, HasMany, column, hasMany } from "@ioc:Adonis/Lucid/Orm";
+import { BaseModel, HasMany, HasOne, column, hasMany, hasOne } from "@ioc:Adonis/Lucid/Orm";
 import RiskAsociate from "./RiskAsociatePAI";
 import { DateTime } from "luxon";
 import ArticulationEstrategicPAi from "./ArticulationEstrategicPAI";
 import ActionPlanStates from "./ActionPlanStates";
 import ActionPAI from "./ActionPAI"
 import RevisionPAI from "./RevisionPAI";
+import ProcessPAI from "./ProcessPAI";
+import ProjectPAI from "./Projects";  
 
 export default class ActionPlan extends BaseModel {
   public static table = "PAI_PLAN_ACCION_INSTITUCIONAL";
@@ -81,5 +83,19 @@ export default class ActionPlan extends BaseModel {
     foreignKey: 'idPai',
   })
   public revision: HasMany<typeof RevisionPAI>;
+
+  
+  @hasOne(() => ProcessPAI, {
+    localKey: 'namePAI',
+    foreignKey: 'id',
+  })
+  public processPai: HasOne<typeof ProcessPAI>;
+
+    
+  @hasOne(() => ProjectPAI, {
+    localKey: 'namePAI',
+    foreignKey: 'id',
+  })
+  public projectPai: HasOne<typeof ProjectPAI>;
 
 }

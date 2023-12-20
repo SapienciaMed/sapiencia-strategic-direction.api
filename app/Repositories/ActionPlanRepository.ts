@@ -1,5 +1,6 @@
 import { ICreatePlanAction } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "../Models/ActionPlan";
+import ProcessPlan from "../Models/ProcessPAI"
 
 import ActionPlanStates from "../Models/ActionPlanStates"
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
@@ -356,15 +357,26 @@ export default class PlanActionRepository implements IPlanActionRepository {
       query.where("yearPAI", filters.yearPAI);
     }
 
-    if (filters.namePAI) {
-      query.where("namePAI", filters.namePAI);
-    }
+  // // Agrega una condición para buscar en ProcessPlan usando el LDP_CODIGO
+   if (filters.namePAI) {
+        query.where(function(builder){
+          builder.where("typePAI",1).whereHas("projectPai", (projectsBuilder) => {
+            projectsBuilder.where("project", filters.namePAI ?? "");
+                });
+        }).orWhere(function(builder){
+          builder.where("typePAI",2).whereHas("processPai", (processBuilder) => {
+            processBuilder.where("description", filters.namePAI ?? "");
+                });
+        })
+   }
 
     if (filters.status) {
       query.where("status", filters.status);
     }
-
-    const res = await query.paginate(filters.page, filters.perPage);
+    console.log(query.toQuery());
+     const res = await query.paginate(filters.page, filters.perPage);
+    
+     
 
     const { data, meta } = res.serialize();
 
@@ -377,12 +389,12 @@ export default class PlanActionRepository implements IPlanActionRepository {
   async getActionPlanByFilters(filters: IActionPlanFilters): Promise<ICreatePlanAction[]> {
     const query = ActionPlan.query();
 
-    if (filters.codeList) {
-      query.whereIn("bpin", filters.codeList);
+    if (filters.namePAI) {
+      query.whereIn("namePAI", filters.namePAI);
     }
 
-    if (filters.idList) {
-      query.whereIn("id", filters.idList);
+    if (filters.yearPAI) {
+      query.whereIn("yearPAI", filters.yearPAI);
     }
 
     if (filters.status) {
