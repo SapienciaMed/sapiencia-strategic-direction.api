@@ -43,6 +43,10 @@ export default class PlanActionRepository implements IPlanActionRepository {
     const updatedVersion: string = pai.status === 5 ? "1.0" : "";
     toCreate.version = updatedVersion;
 
+    if (pai.status == 5){
+        toCreate.dateCreate = DateTime.now();
+    }
+
 
     if (pai?.yearPAI) {
       toCreate.yearPAI = pai.yearPAI;
