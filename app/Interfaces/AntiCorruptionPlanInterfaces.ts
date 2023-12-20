@@ -11,3 +11,17 @@ export interface IAntiCorruptionPlanTemp {
   date?: string,
   status: number,
 }
+
+export interface IAntiCorruptionPlanPaginated {
+  nameOrCode: string;
+  excludeIds?: number[];
+  page: number;
+  perPage: number;
+}
+
+export interface IAntiCorruptionPlanFiltersPaginated {
+  page: number;
+  perPage: number;
+  name?: string;
+  status?: number;
+}

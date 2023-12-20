@@ -27,7 +27,7 @@ export default class ActionPlanController {
     });
   }
 
-  public async updateProject({ request, response }: HttpContextContract) {
+  public async updatePAI({ request, response }: HttpContextContract) {
     await Database.transaction(async (trx) => {
       try {
         const { id } = request.params();

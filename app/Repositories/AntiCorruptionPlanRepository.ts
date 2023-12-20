@@ -1,7 +1,9 @@
-import { IAntiCorruptionPlan, IAntiCorruptionPlanTemp } from "App/Interfaces/AntiCorruptionPlanInterfaces";
+import { IAntiCorruptionPlan, IAntiCorruptionPlanTemp, IAntiCorruptionPlanFiltersPaginated } from "App/Interfaces/AntiCorruptionPlanInterfaces";
 import AntiCorruptionPlans from "../Models/AntiCorruptionPlan";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
+import { IPagingData } from "App/Utils/ApiResponses";
+import AntiCorruptionPlan from "../Models/AntiCorruptionPlan";
 
 export interface IAntiCorruptionPlanRepository {
   getAntiCorruptionPlan(): Promise<IAntiCorruptionPlan[] | null>;
@@ -9,9 +11,35 @@ export interface IAntiCorruptionPlanRepository {
   getAntiCorruptionPlanByStatus(status: number): Promise<IAntiCorruptionPlan[] | null>;
   createAntiCorruptionPlan(AntiCorruptionPlan: IAntiCorruptionPlanTemp, trx: TransactionClientContract): Promise<IAntiCorruptionPlan>;
   updateAntiCorruptionPlan(AntiCorruptionPlan: IAntiCorruptionPlanTemp, id: number, trx: TransactionClientContract): Promise<IAntiCorruptionPlan | null>;
+  getAntiCorruptionPlanPaginated(filters: IAntiCorruptionPlanFiltersPaginated): Promise<IPagingData<IAntiCorruptionPlan>>;
 }
 
 export default class AntiCorruptionPlanRepository implements IAntiCorruptionPlanRepository {
+
+  async getAntiCorruptionPlanPaginated(filters: IAntiCorruptionPlanFiltersPaginated): Promise<IPagingData<IAntiCorruptionPlan>> {
+    const query = AntiCorruptionPlan.query()
+      .distinct()
+      .orderBy('PAC_STATUS', 'asc')
+      .orderBy('PAC_FECHA', 'desc');
+
+    if (filters.name) {
+      query.where("name", filters.name);
+    }
+
+    if (filters.status) {
+      query.where("status", filters.status);
+    }
+
+    const res = await query.paginate(filters.page, filters.perPage);
+
+    const { data, meta } = res.serialize();
+
+    return {
+      array: data as IAntiCorruptionPlan[],
+      meta,
+    };
+
+  }
 
   async getAntiCorruptionPlan(): Promise<IAntiCorruptionPlan[] | null> {
     const res = await AntiCorruptionPlans.query().orderBy('id', 'asc');

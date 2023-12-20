@@ -1,6 +1,6 @@
-import {IAntiCorruptionPlan, IAntiCorruptionPlanTemp } from "App/Interfaces/AntiCorruptionPlanInterfaces";
+import {IAntiCorruptionPlan, IAntiCorruptionPlanPaginated, IAntiCorruptionPlanTemp } from "App/Interfaces/AntiCorruptionPlanInterfaces";
 import { IAntiCorruptionPlanRepository } from "App/Repositories/AntiCorruptionPlanRepository";
-import { ApiResponse } from "App/Utils/ApiResponses";
+import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 
@@ -9,13 +9,19 @@ export interface IAntiCorruptionPlanService {
   getAntiCorruptionPlanByStatus(status: number): Promise<ApiResponse<IAntiCorruptionPlan[]>>;
   getAntiCorruptionPlanById(id: number): Promise<ApiResponse<IAntiCorruptionPlan>>;
   createAntiCorruptionPlan(AntiCorruptionPlan: IAntiCorruptionPlanTemp, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlan>>;
-  updateAntiCorruptionPlan(AntiCorruptionPlan: IAntiCorruptionPlanTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlan>>
+  updateAntiCorruptionPlan(AntiCorruptionPlan: IAntiCorruptionPlanTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlan>>;
+  getAntiCorruptionPlanPaginated(filters: IAntiCorruptionPlanPaginated): Promise<ApiResponse<IPagingData<IAntiCorruptionPlan>>>;
 }
 
 export default class AntiCorruptionPlanService implements IAntiCorruptionPlanService {
   constructor(
     private AntiCorruptionPlantRepository: IAntiCorruptionPlanRepository,
   ) {}
+
+  async getAntiCorruptionPlanPaginated(filters: IAntiCorruptionPlanPaginated): Promise<ApiResponse<IPagingData<IAntiCorruptionPlan>>> {
+    const res = await this.AntiCorruptionPlantRepository.getAntiCorruptionPlanPaginated(filters);
+    return new ApiResponse(res, EResponseCodes.OK)
+  }
 
   async getAntiCorruptionPlan(): Promise<ApiResponse<IAntiCorruptionPlan[]>> {
     const res = await this.AntiCorruptionPlantRepository.getAntiCorruptionPlan();

@@ -6,27 +6,27 @@ export default class ActionPlanValidator {
 
   public schema = schema.create({
       id: schema.number.optional(),
-      user: schema.string.optional(),
-      yearPAI: schema.number.optional(),
-      budgetPAI: schema.number.optional(),
-      typePAI: schema.number.optional(),
-      namePAI: schema.number.optional(),
-      objectivePAI: schema.string.optional(),
-      articulationPAI: schema.string.optional(),
-      status: schema.number.optional(),
-      linePAI: schema.array.optional().members(
+      user: schema.string(),
+      yearPAI: schema.number(),
+      budgetPAI: schema.number(),
+      typePAI: schema.number(),
+      namePAI: schema.number(),
+      objectivePAI: schema.string(),
+      articulationPAI: schema.string(),
+      status: schema.number(),
+      linePAI: schema.array().members(
       schema.object().members({
         id: schema.number.optional(),
-        line: schema.string.optional(),
+        line: schema.string(),
       })
     ),
-    risksPAI: schema.array.optional().members(
+    risksPAI: schema.array().members(
       schema.object().members({
         id: schema.number.optional(),
-        risk: schema.string.optional(),
+        risk: schema.string(),
       })
     ),
-    actionsPAi: schema.array.optional().members(
+    actionsPAi: schema.array().members(
       schema.object().members({
         id: schema.number.optional(),
         description: schema.string(),
@@ -36,16 +36,16 @@ export default class ActionPlanValidator {
             actionId: schema.number.optional(),
             typePAI: schema.number.optional(),
             projectIndicator: schema.number.optional(),
-            indicatorType: schema.number.optional(),
+            indicatorType: schema.number(),
             indicatorDesc: schema.string.optional(),
             bimesters: schema.array().members(
               schema.object().members({
                 bimester: schema.string.optional(),
                 value: schema.number(),
-                disaggregate: schema.array.optional().members(
-                  schema.object.optional().members({
+                disaggregate: schema.array.nullableAndOptional().members(
+                  schema.object.nullableAndOptional().members({
                     id: schema.number.optional(),
-                    percentage: schema.number.optional(),
+                    percentage: schema.number(),
                     description: schema.string.optional(),
                   })
                 ),

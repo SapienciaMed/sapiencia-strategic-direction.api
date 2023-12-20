@@ -16,26 +16,26 @@ export interface ICreatePlanAction {
   dateCreate?: DateTime | null;
   dateModify?: Date | null;
   version?: string | null;
-  status: number;
-  user: string;
+  status?: number;
+  user?: string;
   revision?: IRevisionPAI[];
 }
 
 export interface IAddAction {
   id?: number;
   action?: number;
-  description: string;
+  description?: string;
   indicators?: IIndicatorsPAITemp[];
 }
 
 export interface ILine {
   id?: number;
-  line: string;
+  line?: string;
 }
 
 export interface IRisks {
   id?: number;
-  risk: string;
+  risk?: string;
 }
 
 export interface IActionPlanTemp {

@@ -2,7 +2,7 @@
 export interface IIndicatorsPAI {
     id?: number;
     projectIndicator?: number;
-    indicatorType: number;
+    indicatorType?: number;
     indicatorDesc?: string;
     totalPlannedGoal: number;
     products: IProducts[];
@@ -11,7 +11,7 @@ export interface IIndicatorsPAI {
 }
 
 export interface IIndicatorsPAITemp extends IIndicatorsPAI{
-    bimesters: IBimester[];
+    bimesters?: IBimester[];
 }
 
 export interface IBimester {
@@ -25,7 +25,7 @@ export interface IBimester {
 
 export interface IDisaggregate {
     id?: number;
-    percentage: number,
+    percentage?: number,
     description?: string;
 }
 

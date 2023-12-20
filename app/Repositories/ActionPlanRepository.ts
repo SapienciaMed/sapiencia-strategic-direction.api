@@ -22,7 +22,11 @@ export default class PlanActionRepository implements IPlanActionRepository {
     trx: TransactionClientContract
   ): Promise<ICreatePlanAction> {
     const toCreate = new ActionPlan();
-    toCreate.user = pai.user;
+
+    if (pai?.user) {
+      toCreate.user = pai.user;
+    }
+ 
 
     const query = ActionPlan.query();
 
@@ -32,10 +36,10 @@ export default class PlanActionRepository implements IPlanActionRepository {
       if (existingPai && existingPai.length > 0 && (pai?.status !== 2 && pai?.status !== 3)) {
         throw new Error("Ya existe un plan de acción institucional con este id.");
       }
-      // const updatedVersion: string = pai.status === 2 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
-      // toCreate.version = updatedVersion;
-      // toCreate.dateModify = DateTime.local().toJSDate();
-      // toCreate.id = pai.id;
+       const updatedVersion: string = pai.status === 2 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
+       toCreate.version = updatedVersion;
+       toCreate.dateModify = DateTime.local().toJSDate();
+       toCreate.id = pai.id;
     }
     const updatedVersion: string = pai.status === 2 ? "1.0" : "";
     toCreate.version = updatedVersion;
@@ -213,7 +217,9 @@ export default class PlanActionRepository implements IPlanActionRepository {
       toUpdate.status = pai.status;
     }
 
-    toUpdate.user = pai.user;
+    if (pai?.user) {
+      toUpdate.user = pai.user;
+    }
     if (pai?.yearPAI) {
       toUpdate.yearPAI = pai.yearPAI;
     }
@@ -241,6 +247,35 @@ export default class PlanActionRepository implements IPlanActionRepository {
       const updatedVersion: string = this.updatePaiVersion(toUpdate.version);
       toUpdate.version = updatedVersion;
     }
+
+
+    const childrens = pai.linePAI;
+    if (childrens) {
+      for (let children in childrens) {
+        const line = childrens[children];
+        await toUpdate.related("linePAI").updateOrCreate(
+          { line: line.line },
+          {
+            line: line.line,
+            idPai: toUpdate.id,
+          }
+        );
+      }
+    }
+
+    const childrensRisks = pai.risksPAI;
+    if (childrensRisks) {
+      for (let children in childrensRisks) {
+        const risk = childrensRisks[children];
+        await toUpdate.related("risksPAI").updateOrCreate(
+          { risk: risk.risk },
+          {
+            risk: risk.risk,
+            idPai: toUpdate.id,
+          }
+        );
+      }
+    }
     toUpdate.useTransaction(trx);
 
     await toUpdate.save();
@@ -250,9 +285,14 @@ export default class PlanActionRepository implements IPlanActionRepository {
   private updatePaiVersion(version: string = "0.0"): string {
     const [major, minor] = version.split('.').map(Number);
     const newMinor = minor + 1;
-    const newVersion = newMinor + major < 11 ? `${major}.${0}${newMinor}` : `${major}.${newMinor}`;
+
+    // Verificar si newMinor es NaN y manejarlo
+    const validMinor = isNaN(newMinor) ? '' : newMinor;
+
+    // Utilizar un cero a la izquierda si es necesario
+    const newVersion = validMinor === '' ? '' : (validMinor < 10 ? `${major}.0${validMinor}` : `${major}.${validMinor}`);
     return newVersion;
-  }
+}
 
   async getPAIById(id: number): Promise<ICreatePlanAction | null> {
     const res = await ActionPlan.find(id);
