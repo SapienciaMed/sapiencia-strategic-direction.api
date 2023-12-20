@@ -1,7 +1,5 @@
 import { ICreatePlanAction } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "../Models/ActionPlan";
-import ProcessPlan from "../Models/ProcessPAI"
-
 import ActionPlanStates from "../Models/ActionPlanStates"
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
