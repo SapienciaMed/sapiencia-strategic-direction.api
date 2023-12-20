@@ -37,7 +37,6 @@ export default class ActionPlan extends BaseModel {
   public user: string;
 
   @column.dateTime({
-    autoCreate: true,
     columnName: "PAI_FECHA_CREO",
     serializeAs: "dateCreate",
   })

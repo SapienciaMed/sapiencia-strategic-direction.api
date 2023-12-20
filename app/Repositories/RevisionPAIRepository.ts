@@ -2,6 +2,7 @@ import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IRevisionPAI } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "App/Models/ActionPlan";
 import RevisionPAI from "App/Models/RevisionPAI";
+import { DateTime } from "luxon";
 export interface IRevisionPAIRepository {
     createRevisionPAI(revision: IRevisionPAI, trx: TransactionClientContract): Promise<IRevisionPAI>;
     updateRevisionPAI(id: number, revision: IRevisionPAI, trx: TransactionClientContract): Promise<IRevisionPAI | null>;
@@ -20,11 +21,13 @@ export default class RevisionPAIRepository implements IRevisionPAIRepository {
                     pai.status = 3;
                 } else {
                     pai.status = 5;
+                    pai.dateCreate =  DateTime.now();
                 }
             } else if (revision.version === 2) {
                 pai.status = 4;
             }  else if (revision.version === 3) {
                 pai.status = 5;
+                pai.dateCreate =  DateTime.now();
             }
         }
         pai.useTransaction(trx)
@@ -47,11 +50,13 @@ export default class RevisionPAIRepository implements IRevisionPAIRepository {
                         pai.status = 3;
                     } else {
                         pai.status = 5;
+                        pai.dateCreate =  DateTime.now();
                     }
                 } else if (revision.version === 2) {
                     pai.status = 4;
                 }  else if (revision.version === 3) {
                     pai.status = 5;
+                    pai.dateCreate =  DateTime.now();
                 }
             }
             pai.useTransaction(trx)
