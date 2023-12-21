@@ -34,7 +34,8 @@ export default class SchedulesPAIValidator {
         endDate: schema.date({ format: "yyyy/MM/dd" }),
         userCreate: schema.string.optional(),
         dateCreate: schema.date.optional(),
-        dateModified: schema.date.optional()
+        dateModified: schema.date.optional(),
+        delete: schema.boolean.optional()
       })
     )
   });

@@ -27,10 +27,14 @@ export default class SchedulesPAIService implements ISchedulesPAIService {
     }
 
     async crudSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<ApiResponse<ISchedulesPAI[]>> {
-        const schedulesCreating = schedules.filter(schedule => !schedule.id);
-        const schedulesUptading = schedules.filter(schedule => schedule.id);
+        const schedulesDeleting = schedules.filter(schedule => schedule.delete);
+        const schedulesCreating = schedules.filter(schedule => !schedule.id && !schedule.delete);
+        const schedulesUptading = schedules.filter(schedule => schedule.id && !schedule.delete);
         let schedulesCreated: ISchedulesPAI[] = [];
         let schedulesUpdated: ISchedulesPAI[] = [];
+        if(schedulesDeleting.length > 0) {
+            await this.schedulesPAIRepository.deleteSchedulesPAI(schedulesDeleting, trx);
+        }
         if (schedulesCreating.length > 0) {
             schedulesCreated = await this.schedulesPAIRepository.createSchedulesPAI(schedulesCreating, trx);
         }
