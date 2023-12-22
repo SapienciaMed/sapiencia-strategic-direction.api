@@ -6,10 +6,11 @@ export interface IActionPlanFiltersPaginated {
     yearPAI?: number;
     namePAI?: string;
     status?: number;
+    type?:number;
   }
 
 export interface IActionPlanFilters {
-    idList?: number[];
-    codeList?: string[];
+    yearPAI?: number[];
+    namePAI?: string[];
     status?: boolean;
   }

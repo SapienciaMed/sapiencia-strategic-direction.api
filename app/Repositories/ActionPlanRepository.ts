@@ -1,6 +1,5 @@
 import { ICreatePlanAction } from "App/Interfaces/CreatePlanActionInterfaces";
 import ActionPlan from "../Models/ActionPlan";
-
 import ActionPlanStates from "../Models/ActionPlanStates"
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { DateTime } from "luxon";
@@ -36,13 +35,17 @@ export default class PlanActionRepository implements IPlanActionRepository {
       if (existingPai && existingPai.length > 0 && (pai?.status !== 2 && pai?.status !== 3)) {
         throw new Error("Ya existe un plan de acción institucional con este id.");
       }
-       const updatedVersion: string = pai.status === 2 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
+       const updatedVersion: string = pai.status === 5 ? "1.0" : this.updatePaiVersion(existingPai[0]?.version);
        toCreate.version = updatedVersion;
        toCreate.dateModify = DateTime.local().toJSDate();
        toCreate.id = pai.id;
     }
-    const updatedVersion: string = pai.status === 2 ? "1.0" : "";
+    const updatedVersion: string = pai.status === 5 ? "1.0" : "";
     toCreate.version = updatedVersion;
+
+    if (pai.status == 5){
+        toCreate.dateCreate = DateTime.now();
+    }
 
 
     if (pai?.yearPAI) {
@@ -249,33 +252,53 @@ export default class PlanActionRepository implements IPlanActionRepository {
     }
 
 
-    const childrens = pai.linePAI;
-    if (childrens) {
-      for (let children in childrens) {
-        const line = childrens[children];
-        await toUpdate.related("linePAI").updateOrCreate(
-          { line: line.line },
-          {
-            line: line.line,
-            idPai: toUpdate.id,
-          }
-        );
+    const childrensLines = pai.linePAI;
+    if (childrensLines) {
+      // Obtener IDs de las líneas existentes
+      const existingLines = await toUpdate.related("linePAI").query().select("id");
+    
+      // Pluck para obtener un array de IDs
+      const existingLineIds = existingLines.map((line) => line.id);
+    
+      // Eliminar las líneas existentes
+      await toUpdate.related("linePAI").query().whereIn("id", existingLineIds).delete();
+    
+      // Crear o actualizar las líneas
+      for (let children in childrensLines) {
+        const line = childrensLines[children];
+    
+        // Crear una nueva línea
+        await toUpdate.related("linePAI").create({
+          line: line.line,
+          idPai: toUpdate.id,
+        });
       }
     }
 
     const childrensRisks = pai.risksPAI;
     if (childrensRisks) {
+      // Obtener IDs de los riesgos existentes
+      const existingRisks = await toUpdate.related("risksPAI").query().select("id");
+    
+      // Pluck para obtener un array de IDs
+      const existingRiskIds = existingRisks.map((risk) => risk.id);
+    
+      // Eliminar los riesgos existentes
+      await toUpdate.related("risksPAI").query().whereIn("id", existingRiskIds).delete();
+    
+      // Crear o actualizar los riesgos
       for (let children in childrensRisks) {
         const risk = childrensRisks[children];
-        await toUpdate.related("risksPAI").updateOrCreate(
-          { risk: risk.risk },
-          {
-            risk: risk.risk,
-            idPai: toUpdate.id,
-          }
-        );
+    
+        // Crear un nuevo riesgo
+        await toUpdate.related("risksPAI").create({
+          risk: risk.risk,
+          idPai: toUpdate.id,
+        });
       }
     }
+
+
     toUpdate.useTransaction(trx);
 
     await toUpdate.save();
@@ -336,15 +359,26 @@ export default class PlanActionRepository implements IPlanActionRepository {
       query.where("yearPAI", filters.yearPAI);
     }
 
-    if (filters.namePAI) {
-      query.where("namePAI", filters.namePAI);
-    }
+  // // Agrega una condición para buscar en ProcessPlan usando el LDP_CODIGO
+   if (filters.namePAI) {
+        query.where(function(builder){
+          builder.where("typePAI",1).whereHas("projectPai", (projectsBuilder) => {
+            projectsBuilder.where("project", filters.namePAI ?? "");
+                });
+        }).orWhere(function(builder){
+          builder.where("typePAI",2).whereHas("processPai", (processBuilder) => {
+            processBuilder.where("description", filters.namePAI ?? "");
+                });
+        })
+   }
 
     if (filters.status) {
       query.where("status", filters.status);
     }
-
-    const res = await query.paginate(filters.page, filters.perPage);
+    console.log(query.toQuery());
+     const res = await query.paginate(filters.page, filters.perPage);
+    
+     
 
     const { data, meta } = res.serialize();
 
@@ -357,12 +391,12 @@ export default class PlanActionRepository implements IPlanActionRepository {
   async getActionPlanByFilters(filters: IActionPlanFilters): Promise<ICreatePlanAction[]> {
     const query = ActionPlan.query();
 
-    if (filters.codeList) {
-      query.whereIn("bpin", filters.codeList);
+    if (filters.namePAI) {
+      query.whereIn("namePAI", filters.namePAI);
     }
 
-    if (filters.idList) {
-      query.whereIn("id", filters.idList);
+    if (filters.yearPAI) {
+      query.whereIn("yearPAI", filters.yearPAI);
     }
 
     if (filters.status) {

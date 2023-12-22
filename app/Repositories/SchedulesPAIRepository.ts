@@ -9,6 +9,7 @@ export interface ISchedulesPAIRepository {
     getScheduleStatuses(): Promise<IComponents[]>;
     createSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<ISchedulesPAI[]>;
     updateSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<ISchedulesPAI[]>;
+    deleteSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<boolean>;
 }
 
 export default class SchedulesPAIRepository implements ISchedulesPAIRepository {
@@ -55,5 +56,12 @@ export default class SchedulesPAIRepository implements ISchedulesPAIRepository {
             }
         }
         return schedulesUpdate;
+    }
+
+    async deleteSchedulesPAI(schedules: ISchedulesPAI[], trx: TransactionClientContract): Promise<boolean> {
+        for (let schedule in schedules){
+            await SchedulesPAI.query().where("id", Number(schedules[schedule].id)).delete().useTransaction(trx);
+        }
+        return true;
     }
 }
