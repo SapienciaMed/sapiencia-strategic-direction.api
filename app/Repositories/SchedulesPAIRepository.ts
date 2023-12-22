@@ -27,7 +27,12 @@ export default class SchedulesPAIRepository implements ISchedulesPAIRepository {
         const schedulesCreate: ISchedulesPAI[] = [];
         for (let schedule in schedules) {
             const toCreate = new SchedulesPAI();
-            toCreate.fill({ ...schedules[schedule] });
+            toCreate.idRol = schedules[schedule].idRol;
+            toCreate.idStatus = schedules[schedule].idStatus;
+            toCreate.bimester = schedules[schedule].bimester;
+            toCreate.startDate = schedules[schedule].startDate;
+            toCreate.endDate = schedules[schedule].endDate;
+            toCreate.userCreate = schedules[schedule].userCreate ?? "";
             toCreate.useTransaction(trx);
             await toCreate.save();
             schedulesCreate.push(toCreate.serialize() as ISchedulesPAI)
