@@ -15,10 +15,4 @@ export default class AntiCorruptionPlan extends BaseModel {
 
     @column({ isPrimary: true, columnName: "PAC_STATUS", serializeAs: "status" })
     public status: number;
-
-    @belongsTo(() => AntiCorruptionPlanStatus, {
-      foreignKey: "PAC_STATUS",
-      localKey: "EPA_CODIGO",
-    })
-    public anticorruption_plan_status_info: BelongsTo<typeof AntiCorruptionPlanStatus>;
 }

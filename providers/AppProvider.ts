@@ -14,6 +14,7 @@ export default class AppProvider {
     const ImpactLevelService = await import("App/Services/ImpactLevelService");
     const ImpactTypeService = await import("App/Services/ImpactTypeService");
     const AntiCorruptionPlanStatusService = await import("App/Services/AntiCorruptionPlanStatusService");
+    const AntiCorruptionPlanComponentService = await import("App/Services/AntiCorruptionPlanComponentService");
     const AntiCorruptionPlanService = await import("App/Services/AntiCorruptionPlanService");
     const ImpactRatingService = await import("App/Services/ImpactRatingService");
     const EntitiesService = await import("App/Services/EntitiesService");
@@ -70,6 +71,10 @@ export default class AppProvider {
 
     const AntiCorruptionPlanStatusRepository = await import(
       "App/Repositories/AntiCorruptionPlanStatusRepository"
+    );
+
+    const AntiCorruptionPlanComponentRepository = await import(
+      "App/Repositories/AntiCorruptionPlanComponentRepository"
     );
 
     const AntiCorruptionPlanRepository = await import(
@@ -217,6 +222,13 @@ export default class AppProvider {
       "core.AntiCorruptionPlanProvider",
       () => new AntiCorruptionPlanService.default(
         new AntiCorruptionPlanRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.AntiCorruptionPlanComponentProvider",
+      () => new AntiCorruptionPlanComponentService.default(
+        new AntiCorruptionPlanComponentRepository.default(),
       ),
     );
 

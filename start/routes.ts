@@ -121,6 +121,21 @@ Route.group(() => {
 .middleware("auth");
 
 Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanComponentController.getAntiCorruptionPlanComponentById");
+  Route.get("/get-by-plan-id/:id", "AntiCorruptionPlanComponentController.getAntiCorruptionPlanComponentByPlanId");
+  Route.get("/get-by-status/:status", "AntiCorruptionPlanComponentController.getAntiCorruptionPlanComponentByStatus");
+  Route.get("/", "AntiCorruptionPlanComponentController.getAntiCorruptionPlanComponent");
+  Route.post("/create", "AntiCorruptionPlanComponentController.createAntiCorruptionPlanComponent");
+  Route.put("/update/:id", "AntiCorruptionPlanComponentController.updateAntiCorruptionPlanComponent");
+  Route.post("/paginated", "AntiCorruptionPlanComponentController.getPaginated");
+  Route.post("/delete-all-by-ids", "AntiCorruptionPlanComponentController.deleteAllByIds");
+  Route.post("/store", "AntiCorruptionPlanComponentController.store");
+})
+.prefix("/api/v1/anti-corruption-plan-component")
+.middleware("auth");
+
+
+Route.group(() => {
   Route.get("/get-by-id/:id", "ImpactTypeController.getImpactTypeById");
   Route.get("/", "ImpactTypeController.getImpactType");
   Route.post("/create", "ImpactTypeController.createImpactType");
