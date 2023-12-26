@@ -72,8 +72,8 @@ export default class AntiCorruptionPlanComponentService implements IAntiCorrupti
   }
 
   async deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<ApiResponse<string[]>> {
-    const AntiCorruptionPlanComponenttCreate = await this.AntiCorruptionPlanComponenttRepository.deleteAllByIds(ids, trx);
-    return new ApiResponse(AntiCorruptionPlanComponenttCreate, EResponseCodes.OK);
+    await this.AntiCorruptionPlanComponenttRepository.deleteAllByIds(ids, trx);
+    return new ApiResponse(ids, EResponseCodes.OK);
   }
 
   async store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponentTemp[]>> {
