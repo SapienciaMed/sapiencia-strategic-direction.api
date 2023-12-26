@@ -9,7 +9,7 @@ export interface IAntiCorruptionPlanComponentRepository {
   getAntiCorruptionPlanComponentById(id: number): Promise<IAntiCorruptionPlanComponent | null>;
   getAntiCorruptionPlanComponentByPlanId(status: number): Promise<IAntiCorruptionPlanComponent[] | null>;
   deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<string[] | null>;
-  store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[] | null>;
+  store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]>;
   createAntiCorruptionPlanComponent(AntiCorruptionPlanComponent: IAntiCorruptionPlanComponentTemp, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponent>;
   updateAntiCorruptionPlanComponent(AntiCorruptionPlanComponent: IAntiCorruptionPlanComponentTemp, id: number, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponent | null>;
   getAntiCorruptionPlanComponentPaginated(filters: IAntiCorruptionPlanComponentFiltersPaginated): Promise<IPagingData<IAntiCorruptionPlanComponent>>;
