@@ -1,5 +1,4 @@
-import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
-import AntiCorruptionPlan from "./AntiCorruptionPlan";
+import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
 
 export default class AntiCorruptionPlanComponent extends BaseModel {
     public static table = "CPAC_COMPONENTE_PLAN_ANTICORRUPCION";

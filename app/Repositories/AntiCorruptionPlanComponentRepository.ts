@@ -1,7 +1,6 @@
 import { IAntiCorruptionPlanComponent, IAntiCorruptionPlanComponentTemp, IAntiCorruptionPlanComponentFiltersPaginated } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
 import AntiCorruptionPlanComponents from "../Models/AntiCorruptionPlanComponent";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
-import { DateTime } from "luxon";
 import { IPagingData } from "App/Utils/ApiResponses";
 import AntiCorruptionPlanComponent from "../Models/AntiCorruptionPlanComponent";
 
@@ -76,7 +75,7 @@ export default class AntiCorruptionPlanComponentRepository implements IAntiCorru
   async store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]> {
     await trx.transaction(async (transaction) => {
       for (const component of components) {
-        const { id, description, pac_id } = component;
+        const { description, pac_id } = component;
   
         if (pac_id) {
           await AntiCorruptionPlanComponents.query().useTransaction(transaction).where('pac_id', pac_id).update({ description });
