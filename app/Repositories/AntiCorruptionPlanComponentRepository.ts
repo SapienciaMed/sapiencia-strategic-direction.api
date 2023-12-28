@@ -1,4 +1,4 @@
-import { IAntiCorruptionPlanComponent, IAntiCorruptionPlanComponentTemp, IAntiCorruptionPlanComponentFiltersPaginated } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
+import { IAntiCorruptionPlanComponent, IAntiCorruptionPlanComponentTemp, IAntiCorruptionPlanComponentFiltersPaginated, IStore } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
 import AntiCorruptionPlanComponents from "../Models/AntiCorruptionPlanComponent";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IPagingData } from "App/Utils/ApiResponses";
@@ -9,7 +9,7 @@ export interface IAntiCorruptionPlanComponentRepository {
   getAntiCorruptionPlanComponentById(id: number): Promise<IAntiCorruptionPlanComponent | null>;
   getAntiCorruptionPlanComponentByPlanId(status: number): Promise<IAntiCorruptionPlanComponent[] | null>;
   deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<string[] | null>;
-  store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]>;
+  store(components: IStore, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]>;
   createAntiCorruptionPlanComponent(AntiCorruptionPlanComponent: IAntiCorruptionPlanComponentTemp, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponent>;
   updateAntiCorruptionPlanComponent(AntiCorruptionPlanComponent: IAntiCorruptionPlanComponentTemp, id: number, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponent | null>;
   getAntiCorruptionPlanComponentPaginated(filters: IAntiCorruptionPlanComponentFiltersPaginated): Promise<IPagingData<IAntiCorruptionPlanComponent>>;
@@ -72,20 +72,20 @@ export default class AntiCorruptionPlanComponentRepository implements IAntiCorru
     return ids;
   }
   
-  async store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]> {
+  async store(store: IStore, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]> {
     await trx.transaction(async (transaction) => {
-      for (const component of components) {
-        const { description, pac_id } = component;
+      for (const component of store.components) {
+        const { id, description, pac_id } = component;
   
-        if (pac_id) {
-          await AntiCorruptionPlanComponents.query().useTransaction(transaction).where('pac_id', pac_id).update({ description });
+        if (pac_id && id) {
+          await AntiCorruptionPlanComponents.query().useTransaction(transaction).where('id', id).update({ description });
         } else {
-          await AntiCorruptionPlanComponents.create({ description }, transaction);
+          await AntiCorruptionPlanComponents.create({ description: description || '', pac_id: store.planId }, transaction);
         }
       }
     });
   
-    return components;
+    return store.components;
   }
   
   

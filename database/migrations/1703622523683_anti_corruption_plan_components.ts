@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table
       .string("CPAC_DESCRIPCION")
       .nullable()
+      .defaultTo("")
       .comment("Descripcion del componente del plan anticorrupcion");
 
       table

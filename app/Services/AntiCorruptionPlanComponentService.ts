@@ -1,4 +1,4 @@
-import {IAntiCorruptionPlanComponent, IAntiCorruptionPlanComponentPaginated, IAntiCorruptionPlanComponentTemp } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
+import {IAntiCorruptionPlanComponent, IAntiCorruptionPlanComponentPaginated, IAntiCorruptionPlanComponentTemp, IStore } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
 import { IAntiCorruptionPlanComponentRepository } from "App/Repositories/AntiCorruptionPlanComponentRepository";
 import { ApiResponse, IPagingData } from "App/Utils/ApiResponses";
 import { EResponseCodes } from "../Constants/ResponseCodesEnum";
@@ -9,7 +9,7 @@ export interface IAntiCorruptionPlanComponentService {
   getAntiCorruptionPlanComponentById(id: number): Promise<ApiResponse<IAntiCorruptionPlanComponent>>;
   getAntiCorruptionPlanComponentByPlanId(id: number): Promise<ApiResponse<IAntiCorruptionPlanComponent[]>>;
   deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<ApiResponse<string[]>>;
-  store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponentTemp[]>>;
+  store(components: IStore, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponentTemp[]>>;
   createAntiCorruptionPlanComponent(AntiCorruptionPlanComponent: IAntiCorruptionPlanComponentTemp, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponent>>;
   updateAntiCorruptionPlanComponent(AntiCorruptionPlanComponent: IAntiCorruptionPlanComponentTemp, id: number, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponent>>;
   getAntiCorruptionPlanComponentPaginated(filters: IAntiCorruptionPlanComponentPaginated): Promise<ApiResponse<IPagingData<IAntiCorruptionPlanComponent>>>;
@@ -76,7 +76,7 @@ export default class AntiCorruptionPlanComponentService implements IAntiCorrupti
     return new ApiResponse(ids, EResponseCodes.OK);
   }
 
-  async store(components: IAntiCorruptionPlanComponentTemp[], trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponentTemp[]>> {
+  async store(components: IStore, trx: TransactionClientContract): Promise<ApiResponse<IAntiCorruptionPlanComponentTemp[]>> {
     const AntiCorruptionPlanComponenttCreate = await this.AntiCorruptionPlanComponenttRepository.store(components, trx);
     return new ApiResponse(AntiCorruptionPlanComponenttCreate, EResponseCodes.OK);
   }

@@ -1,6 +1,6 @@
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 import Database from "@ioc:Adonis/Lucid/Database";
-import { IAntiCorruptionPlanComponentPaginated, IAntiCorruptionPlanComponentTemp } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
+import { IAntiCorruptionPlanComponentPaginated, IStore } from "App/Interfaces/AntiCorruptionPlanComponentInterfaces";
 import AntiCorruptionPlanComponentProvider from "@ioc:core.AntiCorruptionPlanComponentProvider";
 import { EResponseCodes } from "App/Constants/ResponseCodesEnum";
 import { ApiResponse } from "App/Utils/ApiResponses";
@@ -50,8 +50,8 @@ export default class AntiCorruptionPlanComponentController {
     await Database.transaction(async (trx) => {
       try {
 
-        const components = request.body() as IAntiCorruptionPlanComponentTemp[] || [];
-        const store = response.send(await AntiCorruptionPlanComponentProvider.store(components, trx));
+        const data = request.body() as IStore || [];
+        const store = response.send(await AntiCorruptionPlanComponentProvider.store(data, trx));
 
         response.send({ store });
       } catch (err) {
