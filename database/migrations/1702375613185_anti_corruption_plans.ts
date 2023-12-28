@@ -17,7 +17,7 @@ export default class extends BaseSchema {
 
       table
       .string("PAC_FECHA", 20)
-      .notNullable()
+      .nullable()
       .comment("Fecha creacion");
 
       table

@@ -1,6 +1,4 @@
-import { BaseModel, column, belongsTo, BelongsTo } from "@ioc:Adonis/Lucid/Orm";
-import AntiCorruptionPlanStatus from "./AntiCorruptionPlanStatus";
-
+import { BaseModel, column } from "@ioc:Adonis/Lucid/Orm";
 export default class AntiCorruptionPlan extends BaseModel {
     public static table = "PAC_PLAN_ANTICORRUPCION";
 
@@ -15,10 +13,4 @@ export default class AntiCorruptionPlan extends BaseModel {
 
     @column({ isPrimary: true, columnName: "PAC_STATUS", serializeAs: "status" })
     public status: number;
-
-    @belongsTo(() => AntiCorruptionPlanStatus, {
-      foreignKey: "PAC_STATUS",
-      localKey: "EPA_CODIGO",
-    })
-    public anticorruption_plan_status_info: BelongsTo<typeof AntiCorruptionPlanStatus>;
 }

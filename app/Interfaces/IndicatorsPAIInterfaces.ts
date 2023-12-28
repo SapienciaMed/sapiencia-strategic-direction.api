@@ -7,7 +7,7 @@ export interface IIndicatorsPAI {
     totalPlannedGoal: number;
     products: IProducts[];
     responsibles: IResponsible[];
-    coresponsibles: ICoResponsible[];
+    coresponsibles?: ICoResponsible[];
 }
 
 export interface IIndicatorsPAITemp extends IIndicatorsPAI{
@@ -41,5 +41,5 @@ export interface IResponsible {
 
 export interface ICoResponsible {
     id?: number;
-    coresponsible: string;
+    coresponsible?: string;
 }

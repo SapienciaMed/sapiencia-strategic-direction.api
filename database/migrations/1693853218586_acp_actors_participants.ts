@@ -14,7 +14,7 @@ export default class extends BaseSchema {
       .notNullable()
       .comment("Descripción del actor");
       table
-      .text("ACP_INTERES_EXPECTATIVA")
+      .text("ACP_INTERES_EXPECTATIVA", 'longtext')
       .notNullable()
       .comment("interes o espectativa");
       table
@@ -25,7 +25,7 @@ export default class extends BaseSchema {
       .inTable("POS_POSICION")
       .comment("llave foranea de la tabla Posicion(FK POS_POSICION)");
       table
-      .text("ACP_CONTRIBUICION")
+      .text("ACP_CONTRIBUICION", 'longtext')
       .notNullable()
       .comment("Campo que almacena la informacion relacionanda con la contribucion");
       table

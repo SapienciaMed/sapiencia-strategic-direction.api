@@ -76,7 +76,7 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Descripción del programa plan distrital");
       table
-      .text("PYR_DETALLE_PROBLEMA")
+      .text("PYR_DETALLE_PROBLEMA", 'longtext')
       .nullable()
       .comment("Descripción detallada del problema");
       table
@@ -123,11 +123,11 @@ export default class extends BaseSchema {
       .nullable()
       .comment("Nombre de la alternativa");
       table
-      .text("PRY_RESUMEN_TECNICO_ALTERNATIVA")
+      .text("PRY_RESUMEN_TECNICO_ALTERNATIVA", 'longtext')
       .nullable()
       .comment("Resumen tecnico de la alternativa");
       table
-      .text("PRY_DESCRIPCION_CAPACIDAD")
+      .text("PRY_DESCRIPCION_CAPACIDAD", 'longtext')
       .nullable()
       .comment("Descripción de la capacidad");
       table
