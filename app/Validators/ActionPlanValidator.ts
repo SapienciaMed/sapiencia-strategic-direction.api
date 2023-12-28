@@ -68,7 +68,7 @@ export default class ActionPlanValidator {
                 responsible: schema.string()
               })
             ),
-            coresponsibles: schema.array().members(
+            coresponsibles: schema.array.optional().members(
               schema.object().members({
                 id: schema.number.optional(),
                 idIndicatorPAI: schema.number.optional(),

@@ -243,7 +243,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
     }
 
     toUpdate.dateModify = DateTime.local().toJSDate();
-    if (pai.status === 2) {
+    if (pai.status === 5) {
       const updatedVersion = Number(toUpdate.version.split(".")[0]);
       toUpdate.version = `${updatedVersion + 1}.0`;
     } else {
@@ -375,7 +375,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
     if (filters.status) {
       query.where("status", filters.status);
     }
-    console.log(query.toQuery());
+    
      const res = await query.paginate(filters.page, filters.perPage);
     
      
