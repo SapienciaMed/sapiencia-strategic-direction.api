@@ -375,7 +375,7 @@ export default class PlanActionRepository implements IPlanActionRepository {
     if (filters.status) {
       query.where("status", filters.status);
     }
-    console.log(query.toQuery());
+    
      const res = await query.paginate(filters.page, filters.perPage);
     
      
