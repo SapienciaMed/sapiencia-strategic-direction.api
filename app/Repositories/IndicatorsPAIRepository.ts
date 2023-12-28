@@ -132,7 +132,9 @@ export default class IndicatorsPAIRepository implements IIndicatorsPAIRepository
           const coresponsible = products[index];
           const toCreate = new CoResponsiblesPAI();
           toCreate.idIndicatorPAI = idIndicator;
-          toCreate.coresponsible = coresponsible.coresponsible;
+          if (toCreate.coresponsible !== undefined && toCreate.coresponsible !== null) {
+            toCreate.coresponsible ?  coresponsible.coresponsible : "";
+        }
           toCreate.useTransaction(trx);
           await toCreate.save();
           productsCreate.push({ ...toCreate.serialize() as ICoResponsible });
