@@ -27,8 +27,10 @@ export default class MeasurementCapacityValidator {
   public schema = schema.create({
     id: schema.number.optional(),
     name: schema.string(),
-    date: schema.string.optional(),
+    date: schema.string(),
+    year: schema.string(),
     status: schema.number(),
+    uuid: schema.string(),
   });
 
   /**

@@ -9,6 +9,11 @@ export default class AntiCorruptionPlanComponent extends BaseModel {
     @column({ columnName: "CPAC_DESCRIPCION", serializeAs: "description" })
     public description: string;
 
-    @column({ isPrimary: true, columnName: "PAC_CODIGO", serializeAs: "pac_id" })
+    @column({ columnName: "CPAC_UUID", serializeAs: "uuid" })
+    public uuid: string;
+
+    @column({ columnName: "PAC_CODIGO", serializeAs: "pac_id" })
     public pac_id: number;
+
+    
 }

@@ -10,6 +10,12 @@ export default class extends BaseSeeder {
         active: true,
         order: 1
       },
+      {
+        id: 2,
+        description: 'Formulado',
+        active: true,
+        order: 2
+      },
     ]);
   }
 }

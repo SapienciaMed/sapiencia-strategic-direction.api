@@ -15,6 +15,9 @@ export default class AppProvider {
     const ImpactTypeService = await import("App/Services/ImpactTypeService");
     const AntiCorruptionPlanStatusService = await import("App/Services/AntiCorruptionPlanStatusService");
     const AntiCorruptionPlanComponentService = await import("App/Services/AntiCorruptionPlanComponentService");
+    const AntiCorruptionPlanComponentActivityService = await import("App/Services/AntiCorruptionPlanComponentActivityService");
+    const AntiCorruptionPlanIndicatorService = await import("App/Services/AntiCorruptionPlanIndicatorService");
+    const AntiCorruptionPlanResponsibleService = await import("App/Services/AntiCorruptionPlanResponsibleService");
     const AntiCorruptionPlanService = await import("App/Services/AntiCorruptionPlanService");
     const ImpactRatingService = await import("App/Services/ImpactRatingService");
     const EntitiesService = await import("App/Services/EntitiesService");
@@ -75,6 +78,19 @@ export default class AppProvider {
 
     const AntiCorruptionPlanComponentRepository = await import(
       "App/Repositories/AntiCorruptionPlanComponentRepository"
+    );
+
+  
+    const AntiCorruptionPlanIndicatorRepository = await import(
+      "App/Repositories/AntiCorruptionPlanIndicatorRepository"
+    );
+
+    const AntiCorruptionPlanComponentActivityRepository = await import(
+      "App/Repositories/AntiCorruptionPlanComponentActivityRepository"
+    );
+
+    const AntiCorruptionPlanResponsibleRepository = await import(
+      "App/Repositories/AntiCorruptionPlanResponsibleRepository"
     );
 
     const AntiCorruptionPlanRepository = await import(
@@ -229,6 +245,27 @@ export default class AppProvider {
       "core.AntiCorruptionPlanComponentProvider",
       () => new AntiCorruptionPlanComponentService.default(
         new AntiCorruptionPlanComponentRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.AntiCorruptionPlanComponentActivityProvider",
+      () => new AntiCorruptionPlanComponentActivityService.default(
+        new AntiCorruptionPlanComponentActivityRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.AntiCorruptionPlanIndicatorProvider",
+      () => new AntiCorruptionPlanIndicatorService.default(
+        new AntiCorruptionPlanIndicatorRepository.default(),
+      ),
+    );
+
+    this.app.container.singleton(
+      "core.AntiCorruptionPlanResponsibleProvider",
+      () => new AntiCorruptionPlanResponsibleService.default(
+        new AntiCorruptionPlanResponsibleRepository.default(),
       ),
     );
 

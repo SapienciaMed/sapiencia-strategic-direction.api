@@ -1,7 +1,7 @@
 import { schema, CustomMessages } from "@ioc:Adonis/Core/Validator";
 import type { HttpContextContract } from "@ioc:Adonis/Core/HttpContext";
 
-export default class AntiCorruptionPlanComponentValidator {
+export default class AntiCorruptionPlanComponentActivityValidator {
   constructor(protected ctx: HttpContextContract) { }
 
   /*
@@ -27,10 +27,15 @@ export default class AntiCorruptionPlanComponentValidator {
   public schema = schema.create({
     id: schema.number.optional(),
     description: schema.string(),
-    status: schema.number(),
-    date: schema.string(),
+    acpa_uuid: schema.string(),
     uuid: schema.string(),
-    plan_id: schema.number(),
+    pac_id: schema.number(),
+    quarterly_goal1: schema.number(),
+    quarterly_goal2: schema.number(),
+    quarterly_goal3: schema.number(),
+    unit1: schema.string(),
+    unit2: schema.string(),
+    unit3: schema.string(),
   });
 
   /**

@@ -1,18 +1,21 @@
 export interface IAntiCorruptionPlanComponent {
   id: number,
   description: string,
+  uuid: string,
   pac_id: number,
 }
 
 export interface IAntiCorruptionPlanComponentTemp {
-  id?: number,
-  description?: string,
-  pac_id?: number,
+  id?: number;
+  description?: string;
+  uuid: string;
+  pac_id?: number;
 }
 
 export interface IStore {
   components: IAntiCorruptionPlanComponentTemp[];
-  planId: number;
+  plan_id: number;
+  plan_uuid: string
 }
 
 export interface IAntiCorruptionPlanComponentPaginated {

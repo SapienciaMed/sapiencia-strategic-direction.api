@@ -6,6 +6,7 @@ export default class extends BaseSchema {
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.comment("Tabla que contiene los campos de los planes anticorrupcion");
+      table.string("PAC_UUID").notNullable().comment("_id unico");
       table.increments("PAC_CODIGO")
       .primary()
       .comment("Llave primaria");
@@ -13,12 +14,17 @@ export default class extends BaseSchema {
       table
       .string("PAC_NOMBRE")
       .notNullable()
-      .comment("Nombre del planr");
+      .comment("Nombre del plan");
 
       table
       .string("PAC_FECHA", 20)
       .nullable()
       .comment("Fecha creacion");
+
+      table
+      .string("PAC_AÑO", 20)
+      .notNullable()
+      .comment("año");
 
       table
       .integer("PAC_STATUS")

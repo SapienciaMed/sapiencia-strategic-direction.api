@@ -134,6 +134,49 @@ Route.group(() => {
 .prefix("/api/v1/anti-corruption-plan-component")
 .middleware("auth");
 
+Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanComponentActivityController.getAntiCorruptionPlanComponenActivitytById");
+  Route.get("/get-by-plan-id/:id", "AntiCorruptionPlanComponentActivityController.getAntiCorruptionPlanComponentActivityByPlanId");
+  Route.get("/get-by-status/:status", "AntiCorruptionPlanComponentActivityController.getAntiCorruptionPlanComponentActivityByStatus");
+  Route.get("/", "AntiCorruptionPlanComponentActivityController.getAntiCorruptionPlanComponentActivity");
+  Route.post("/create", "AntiCorruptionPlanComponentActivityController.createAntiCorruptionPlanComponentActivity");
+  Route.put("/update/:id", "AntiCorruptionPlanComponentActivityController.updateAntiCorruptionPlanComponentActivity");
+  Route.post("/paginated", "AntiCorruptionPlanComponentActivityController.getAntiCorruptionPlanComponentActivityPaginated");
+  Route.post("/delete-all-by-ids", "AntiCorruptionPlanComponentActivityController.deleteAllByIds");
+  Route.post("/store", "AntiCorruptionPlanComponentActivityController.store");
+})
+.prefix("/api/v1/anti-corruption-plan-activity")
+.middleware("auth");
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanIndicatorController.getAntiCorruptionPlanIndicatortById");
+  Route.get("/get-by-plan-id/:id", "AntiCorruptionPlanIndicatorController.getAntiCorruptionPlanIndicatorByPlanId");
+  Route.get("/get-by-status/:status", "AntiCorruptionPlanIndicatorController.getAntiCorruptionPlanIndicatorByStatus");
+  Route.get("/", "AntiCorruptionPlanIndicatorController.getAntiCorruptionPlanIndicator");
+  Route.post("/create", "AntiCorruptionPlanIndicatorController.createAntiCorruptionPlanIndicator");
+  Route.put("/update/:id", "AntiCorruptionPlanIndicatorController.updateAntiCorruptionPlanIndicator");
+  Route.post("/paginated", "AntiCorruptionPlanIndicatorController.getAntiCorruptionPlanIndicatorPaginated");
+  Route.post("/delete-all-by-ids", "AntiCorruptionPlanIndicatorController.deleteAllByIds");
+  Route.post("/store", "AntiCorruptionPlanIndicatorController.store");
+})
+.prefix("/api/v1/anti-corruption-plan-indicator")
+.middleware("auth");
+
+
+Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanResponsibleController.getAntiCorruptionPlanResponsibletById");
+  Route.get("/get-by-plan-id/:id", "AntiCorruptionPlanResponsibleController.getAntiCorruptionPlanResponsibleByPlanId");
+  Route.get("/get-by-status/:status", "AntiCorruptionPlanResponsibleController.getAntiCorruptionPlanResponsibleByStatus");
+  Route.get("/", "AntiCorruptionPlanResponsibleController.getAntiCorruptionPlanResponsible");
+  Route.post("/create", "AntiCorruptionPlanResponsibleController.createAntiCorruptionPlanResponsible");
+  Route.put("/update/:id", "AntiCorruptionPlanResponsibleController.updateAntiCorruptionPlanResponsible");
+  Route.post("/paginated", "AntiCorruptionPlanResponsibleController.getAntiCorruptionPlanResponsiblePaginated");
+  Route.post("/delete-all-by-ids", "AntiCorruptionPlanResponsibleController.deleteAllByIds");
+  Route.post("/store", "AntiCorruptionPlanResponsibleController.store");
+})
+.prefix("/api/v1/anti-corruption-plan-responsible")
+.middleware("auth");
+
 
 Route.group(() => {
   Route.get("/get-by-id/:id", "ImpactTypeController.getImpactTypeById");

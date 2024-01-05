@@ -5,12 +5,21 @@ export default class AntiCorruptionPlan extends BaseModel {
     @column({ isPrimary: true, columnName: "PAC_CODIGO", serializeAs: "id" })
     public id: number;
 
+    @column({ columnName: "PAC_UUID", serializeAs: "uuid" })
+    public uuid: string;
+
+
     @column({ columnName: "PAC_NOMBRE", serializeAs: "name" })
     public name: string;
 
     @column({ columnName: "PAC_FECHA", serializeAs: "date" })
     public date: string;
 
-    @column({ isPrimary: true, columnName: "PAC_STATUS", serializeAs: "status" })
+    @column({ columnName: "PAC_AÑO", serializeAs: "year" })
+    public year: string;
+
+    @column({ columnName: "PAC_STATUS", serializeAs: "status" })
     public status: number;
+
+   
 }

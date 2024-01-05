@@ -72,15 +72,15 @@ export default class AntiCorruptionPlanComponentRepository implements IAntiCorru
     return ids;
   }
   
-  async store(store: IStore, trx: TransactionClientContract): Promise<IAntiCorruptionPlanComponentTemp[]> {
+  async store(store: IStore, trx: TransactionClientContract): Promise<any[]> {
     await trx.transaction(async (transaction) => {
       for (const component of store.components) {
-        const { id, description, pac_id } = component;
+        const { id, description, pac_id, uuid } = component;
   
         if (pac_id && id) {
           await AntiCorruptionPlanComponents.query().useTransaction(transaction).where('id', id).update({ description });
         } else {
-          await AntiCorruptionPlanComponents.create({ description: description || '', pac_id: store.planId }, transaction);
+          await AntiCorruptionPlanComponents.create({ description: description, uuid, pac_id: store.plan_id }, transaction);
         }
       }
     });

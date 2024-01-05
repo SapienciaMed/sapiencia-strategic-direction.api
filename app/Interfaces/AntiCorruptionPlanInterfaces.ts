@@ -1,15 +1,19 @@
 export interface IAntiCorruptionPlan {
+  uuid: string;
   id: number,
   name: string,
-  date?: string,
+  date: string,
   status: number
+  year: string;
 }
 
 export interface IAntiCorruptionPlanTemp {
-  id?: number,
+  uuid: string;
   name: string,
-  date?: string,
+  date: string,
   status: number,
+  year: string;
+  id?: number,
 }
 
 export interface IAntiCorruptionPlanPaginated {

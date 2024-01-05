@@ -1,7 +1,6 @@
 import { IAntiCorruptionPlan, IAntiCorruptionPlanTemp, IAntiCorruptionPlanFiltersPaginated } from "App/Interfaces/AntiCorruptionPlanInterfaces";
 import AntiCorruptionPlans from "../Models/AntiCorruptionPlan";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
-import { DateTime } from "luxon";
 import { IPagingData } from "App/Utils/ApiResponses";
 import AntiCorruptionPlan from "../Models/AntiCorruptionPlan";
 
@@ -41,9 +40,9 @@ export default class AntiCorruptionPlanRepository implements IAntiCorruptionPlan
 
   }
 
-  async getAntiCorruptionPlan(): Promise<IAntiCorruptionPlan[] | null> {
+  async getAntiCorruptionPlan(): Promise<IAntiCorruptionPlan[]> {
     const res = await AntiCorruptionPlans.query().orderBy('id', 'asc');
-    return res ? (res) : null;
+    return res ? (res) : [];
   }
 
   async getAntiCorruptionPlanById(id: number): Promise<IAntiCorruptionPlan | null> {
@@ -61,16 +60,27 @@ export default class AntiCorruptionPlanRepository implements IAntiCorruptionPlan
     if (AntiCorruptionPlan?.id !== undefined) {
       toCreate.id = AntiCorruptionPlan.id;
     }
+
     if (AntiCorruptionPlan?.name) {
       toCreate.name = AntiCorruptionPlan.name;
     }
 
-    toCreate.date = AntiCorruptionPlan.date || DateTime.now().toISO()!;
+    if (AntiCorruptionPlan?.date) {
+      toCreate.date = AntiCorruptionPlan.date
+    }
 
     if (AntiCorruptionPlan?.status) {
       toCreate.status = AntiCorruptionPlan.status;
     }
 
+    if (AntiCorruptionPlan?.year) {
+      toCreate.year = AntiCorruptionPlan.year;
+    }
+
+    if (AntiCorruptionPlan?.uuid) {
+      toCreate.uuid = AntiCorruptionPlan.uuid;
+    }
+    
     toCreate.useTransaction(trx);
     await toCreate.save();
     return toCreate.serialize() as IAntiCorruptionPlan;
@@ -89,6 +99,9 @@ export default class AntiCorruptionPlanRepository implements IAntiCorruptionPlan
     }
     if (AntiCorruptionPlan?.status) {
       toUpdate.status = AntiCorruptionPlan.status;
+    }
+    if (AntiCorruptionPlan?.year) {
+      toUpdate.year = AntiCorruptionPlan.year;
     }
 
     toUpdate.useTransaction(trx);
