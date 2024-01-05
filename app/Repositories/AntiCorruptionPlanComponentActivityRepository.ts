@@ -3,6 +3,8 @@ import AntiCorruptionPlanActivity from "../Models/AntiCorruptionPlanComponentAct
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IPagingData } from "App/Utils/ApiResponses";
 import AntiCorruptionPlanComponentActivity from "../Models/AntiCorruptionPlanComponentActivity";
+import AntiCorruptionPlanIndicator from "App/Models/AntiCorruptionPlanIndicator";
+import AntiCorruptionPlanResponsible from "App/Models/AntiCorruptionPlanResponsible";
 
 export interface IAntiCorruptionPlanComponentActivityRepository {
   getAntiCorruptionPlanComponentActivity(): Promise<IAntiCorruptionPlanComponentActivity[] | null>;
@@ -64,11 +66,16 @@ export default class AntiCorruptionPlanComponentActivityRepository implements IA
     return toCreate.serialize() as IAntiCorruptionPlanComponentActivity;
   }
 
-
   async deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<string[]> {
+    const indicators = await AntiCorruptionPlanIndicator.query().useTransaction(trx).whereIn('acpa_uuid', ids);
+    const responsibleIds = indicators.map(indicator => indicator.uuid);
+  
     await trx.transaction(async (transaction) => {
-      await AntiCorruptionPlanActivity.query().useTransaction(transaction).whereIn('id', ids).delete();
+      await AntiCorruptionPlanIndicator.query().useTransaction(transaction).whereIn('acpa_uuid', ids).delete();
+      await AntiCorruptionPlanResponsible.query().useTransaction(transaction).whereIn('ipa_uuid', responsibleIds).delete();
+      await AntiCorruptionPlanComponentActivity.query().useTransaction(transaction).whereIn('uuid', ids).delete();
     });
+  
     return ids;
   }
   

@@ -2,7 +2,9 @@ import { IAntiCorruptionPlanComponent, IAntiCorruptionPlanComponentTemp, IAntiCo
 import AntiCorruptionPlanComponents from "../Models/AntiCorruptionPlanComponent";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IPagingData } from "App/Utils/ApiResponses";
-import AntiCorruptionPlanComponent from "../Models/AntiCorruptionPlanComponent";
+import AntiCorruptionPlanComponentActivity from "../Models/AntiCorruptionPlanComponentActivity";
+import AntiCorruptionPlanIndicator from "../Models/AntiCorruptionPlanIndicator";
+import AntiCorruptionPlanResponsible from "../Models/AntiCorruptionPlanResponsible";
 
 export interface IAntiCorruptionPlanComponentRepository {
   getAntiCorruptionPlanComponent(): Promise<IAntiCorruptionPlanComponent[] | null>;
@@ -18,7 +20,7 @@ export interface IAntiCorruptionPlanComponentRepository {
 export default class AntiCorruptionPlanComponentRepository implements IAntiCorruptionPlanComponentRepository {
 
   async getAntiCorruptionPlanComponentPaginated(filters: IAntiCorruptionPlanComponentFiltersPaginated): Promise<IPagingData<IAntiCorruptionPlanComponent>> {
-    const query = AntiCorruptionPlanComponent.query()
+    const query = AntiCorruptionPlanComponents.query()
       .distinct();
 
     if (filters.description) {
@@ -66,9 +68,19 @@ export default class AntiCorruptionPlanComponentRepository implements IAntiCorru
 
 
   async deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<string[]> {
+    const activities = await AntiCorruptionPlanComponentActivity.query().useTransaction(trx).whereIn('cpac_uuid', ids);
+    const activityIds = activities.map(activity => activity.uuid);
+  
+    const indicators = await AntiCorruptionPlanIndicator.query().useTransaction(trx).whereIn('acpa_uuid', activityIds);
+    const responsibleIds = indicators.map(indicator => indicator.uuid);
+  
     await trx.transaction(async (transaction) => {
-      await AntiCorruptionPlanComponents.query().useTransaction(transaction).whereIn('id', ids).delete();
+      await AntiCorruptionPlanComponentActivity.query().useTransaction(transaction).whereIn('cpac_uuid', ids).delete();
+      await AntiCorruptionPlanIndicator.query().useTransaction(transaction).whereIn('acpa_uuid', activityIds).delete();
+      await AntiCorruptionPlanResponsible.query().useTransaction(transaction).whereIn('ipa_uuid', responsibleIds).delete();
+      await AntiCorruptionPlanComponents.query().useTransaction(transaction).whereIn('uuid', ids).delete();
     });
+  
     return ids;
   }
   

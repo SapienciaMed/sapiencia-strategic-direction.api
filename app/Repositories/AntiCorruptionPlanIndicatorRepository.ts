@@ -1,8 +1,8 @@
 import { IAntiCorruptionPlanIndicator, IAntiCorruptionPlanIndicatorTemp, IAntiCorruptionPlanIndicatorFiltersPaginated, IStore } from "App/Interfaces/AntiCorruptionPlanIndicatorInterfaces";
-import AntiCorruptionPlanActivity from "../Models/AntiCorruptionPlanIndicator";
+import AntiCorruptionPlanIndicatorModel from "../Models/AntiCorruptionPlanIndicator";
 import { TransactionClientContract } from "@ioc:Adonis/Lucid/Database";
 import { IPagingData } from "App/Utils/ApiResponses";
-import AntiCorruptionPlanIndicator from "../Models/AntiCorruptionPlanIndicator";
+import AntiCorruptionPlanResponsible from "App/Models/AntiCorruptionPlanResponsible";
 
 export interface IAntiCorruptionPlanIndicatorRepository {
   getAntiCorruptionPlanIndicator(): Promise<IAntiCorruptionPlanIndicator[] | null>;
@@ -18,7 +18,7 @@ export interface IAntiCorruptionPlanIndicatorRepository {
 export default class AntiCorruptionPlanIndicatorRepository implements IAntiCorruptionPlanIndicatorRepository {
 
   async getAntiCorruptionPlanIndicatorPaginated(filters: IAntiCorruptionPlanIndicatorFiltersPaginated): Promise<IPagingData<IAntiCorruptionPlanIndicator>> {
-    const query = AntiCorruptionPlanIndicator.query()
+    const query = AntiCorruptionPlanIndicatorModel.query()
       .distinct();
 
     if (filters.description) {
@@ -36,22 +36,22 @@ export default class AntiCorruptionPlanIndicatorRepository implements IAntiCorru
   }
 
   async getAntiCorruptionPlanIndicator(): Promise<IAntiCorruptionPlanIndicator[] | null> {
-    const res = await AntiCorruptionPlanActivity.query().orderBy('id', 'asc');
+    const res = await AntiCorruptionPlanIndicatorModel.query().orderBy('id', 'asc');
     return res ? (res) : null;
   }
 
   async getAntiCorruptionPlanIndicatorById(id: number): Promise<IAntiCorruptionPlanIndicator | null> {
-    const res = await AntiCorruptionPlanActivity.find(id);
+    const res = await AntiCorruptionPlanIndicatorModel.find(id);
     return res ? (res.serialize() as IAntiCorruptionPlanIndicator) : null;
   }
 
   async getAntiCorruptionPlanIndicatorByPlanId(id: number): Promise<IAntiCorruptionPlanIndicator[] | null> {
-    const res = await AntiCorruptionPlanActivity.query().where("pac_id", id);
+    const res = await AntiCorruptionPlanIndicatorModel.query().where("pac_id", id);
     return res ? (res) : null;
   }
 
   async createAntiCorruptionPlanIndicator(AntiCorruptionPlanIndicator: IAntiCorruptionPlanIndicatorTemp, trx: TransactionClientContract): Promise<IAntiCorruptionPlanIndicator> {
-    const toCreate = new AntiCorruptionPlanActivity();
+    const toCreate = new AntiCorruptionPlanIndicatorModel();
     if (AntiCorruptionPlanIndicator?.id !== undefined) {
       toCreate.id = AntiCorruptionPlanIndicator.id;
     }
@@ -64,11 +64,13 @@ export default class AntiCorruptionPlanIndicatorRepository implements IAntiCorru
     return toCreate.serialize() as IAntiCorruptionPlanIndicator;
   }
 
-
   async deleteAllByIds(ids: string[], trx: TransactionClientContract): Promise<string[]> {
+  
     await trx.transaction(async (transaction) => {
-      await AntiCorruptionPlanActivity.query().useTransaction(transaction).whereIn('id', ids).delete();
+      await AntiCorruptionPlanResponsible.query().useTransaction(transaction).whereIn('ipa_uuid', ids).delete();
+      await AntiCorruptionPlanIndicatorModel.query().useTransaction(transaction).whereIn('uuid', ids).delete();
     });
+  
     return ids;
   }
   
@@ -78,9 +80,9 @@ export default class AntiCorruptionPlanIndicatorRepository implements IAntiCorru
         const { id, description, uuid, acpa_uuid, pac_id, quarterly_goal1, quarterly_goal2, quarterly_goal3, unit1, unit2, unit3 } = activity;
   
         if (pac_id && id) {
-          await AntiCorruptionPlanActivity.query().useTransaction(transaction).where('id', id).update({ description });
+          await AntiCorruptionPlanIndicatorModel.query().useTransaction(transaction).where('id', id).update({ description });
         } else {
-          await AntiCorruptionPlanActivity.create({
+          await AntiCorruptionPlanIndicatorModel.create({
             description: description, uuid, acpa_uuid, pac_id: store.plan_id,
             quarterly_goal1, quarterly_goal2, quarterly_goal3, unit1, unit2, unit3
           }, transaction);
@@ -93,7 +95,7 @@ export default class AntiCorruptionPlanIndicatorRepository implements IAntiCorru
   
   
   async updateAntiCorruptionPlanIndicator(AntiCorruptionPlanIndicator: IAntiCorruptionPlanIndicatorTemp, id: number, trx: TransactionClientContract): Promise<IAntiCorruptionPlanIndicator | null> {
-    const toUpdate = await AntiCorruptionPlanActivity.find(id);
+    const toUpdate = await AntiCorruptionPlanIndicatorModel.find(id);
     if (!toUpdate) {
       return null;
     }

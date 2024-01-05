@@ -35,7 +35,9 @@ export default class AntiCorruptionPlanComponentController {
   public async deleteAllByIds({ response, request }: HttpContextContract) {
     await Database.transaction(async (trx) => {
       try {
+        console.log(request.body())
         const ids = request.body() as string[] || [];
+        console.log('ids', ids)
         return response.send(await AntiCorruptionPlanComponentProvider.deleteAllByIds(ids, trx));
       } catch (err) {
         await trx.rollback();
