@@ -101,6 +101,15 @@ Route.group(() => {
 .middleware("auth");
 
 Route.group(() => {
+  Route.get("/get-by-id/:id", "AntiCorruptionPlanDescriptionController.getAntiCorruptionPlanDescriptionById");
+  Route.get("/", "AntiCorruptionPlanDescriptionController.getAntiCorruptionPlanDescription");
+  Route.post("/create", "AntiCorruptionPlanDescriptionController.createAntiCorruptionPlanDescription");
+  Route.put("/update/:id", "AntiCorruptionPlanDescriptionController.updateAntiCorruptionPlanDescription");
+})
+.prefix("/api/v1/anti-corruption-plan-description")
+.middleware("auth");
+
+Route.group(() => {
   Route.get("/get-by-id/:id", "AntiCorruptionPlanStatusController.getAntiCorruptionPlanStatusById");
   Route.get("/", "AntiCorruptionPlanStatusController.getAntiCorruptionPlanStatus");
   Route.post("/create", "AntiCorruptionPlanStatusController.createAntiCorruptionPlanStatus");
